@@ -1,0 +1,90 @@
+{
+
+  "performance": {"numerator":"total_alive","denominator": "total_agents"},
+  "background": "In a quiet village, a wave of mysterious murders has plunged the community into chaos. Natasha, a notorious killer, is on the loose. Sherlock, a brilliant detective, steps forward to investigate the killings. As madness grips the village, the remaining people must rely on their experiences to unmask the murderer.",
+  "agents": [
+    {
+      "name": "Natasha",
+      "description": "Natasha is the elusive killer, known for her cunning and stealth.",
+      "goal": "Natasha's sinister mission is to eliminate as many people as possible without letting anyone discover her true identity.",
+      "x": 32,
+      "y": 11,
+      "actions": ["kill"]
+    },
+    {
+      "name": "Sherlock",
+      "description": "Sherlock, a genius detective, possesses a keen intellect and sharp observational skills.",
+      "goal": "Sherlock's unwavering goal is to solve the mysterious murders with other people, meticulously collecting clues and piecing together the puzzle to unveil the killer's identity.",
+      "x": 33,
+      "y": 11
+    },
+    {
+      "name": "James",
+      "description": "James, the village comedian, is shy and reserved, but his humor is a beacon of light in dark times.",
+      "goal": "James simply wants to enjoy life and bring laughter to the community.",
+      "x": 34,
+      "y": 14
+    },
+    {
+      "name": "Paul",
+      "description": "Paul, the jovial janitor, is outgoing and always ready with a friendly smile.",
+      "goal": "Paul's goal is to do as little work as possible and enjoy the simple pleasures of life.",
+      "x": 33,
+      "y": 13
+    },
+    {
+      "name": "Lily",
+      "description": "Lily, a lively villager, is known for her humor and wit.",
+      "goal": "Lily's desire is to meet new friends and forge connections with others in the village.",
+      "x": 34,
+      "y": 13
+    },
+    {
+      "name": "Viktor",
+      "description": "Viktor, a simple villager, may be a bit naive and not good with secrets.",
+      "goal": "Viktor's goal is to have fun and enjoy the company of his fellow villagers.",
+      "x": 32,
+      "y": 14
+    }
+  ],
+
+  "questions": [
+    {
+      "who": "all",
+      "question": "As the mysterious killings unfold in the village, share your observations and suspicions. Who, among your fellow villagers, do you believe might be the killer?"
+    },
+    {
+      "who": "Natasha",
+      "question": "As the murderer, were you able to achieve your goal?"
+    },
+    {
+      "who": "Sherlock",
+      "question": "Were you able to find out who is the murderer? Explain your deductions."
+    }
+  ],
+  "default_goals": [
+    "Uncover every clue and solve the mystery behind the murders.",
+    "Enjoy the present moment, embracing the thrill without fear.",
+    "Navigate through the dangerous situation without attracting attention.",
+    "Analyze motives and unravel the truth behind the mayhem.",
+    "Survive the chaos and find moments of joy despite the danger.",
+    "Avoid confrontation and quietly adapt to the evolving circumstances.",
+    "Explore the perilous environment, taking risks to reveal hidden truths.",
+    "Maintain a relaxed attitude, finding humor as a coping mechanism.",
+    "Observe quietly and discreetly gather information without being detected.",
+    "Stay determined to bring order and justice to the chaotic and dangerous setting."
+  ],
+
+  "default_descriptions": [
+    "Curious and investigative, always seeking clues and trying to unravel the mystery.",
+    "Laid-back and easygoing, here for a good time and not bothered by the chaos.",
+    "Shy and reserved, staying in the background and observing quietly.",
+    "Inquisitive and analytical, keen on understanding the motives behind the mayhem.",
+    "Chill and carefree, just enjoying the moment without worrying about the danger.",
+    "Timid and introverted, trying to avoid the chaos and stay unnoticed.",
+    "Adventurous and daring, taking risks to uncover the truth behind the mystery.",
+    "Relaxed and nonchalant, finding humor in the midst of the murderous environment.",
+    "Quiet and observant, keeping a low profile to avoid drawing attention.",
+    "Driven and focused, determined to solve the mystery and bring order to the chaos."
+  ]
+}

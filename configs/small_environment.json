@@ -1,0 +1,137 @@
+{
+  "collision": [
+    [1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+    [1, 0, 0, 1, 0, 0, 0, 0, 1, 1],
+    [1, 0, 0, 1, 0, 0, 0, 0, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+    [1, 1, 1, 1, 0, 0, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 0, 1, 0, 1, 1, 1],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 1, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 1, 1, 1, 0, 1, 1, 1, 1, 1]
+  ],
+  "location": [
+    {
+      "name": "Natasha House",
+      "description": "Natasha's house.",
+      "areas": [
+        {
+          "name": "Natasha's Bedroom",
+          "x": 1,
+          "y": 1,
+          "description": "Natasha's bedroom",
+          "objects": [
+            {
+              "name": "Bed",
+              "x": 1,
+              "y": 1,
+              "is_boundary": false,
+              "symbol": "bed"
+            },
+            {
+              "name": "Closet",
+              "x": 1,
+              "y": 2,
+              "is_boundary": false,
+              "symbol": "closet"
+            }
+          ]
+        },
+        {
+          "name": "Natasha's Office",
+          "x": 5,
+          "y": 2,
+          "description": "Natasha's Office",
+          "objects": [
+            {
+              "name": "Table",
+              "x": 5,
+              "y": 1,
+              "is_boundary": false,
+              "symbol": "table"
+            },
+            {
+              "name": "Chair",
+              "x": 5,
+              "y": 2,
+              "is_boundary": false,
+              "symbol": "chair"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "James House",
+      "description": "James's house.",
+      "areas": [
+        {
+          "name": "James's Bedroom",
+          "x": 8,
+          "y": 7,
+          "description": "James's bedroom",
+          "objects": [
+            {
+              "name": "Bed",
+              "x": 8,
+              "y": 7,
+              "is_boundary": false,
+              "symbol": "bed"
+            },
+            {
+              "name": "Nightstand",
+              "x": 7,
+              "y": 7,
+              "is_boundary": false,
+              "symbol": "bed"
+            }
+          ]
+        },
+        {
+          "name": "James's Living Room",
+          "x": 5,
+          "y": 8,
+          "description": "James's bedroom",
+          "objects": [
+            {
+              "name": "Bean bag",
+              "x": 5,
+              "y": 8,
+              "is_boundary": false,
+              "symbol": "Bean bag"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Park",
+      "description": "Town's park.",
+      "areas": [
+        {
+          "name": "Park bench",
+          "x": 8,
+          "y": 3,
+          "description": "Park bench",
+          "objects": [
+            {
+              "name": "Bench",
+              "x": 8,
+              "y": 3,
+              "is_boundary": false,
+              "symbol": "--"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+
+  "width": 10,
+  "height": 10,
+
+  "simulation_steps": 5
+}
+

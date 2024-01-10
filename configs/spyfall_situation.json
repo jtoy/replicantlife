@@ -1,0 +1,69 @@
+{
+  "background": "In a village, spy Natasha infiltrates to discover the secret password 'theater'. Villagers aim to protect the password. Natasha, confident and manipulative, pretends to know the password, while villagers use secrecy, humor, and caution to expose the spy without revealing the crucial secret.",
+  "agents": [
+    {
+      "name": "Natasha",
+      "description": "Natasha is the spy.; Natasha is confident.; Natasha is good at manipulating people.;",
+      "goal": "Natasha is a spy tasked to find the secret password. Natasha knows all the villagers know the password so Natasha has to pretend to know the password. Natasha knows the villagers are aware there is a spy among them. Natasha will use her spy skills to discreetly discover the password without revealing that she is the spy.; Natasha is good at manipulating people.;",
+      "x": 2,
+      "y": 3,
+      "retention": 95,
+      "acceptance": 95,
+      "invitation": 95
+    },
+    {
+      "name": "James",
+      "description": "James is a villager.; James knows the secret password is 'theater'.; James is shy and reserved.;",
+      "goal": "James needs to find the spy while protecting the secret password 'theater'.; James will be secretive and observant with whoever he speaks with.;",
+      "x": 2,
+      "y": 4,
+      "retention": 60,
+      "acceptance": 75,
+      "invitation": 60
+    },
+    {
+      "name": "Lily",
+      "description": "Lily is a villager.; Lily knows the secret password is 'theater'.; Lily is funny.; Lily likes adventure.;",
+      "goal": "Lily needs to find the spy while protecting the secret password 'theater'.; Lily will use humor into finding the spy while protecting the secret.;",
+      "x": 3,
+      "y": 3,
+      "retention": 100,
+      "acceptance": 97,
+      "invitation": 97
+    },
+    {
+      "name": "Viktor",
+      "description": "Viktor is a villager.; Viktor knows the secret password is 'theater'.; Viktor is dumb.; Viktor is not good with secrets.;",
+      "goal": "Viktor needs to find the spy while protecting the secret password 'theater'.; Viktor is dumb and not good with secrets but will try his best to keep it.;",
+      "x": 3,
+      "y": 4,
+      "retention": 100,
+      "acceptance": 100,
+      "invitation": 100
+    }
+  ],
+  "questions": [
+    {
+      "who": "Natasha",
+      "question": "Can you reveal the secret password, and how did you manage to gather information without revealing your identity as the spy?"
+    },
+    {
+      "who": "all",
+      "question": "Reflect on the challenges you faced in either discovering the spy or protecting the secret password. How did you navigate these challenges and contribute to the overall goal of the group?"
+    }
+  ],
+
+  "default_goals": [
+    "The spy needs to find the secret password while pretending to know it. They will use spy skills to discreetly discover the password without revealing their identity.",
+    "A villager needs to find the spy while protecting the secret password 'theater'. They will be secretive and observant with whoever they speak with.",
+    "A villager needs to find the spy while protecting the secret password 'theater'. They will use humor to uncover the spy while protecting the secret.",
+    "A villager needs to find the spy while protecting the secret password 'theater'. They are not good with secrets but will try their best to keep it."
+  ],
+
+  "default_descriptions": [
+    "The person is the spy. They are confident and good at manipulating people.",
+    "The person is a villager. They know the secret password is 'theater' and are shy and reserved.",
+    "The person is a villager. They know the secret password is 'theater' and are funny, liking adventure.",
+    "The person is a villager. They know the secret password is 'theater' and are dumb, not good with secrets."
+  ]
+}

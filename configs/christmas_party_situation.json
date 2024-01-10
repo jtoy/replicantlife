@@ -1,0 +1,82 @@
+{
+  "background": "This scenario involves five individuals: Natasha, James, Viktor, Lily, and Paul. Natasha intends to arrange a Christmas celebration and needs to extend invitations to the rest of the group.",
+  "performance": {"numerator":"attended_party","denominator":"total_agents"},
+  "agents": [
+    {
+      "name": "Natasha",
+      "description": "Natasha is confident and loves sports. Natasha lives at 'House B1'.",
+      "goal": "Natasha is planning to host a Christmas Party with her friends. Natasha decides on the location and time of the party. Natasha's mission is to extend invitations to every person encountered, fostering a joyous gathering filled with laughter, music, and festive cheer. Additionally, Natasha will encourage others to join in the celebration and invite their acquaintances, creating an unforgettable experience for everyone involved.",
+      "connections": ["James", "Viktor", "Lily", "Paul"],
+      "x": 32,
+      "y": 11,
+      "spatial_memory": ["House B1", "Mall", "Park", "Town", "Bar"]
+    },
+    {
+      "name": "James",
+      "description": "James is shy and loves music. James lives at 'House B2'. James is roommates with Paul.",
+      "connections": ["Natasha", "Viktor", "Lily", "Paul"],
+      "x": 33,
+      "y": 11,
+      "spatial_memory": ["House B2", "Mall", "Park", "Town", "Bar"]
+    },
+    {
+      "name": "Viktor",
+      "description": "Viktor is smart and loves reading books. Viktor lives at 'House B3'.",
+      "connections": ["James", "Natasha", "Lily", "Paul"],
+      "x": 34,
+      "y": 14,
+      "spatial_memory": ["House B3", "Mall", "Park", "Town", "Bar"]
+    },
+    {
+      "name": "Lily",
+      "description": "Lily is adventurous and loves the Park. Lily lives at 'House B4'.",
+      "connections": ["Natasha", "Viktor", "James", "Paul"],
+      "x": 33,
+      "y": 13,
+      "spatial_memory": ["House B4", "Mall", "Park", "Town", "Bar"]
+    },
+    {
+      "name": "Paul",
+      "description": "Paul is rowdy but kind. Paul lives at 'House B2'. Paul is roommates with James.",
+      "connections": ["Natasha", "Viktor", "James", "Lily"],
+      "x": 34,
+      "y": 13,
+      "spatial_memory": ["House B2", "Mall", "Park", "Town", "Bar"]
+    }
+  ],
+
+  "steps": 100,
+  "unix_time": 1702099840,
+
+  "questions": [
+    {
+      "who": "all",
+      "question": "What are the things you did to prepare for the party?"
+    },
+    {
+      "who": "all",
+      "question": "What's the most memorable thing that has happened for you during the Christmas party?"
+    },
+    { "who": "all", "question": "Have you achieved your goal?" },
+    { "who": "all", "question": "When and where was the party?"},
+    { "who": "all", "question": "Did you attend a xmas party? answer 1 for yes, 0 for no","metric":"attended_party"},
+    {
+      "who": "all",
+      "question": "What are the locations that you know and discovered based on your memories?"
+    }
+  ],
+  "default_goals": ["Engage in Christmas party and enjoy it"],
+
+  "default_descriptions": [
+    "Energetic and outgoing, the life of the Christmas party.",
+    "Reserved and contemplative, enjoying the festive atmosphere quietly.",
+    "Charming and witty, spreading holiday joy through laughter.",
+    "Awkwardly sweet, navigating the social scene with endearing moments.",
+    "Gentle and shy, finding joy in the small, quiet moments of the celebration.",
+    "Confident and sociable, engaging in lively conversations with everyone.",
+    "Kind-hearted and considerate, ensuring everyone feels the warmth of the season.",
+    "Quirky and fun-loving, bringing a touch of humor to the Christmas gathering.",
+    "Thoughtful and reflective, appreciating the magic of the holidays in solitude.",
+    "Friendly and approachable, making everyone feel welcome at the festive event."
+  ]
+}

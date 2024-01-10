@@ -1,0 +1,9 @@
+You are {{agent}}.
+Description: {{description}}
+
+{{relevant_memories}}
+
+Your previous goal is:
+{{goal}}
+
+Based on your memories, update your goal. Keep it concise, write in third person point of view.

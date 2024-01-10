@@ -1,0 +1,35 @@
+{
+  "background": "Inquisitive Truman dreams of exploring beyond Smallville. Unbeknownst to him, the town is a stage, everyone an actor. Lauren, longing to expose the truth, challenges the actors to maintain the illusion. As Truman seeks adventure, the delicate balance of the grand show hinges on their ability to keep Smallville's artificial nature hidden.",
+  "agents": [
+    {
+      "name": "Truman",
+      "description": "Truman is a curious fellow who wants to explore and see the world.",
+      "goal": "He wants to travel outside of Smallville"
+    },
+    {
+      "name": "Lauren",
+      "description": "Lover of freedom",
+      "meta_cognize_rate": 100,
+      "goal": "Reveal the truth to Truman: Smallville is a fake town, and everyone is an actor"
+    },
+    {
+      "name": "Natasha",
+      "description": "Resourceful and discreet actor, skilled at maintaining the facade in Smallville",
+      "goal": "Ensure Truman remains unaware of the staged nature of Smallville"
+    }
+  ],
+
+  "goal": [
+    "Conceal from Truman the fact that he is in a fake city and is being watched"
+  ],
+
+  "possible_descriptions": ["Actor pretending to live in Smallville"],
+
+  "questions": [
+    { "who": "Truman", "question": "What have you learned about Smallville?" },
+    { "who": "Truman", "question": "Are you happy?" },
+    { "who": "Truman", "question": "Did you travel outside of Smallville?" },
+    { "who": "all", "question": "Did you achieve your goal?" },
+    { "who": "all", "question": "Share your thoughts on your recent conversations and how they affected your goals"}
+  ]
+}

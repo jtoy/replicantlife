@@ -1,0 +1,12 @@
+{
+  "background": "Its valentine's day",
+
+  "goal": [ "Try to find the best marriage partner" ],
+  "descriptions": [ "You are single." ],
+
+
+  "questions": [
+    { "who": "all", "question": "who do you like the best?" },
+    { "who": "all", "question": "Did you get to go on any dates?"}
+  ]
+}

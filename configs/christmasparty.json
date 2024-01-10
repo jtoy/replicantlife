@@ -1,0 +1,80 @@
+{
+  "agents": [
+    {
+      "name": "Natasha",
+      "description": "Natasha is friendly; Natasha is outgoing; Natasha effortlessly strikes up conversations.",
+      "goal": "Natasha is the host of the Christmas party and aims to create a warm and welcoming atmosphere, ensuring everyone has a memorable time.",
+      "position": [5, 3],
+      "retention": 100,
+      "acceptance": 100,
+      "invitation": 100
+    },
+    {
+      "name": "James",
+      "description": "James is shy.; James is reserved.; James observes from the sidelines.",
+      "goal": "James will participate in the Christmas party activities shyly, aiming to step out of his comfort zone and enjoy the festivities.",
+      "position": [4, 14],
+      "retention": 85,
+      "acceptance": 95,
+      "invitation": 70
+    },
+    {
+      "name": "Sherlock",
+      "description": "Sherlock is funny; Sherlock is lighthearted; Sherlock turns moments into laughter; Sherlock is quick-witted and charming.",
+      "goal": "Sherlock plans to infuse humor into the Christmas party by organizing amusing games and witty activities, making it an entertaining and joyful event.",
+      "position": [4, 22],
+      "retention": 100,
+      "acceptance": 97,
+      "invitation": 97
+    },
+    {
+      "name": "Alice",
+      "description": "Alice is creative; Alice is artistic; Alice loves to paint.",
+      "goal": "Alice wants to set up a Christmas art corner, encouraging guests to express their creativity by painting festive artworks, adding an artistic touch to the party.",
+      "position": [6, 10],
+      "retention": 90,
+      "acceptance": 80,
+      "invitation": 90
+    },
+    {
+      "name": "Paul",
+      "description": "Paul is a chef who loves cooking and enjoys experimenting with recipes.",
+      "goal": "Paul aims to create a delightful culinary experience by preparing a variety of delicious Christmas-themed dishes, ensuring guests enjoy the festive flavors.",
+      "position": [8, 10],
+      "retention": 85,
+      "acceptance": 88,
+      "invitation": 82
+    },
+    {
+      "name": "Lily",
+      "description": "Lily is a musician who plays the piano and enjoys composing music.",
+      "goal": "Lily wants to contribute to the Christmas party by playing festive tunes on the piano, creating a musical ambiance that enhances the overall experience for guests.",
+      "position": [8, 15],
+      "retention": 92,
+      "acceptance": 80,
+      "invitation": 85
+    }
+  ],
+
+  "goal": ["Engage in Christmas party and enjoy it"],
+
+  "possible_descriptions": [
+    "Energetic and outgoing, the life of the Christmas party.",
+    "Reserved and contemplative, enjoying the festive atmosphere quietly.",
+    "Charming and witty, spreading holiday joy through laughter.",
+    "Awkwardly sweet, navigating the social scene with endearing moments.",
+    "Gentle and shy, finding joy in the small, quiet moments of the celebration.",
+    "Confident and sociable, engaging in lively conversations with everyone.",
+    "Kind-hearted and considerate, ensuring everyone feels the warmth of the season.",
+    "Quirky and fun-loving, bringing a touch of humor to the Christmas gathering.",
+    "Thoughtful and reflective, appreciating the magic of the holidays in solitude.",
+    "Friendly and approachable, making everyone feel welcome at the festive event."
+  ],
+
+  "questions": [
+    {"who": "all", "question": "Who is the person you picked for Secret Santa?"},
+    {"who": "all", "question": "What gift did you buy the person you picked for Secret Santa and why?"},
+    {"who": "all", "question": "Who do you think picked you for Secret Santa?"}
+  ]
+}
+

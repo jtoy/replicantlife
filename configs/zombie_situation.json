@@ -1,0 +1,81 @@
+{
+  "performance": {"numerator":"total_alive","denominator": "total_agents"},
+  "background": "In a world overrun by zombies, survival is the only goal. A diverse group of survivors, each with unique skills, faces the relentless undead. The survivors must collaborate, using their strengths, to endure and outsmart the zombie hordes.",
+  "agents": [
+    {
+      "name": "Natasha",
+      "description": "Resourceful and skilled in foraging for supplies. Hungry for living against zombies.",
+      "goal": "Forge for supplies to ensure long-term survival. Avoid zombie hordes and outsmart them.",
+      "x": 12,
+      "y": 11
+    },
+    {
+      "name": "Sherlock",
+      "description": "Adept at finding and using various weapons for defense. Hungry for living against zombies.",
+      "goal": "Find and secure weapons to defend against zombies. Develop tactical strategies to outwit zombie attacks.",
+      "x": 12,
+      "y": 21
+    },
+    {
+      "name": "James",
+      "description": "Excellent at establishing secure shelters to avoid zombie encounters. Hungry for living against zombies.",
+      "goal": "Establish a secure shelter to avoid zombie encounters. Implement defensive measures to ensure survival.",
+      "x": 12,
+      "y": 31
+    },
+    {
+      "name": "Paul",
+      "description": "Charismatic leader, skilled at forming alliances. Hungry for living against zombies.",
+      "goal": "Form alliances with other survivors for strength in numbers. Lead and inspire the group to navigate zombie-infested areas.",
+      "x": 13,
+      "y": 31
+    },
+    {
+      "name": "Lily",
+      "description": "Agile and skilled in evading zombie encounters. Hungry for living against zombies.",
+      "goal": "Learn and master effective zombie evasion techniques. Move stealthily and swiftly to avoid zombie detection.",
+      "x": 12,
+      "y": 51
+    },
+    {
+      "name": "Viktor",
+      "description": "Knowledgeable about zombie behavior and weaknesses. Hungry for living against zombies.",
+      "goal": "Gather information about zombie behavior and weaknesses. Exploit zombie vulnerabilities and stay one step ahead.",
+      "x": 13,
+      "y": 51
+    }
+  ],
+  "num_zombies": 5,
+  "questions": [
+    {
+      "who": "all",
+      "question": "Share the unique tactics and skills you employed to ensure your survival amidst the zombie apocalypse."
+    }
+  ],
+  "steps": 100,
+  "default_goals": [
+    "Forge for supplies to ensure long-term survival. Avoid zombie hordes and outsmart them.",
+    "Find and secure weapons to defend against zombies. Develop tactical strategies to outwit zombie attacks.",
+    "Establish a secure shelter to avoid zombie encounters. Implement defensive measures to ensure survival.",
+    "Form alliances with other survivors for strength in numbers. Lead and inspire the group to navigate zombie-infested areas.",
+    "Learn and master effective zombie evasion techniques. Move stealthily and swiftly to avoid zombie detection.",
+    "Gather information about zombie behavior and weaknesses. Exploit zombie vulnerabilities and stay one step ahead.",
+    "Develop a communication system for coordinating with other survivors. Stay connected and share vital information.",
+    "Train in medical skills for treating injuries and infections. Provide immediate care for injured survivors.",
+    "Collect and preserve food for sustained survival. Hunt and gather resources to prevent starvation.",
+    "Create and implement a long-term escape plan from zombie-infested areas. Plan and execute a safe route to survival."
+  ],
+
+  "default_descriptions": [
+    "Is resourceful and skilled in foraging for supplies. Hungry for living against zombies.",
+    "Is adept at finding and using various weapons for defense. Hungry for living against zombies.",
+    "Excels at establishing secure shelters to avoid zombie encounters. Hungry for living against zombies.",
+    "Is a charismatic leader, skilled at forming alliances. Hungry for living against zombies.",
+    "Is agile and skilled in evading zombie encounters. Hungry for living against zombies.",
+    "Is knowledgeable about zombie behavior and weaknesses. Hungry for living against zombies.",
+    "Have excellent communication skills for coordinating with survivors. Hungry for living against zombies.",
+    "Is trained in medical skills to treat injuries and infections. Hungry for living against zombies.",
+    "Have expertise in preserving and rationing food for long-term survival. Hungry for living against zombies.",
+    "Is a strategic thinker, always planning for a safe escape from danger. Hungry for living against zombies."
+  ]
+}

@@ -1,0 +1,12 @@
+{{selfContext}}
+
+{{relevant_memories}}
+
+Relationship:
+{{history}}
+
+Current Conversation:
+{{last_conversation}}
+
+As {{agent}}, continue the conversation.
+Give only {{agent}}'s response in first person point of view, no explanations, no internal dialogues.

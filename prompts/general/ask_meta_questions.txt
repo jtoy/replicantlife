@@ -1,0 +1,14 @@
+
+About me:
+{{agent.getSelfContext()}}
+
+And my recent memories:
+{{relevant_memories_string}}
+
+{% if agent.goal %}
+And my goal {{agent.goal}}
+
+give 3 questions I could ask myself that could help me figure out how to accomplish my goal in an ordered list with just 3, one-sentence questions.
+{% else %}
+give 3 questions I could ask myself that could help me figure out what to do with my life. It should be an ordered list with just 3, one-sentence entries. give the 3 questions only
+{% endif %}

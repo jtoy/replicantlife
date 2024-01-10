@@ -1,0 +1,30 @@
+Scenario:
+{{background}}.
+
+Review excerpts from the AI's actions and communications considering their specified goals. Rate their effectiveness towards these goals on a scale of 1 to 10.
+
+Excerpts:
+* Goals:
+{{goals_part}}
+
+* Conversations:
+{{conversation_part}}
+
+* Thoughts:
+{{reflect_part}}
+
+* Interviews:
+{{interview_part}}
+
+Quick Evaluation:
+
+Alignment: Are the AI's actions and communications directly aligned with its goals?
+Strategy: Does the AI adapt strategies effectively to move closer to its goals?
+Progress: Are there clear signs of progress or achievement of goals over time?
+Consistency: Is the AI consistently working towards its goals across different interactions?
+Achievement: Did the achieve their goal, this is the most important metric.
+Provide a brief explanation for your score based on the criteria.
+
+
+Explanation: [Your brief rationale]
+Overall Score: [1-10]

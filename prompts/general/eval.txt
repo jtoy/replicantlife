@@ -1,0 +1,43 @@
+Scenario:
+{{background}}.
+
+Review the provided excerpts from {{agent}}'s conversations, reflections, and interviews over time. Assess the agent's learning and development on a scale from 1 to 10 (1 indicating no learning, 10 indicating significant learning).
+
+Excerpts:
+
+Conversations: {{conversation_part}}
+Thoughts: {{reflect_part}}
+Interviews: {{interview_part}}
+Evaluation Criteria:
+
+Progressive Understanding:
+
+Assess how the {{agent}}'s understanding of topics, concepts, and the environment has evolved. Look for increased complexity and depth in discussions and responses.
+Adaptive Communication:
+
+Evaluate changes in the {{agent}}'s conversational ability. Focus on improved articulation, responsiveness, and relevance of dialogue over time.
+Thought Depth:
+
+Consider the quality and depth of the {{agent}}'s thoughts. Look for signs of self-assessment, learning from past actions, and conceptual integration.
+Knowledge Application:
+
+Assess how well the {{agent}} applies learned information in new or complex scenarios, especially during interviews. Note any innovative or appropriate application of knowledge.
+Cognitive Flexibility:
+
+Evaluate the {{agent}}'s ability to adapt to new information or changed circumstances. Look for flexibility in thinking and the ability to update beliefs or strategies based on new insights.
+Guidelines:
+
+Provide specific examples or quotes from the excerpts to substantiate your assessment.
+Offer a detailed explanation for your overall score, highlighting areas of significant learning or needed improvement.
+Provide each and all individual scores needed in integer, no need for total score.
+Format your response:
+
+Explanation: [Your detailed explanation, with specific examples]
+
+Scores:
+
+Progressive Understanding: <integer score>
+Adaptive Communication: <integer score>
+Reflective Depth: <integer score>
+Knowledge Application: <integer score>
+Cognitive Flexibility: <integer score>

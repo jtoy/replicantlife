@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix State Viewer</title>
+
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #matrixContainer {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+        }
+
+        #matrixTable {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        #titleContainer {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        #chatContainer {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+        }
+
+        #chatTextArea {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ddd;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="matrixContainer">
+    <table>
+        <!-- Assuming the matrix is a 15x15 array -->
+        {% for row in matrix %}
+            <tr>
+                {% for value in row %}
+                    <td id="matrixTable">{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+<div id="chatContainer">
+    <textarea id="chatTextArea">
+    </textarea>
+</div>
+<script>
+function fetchMatrixState() {
+    fetch('/get_matrix_state')
+        .then(response => response.json())
+        .then(matrix => {
+            const matrixContainer = document.getElementById('matrixContainer');
+            matrixContainer.innerHTML = ''; // Clear existing content
+
+            const table = document.createElement('table');
+
+            // Parse the JSON string into a JavaScript array
+            const parsedMatrix = JSON.parse(matrix);
+
+            // Assuming the matrix is a 15x15 array
+            parsedMatrix.forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach(value => {
+                    const td = document.createElement('td');
+                    td.id = 'matrixTable';
+                    td.textContent = value;
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+
+            matrixContainer.appendChild(table);
+        })
+        .catch(error => console.error('Error fetching matrix state:', error));
+}
+
+function fetchConversations() {
+    fetch('/get_conversations')
+        .then(response => response.json())
+        .then(conversations => {
+            const chatTextArea = document.getElementById('chatTextArea');
+            chatTextArea.value = '';
+
+            conversations.forEach(conversation => {
+                chatTextArea.value += `${conversation}\n\n`;
+            });
+        })
+        .catch(error => console.error('Error fetching conversations:', error));
+}
+
+// Fetch matrix state initially
+fetchMatrixState();
+
+// Periodically fetch matrix state every 5 seconds
+setInterval(fetchMatrixState, 3000);
+setInterval(fetchConversations, 3000);
+</script>
+
+</body>
+</html>

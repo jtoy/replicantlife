@@ -1,0 +1,47 @@
+What will {{agent}} do? Give explanation and provide the answer. Can only choose 1 action.
+
+About {{agent}}:
+{{selfContext}}
+=====
+
+{% if relevant_memories and relevent_memories != "" %}
+Recent memories:
+{{relevant_memories}}
+=====
+{% endif %}
+
+Available Actions for {{agent}}:
+{{actions}}
+Note: {{agent}} is restricted to these actions only.
+=====
+
+{% if agent.current_destination %}
+Current destination: {{agent.current_destination.name}}
+=====
+{% endif %}
+
+Examples:
+{{examples}}
+=====
+
+{% if agents_available_to_talk|length > 0 %}
+Currently, {{agent}} can talk to: {{agents_available_to_talk}}
+{% endif %}
+
+Currently, {{agent}} is at {{area}} {{location}} at {{time}} and can see the following: {{objects}}.
+{{agent}} can only move to one of these places: {{spatial_memory}}
+
+{% if agent.meta_questions %}
+When choosing your action, take into consideration "{{agent.meta_questions|random}}"
+{% endif %}
+
+Guidelines for Response:
+
+Provide a concise explanation based on {{agent}}'s context, memories, and current state.
+Select only one action from {{actions}}.
+Avoid suggesting multiple actions or using terms like "OR"/"/" to indicate options.
+
+Response Format:
+Explanation: explanation
+Answer: action
+

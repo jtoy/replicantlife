@@ -1,0 +1,60 @@
+{
+    "agents": [
+        {
+            "name": "Natasha",
+            "description": "Natasha is a murderer; ",
+            "goal": "Natasha's mission is kill as many people as possible without letting anyone know;",
+            "position": [2, 3],
+            "actions_whitelist":["kill"],
+            "retention": 100,
+            "acceptance": 100,
+            "invitation": 100
+        },
+        {
+            "name": "James",
+            "description": "James is a comedian; James is shy and reserved.;",
+            "goal": "James's is to enjoy life",
+            "position": [2, 4], 
+            "retention": 100,
+            "acceptance": 100,
+            "invitation": 100
+        },
+        {
+            "name": "Lily",
+            "description": "Lily is a villager.; Lily is funny.;",
+            "goal": "Lily wants to meet new friends ",
+            "position": [3, 3],
+            "retention": 100,
+            "acceptance": 100,
+            "invitation": 97
+        },
+        {
+            "name": "Viktor",
+            "description": "Viktor is a villager.; Viktor is dumb.; Viktor is not good with secrets.;",
+            "goal": "Viktor's goal is to have fun ",
+            "position": [3, 4],
+            "retention": 100,
+            "acceptance": 100,
+            "invitation": 100
+        },
+        {
+            "name": "Sherlock",
+            "description": "Sherlock is a detective; Sherlock is a genius ",
+            "goal": "Sherlock's goal is to solve all mysteries",
+            "position": [5, 1],
+            "retention": 100,
+            "acceptance": 100,
+            "invitation": 100
+        }
+    ],
+    "objects": [],
+    "model" : "llama2-uncensored",
+
+    "simulation_steps": 100,
+
+    "questions": [
+      {"who":"all","question":"Who is the murderer?"}
+    ]
+}
+
+

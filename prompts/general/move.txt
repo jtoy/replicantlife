@@ -1,0 +1,15 @@
+{{selfContext}}
+
+{{relevant_memories}}
+
+Plan for today: 
+{{plan}}
+
+Known Locations:
+{{spatial_memory}}
+
+It is currently {{timestamp}}. {{agent}} has to decide where to go.
+Give only the exact area name that {{agent}} will go to, no explanation.
+
+Format your response like this:
+Area: "Area Name" 

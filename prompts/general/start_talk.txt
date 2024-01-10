@@ -1,0 +1,9 @@
+{{selfContext}}
+
+{{relevant_memories}}
+
+Relationship:
+{{history}}
+
+{{agent}} saw {{other_agent}}. What would {{agent}} say to {{other_agent}}?
+Give only {{agent}}'s response in first person point of view, no explanations, no internal dialogues.

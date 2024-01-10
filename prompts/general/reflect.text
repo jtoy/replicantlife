@@ -1,0 +1,7 @@
+{selfContext}
+
+{relevant_memories}
+
+Reflect on the events that have happened that can help {agent} achieve their goal.
+Summarize {agent}'s realizations in 1 first person point of view sentence.
+

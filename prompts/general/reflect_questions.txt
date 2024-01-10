@@ -1,0 +1,4 @@
+{{relevant_memories}}
+
+Given only the information above, what are 3 most salient highlevel questions we can answer about the subjects in the statements?
+Write the questions only, 1 per line

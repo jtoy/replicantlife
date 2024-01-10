@@ -1,0 +1,31 @@
+Scenario:
+{{detailed_scenario}}
+
+Examine the following excerpts from {{agent}}'s memories. Rate the agent's ability to reflect and metacognize considering the criteria below on a scale from 1 to 10 (1 being poor, 10 being excellent).
+
+Excerpts:
+{{reflect_part}}
+
+Evaluation Criteria:
+
+Self-Awareness: Assess the agent's ability to recognize its own cognitive processes and limitations.
+MetaCognitive and Reflective Thinking: Evaluate the depth and quality of the agent's thoughts on its experiences and decisions.
+Strategic Planning: Look for evidence of the agent setting goals, planning, and adjusting strategies based on self-assessment.
+Critical Evaluation: Check for the agent’s ability to critically analyze its own thoughts and actions, identifying areas for improvement.
+Insightfulness: Consider the depth of insight into its own behavior and learning process.
+Guidelines:
+
+Cite specific examples or quotes from the excerpts that demonstrate metacognitive and reflective processes.
+Provide a brief explanation for your overall score.
+Format your response:
+
+Explanation: [Brief rationale for your assessment]
+
+Scores:
+
+Self-Awareness: [Score]
+Reflective Thinking: [Score]
+Strategic Planning: [Score]
+Critical Evaluation: [Score]
+Insightfulness: [Score]
+Overall Score: [Integer score max 10]

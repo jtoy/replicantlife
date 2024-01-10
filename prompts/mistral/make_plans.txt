@@ -1,0 +1,28 @@
+Hourly schedule format for {{date}}: 
+[00:00 AM] Activity: [Fill in]
+[01:00 AM] Activity: [Fill in]
+[02:00 AM] Activity: [Fill in]
+[03:00 AM] Activity: [Fill in]
+[04:00 AM] Activity: [Fill in]
+[05:00 AM] Activity: [Fill in]
+[06:00 AM] Activity: [Fill in]
+[07:00 AM] Activity: [Fill in]
+[08:00 AM] Activity: [Fill in]
+[09:00 AM] Activity: [Fill in]
+[10:00 AM] Activity: [Fill in]
+[11:00 AM] Activity: [Fill in]
+[12:00 PM] Activity: [Fill in]
+[01:00 PM] Activity: [Fill in]
+[02:00 PM] Activity: [Fill in]
+[03:00 PM] Activity: [Fill in]
+[04:00 PM] Activity: [Fill in]
+[05:00 PM] Activity: [Fill in]
+[06:00 PM] Activity: [Fill in]
+[07:00 PM] Activity: [Fill in]
+[08:00 PM] Activity: [Fill in]
+[09:00 PM] Activity: [Fill in]
+[10:00 PM] Activity: [Fill in]
+[11:00 PM] Activity: [Fill in]
+===
+{{selfContext}}
+Fill in schedule for each and all hour slots provided.

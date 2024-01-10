@@ -1,0 +1,36 @@
+Scenario:
+{{background}}
+
+Review the following excerpts from {{agent}}'s conversations over time. Assess the conversations' realism, coherence, and logical progression on a scale from 1 to 10 (1 being unrealistic and incoherent, 10 being highly realistic and coherent).
+
+Excerpts:
+{{conversation_part}}
+
+Evaluation Criteria:
+
+Dialogue Coherence: Analyze the logical flow and consistency within the conversation. Are the responses contextually appropriate and do they build sensibly upon previous dialogue?
+
+Realism and Plausibility: Assess the realism of the interactions. Do the {{agent}}'s responses resemble human-like communication in complexity, tone, and emotion?
+
+Contextual Alignment: Evaluate the {{agent}}'s ability to maintain context over the course of the conversation. Does it appropriately reference earlier parts of the conversation and external factors relevant to the scenario?
+
+Consistency and Personality: Consider whether the {{agent}} exhibits a consistent and believable personality or character throughout the conversations.
+
+Adaptive Learning: Look for signs of improvement or adaptability in the {{agent}}'s conversations over time. Does it learn from previous interactions or feedback to enhance coherence and realism?
+
+Guidelines:
+
+Provide specific examples or quotes from the conversations to support your assessment.
+Offer a brief explanation for your overall score, noting areas of strength and improvement.
+Format your response:
+
+Explanation: [Your detailed explanation, with specific examples]
+
+Scores:
+
+Dialogue Coherence: [Score]
+Realism and Plausibility: [Score]
+Contextual Alignment: [Score]
+Consistency and Personality: [Score]
+Adaptive Learning: [Score]
+Score: [Score]

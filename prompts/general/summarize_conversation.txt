@@ -1,0 +1,7 @@
+Your name is {{agent}}
+You are talking with {{other_agent}}
+
+{{conversation_string}}
+
+Summarize the conversation above in {{agent}}'s point of view.
+List all important outcomes of the conversation:

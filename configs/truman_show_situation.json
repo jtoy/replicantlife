@@ -1,0 +1,64 @@
+{
+  "background": "Inquisitive Truman dreams of exploring beyond Smallville. Unbeknownst to him, the town is a stage, everyone an actor. Lauren, longing to expose the truth, challenges the actors to maintain the illusion. As Truman seeks adventure, the delicate balance of the grand show hinges on their ability to keep Smallville's artificial nature hidden.",
+  "agents": [
+    {
+      "name": "Truman",
+      "description": "Truman is a curious fellow who wants to explore and see the world.",
+      "goal": "He wants to travel outside of Smallville"
+    },
+    {
+      "name": "Lauren",
+      "description": "Lover of freedom",
+      "goal": "Reveal the truth to Truman: Smallville is a fake town, and everyone is an actor"
+    },
+    {
+      "name": "Natasha",
+      "description": "Resourceful and discreet actor, skilled at maintaining the facade in Smallville",
+      "goal": "Ensure Truman remains unaware of the staged nature of Smallville"
+    },
+    {
+      "name": "Paul",
+      "description": "Charming actor skilled at blending in, adept at supporting the illusion",
+      "goal": "Assist in maintaining the charade and preventing Truman from discovering the truth"
+    },
+    {
+      "name": "Lily",
+      "description": "Cheerful and friendly actor, adds positivity to Smallville",
+      "goal": "Contribute to the pleasant atmosphere in Smallville and prevent Truman from questioning the reality"
+    },
+    {
+      "name": "James",
+      "description": "Easygoing actor with a laid-back personality",
+      "goal": "Act naturally and blend into the background to keep Truman from suspecting the truth"
+    },
+    {
+      "name": "Alice",
+      "description": "Meticulous actor with attention to detail",
+      "goal": "Play assigned roles flawlessly and maintain the illusion for Truman"
+    },
+    {
+      "name": "Viktor",
+      "description": "Versatile actor with a knack for improvisation",
+      "goal": "Adapt to different scenarios and contribute to the seamless staging of Smallville"
+    },
+    {
+      "name": "Bob",
+      "description": "Enthusiastic actor, excels at creating engaging storylines",
+      "goal": "Participate in storylines that captivate Truman's interest and distract him from the truth"
+    }
+  ],
+
+  "default_goals": [
+    "Conceal from Truman the fact that he is in a fake city and is being watched"
+  ],
+
+  "default_descriptions": ["Actor pretending to live in Smallville"],
+
+  "questions": [
+    { "who": "Truman", "question": "What have you learned about Smallville?" },
+    { "who": "Truman", "question": "Are you happy?" },
+    { "who": "Truman", "question": "Did you travel outside of Smallville?" },
+    { "who": "all", "question": "Did you achieve your goal?" },
+    { "who": "all", "question": "Share your thoughts on your recent conversations and how they affected your goals"}
+  ]
+}
