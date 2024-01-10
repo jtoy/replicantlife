@@ -115,7 +115,6 @@ There are zombies killing people
 
 ## Unit Tests
 
-
 `python test.py`
 
 ## Simulation Report
@@ -151,27 +150,6 @@ MODEL=off python run_all_sims.py
   8. `SHORT_MEMORY_CAPACITY=<1 or 0>` to indicate how many memories needs to be stored on short term memory before reflecting and summarizing them.
 
 
-## Updated Usages
-
-* Running Normal 5 person simulation
-
-`python engine.py`
-
-* Running Christmas Party
-
-`LLM_ACTION=1 ALLOW_PLAN=0 python engine.py --scenario configs/christmas_party_situation.json`
-
-* Running Secret Santa
-
-`python engine.py --scenario configs/secret_santa_situation.json`
-
-* Running with llm action
-
-`LLM_ACTION=1 python engine.py` Can pass in different envs/situations here if you want.
-
-* Running All Tests
-
-`python test.py --all`
 
 ## Running Cognitive Test Graph
 
