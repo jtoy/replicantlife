@@ -4,7 +4,9 @@
 replicantlife is a simulation engine for generative agents that can be used in a simulation engine or standalone.
 
 Read the paper: https://arxiv.org/abs/5336760
+
 Learn more about the project: https://replicantlife.com
+
 Join discord here: https://discord.com/invite/DNBwbKT3Ns
 
 # Paper
