@@ -227,7 +227,11 @@ if args.graph:
         height = bar.get_height()
         ax.text(bar.get_x() + bar.get_width() / 2, height + 0.1, f'{mean:.2f} ± {std_dev:.2f}', ha='center', va='bottom')
 
-    print(grouped_data)
+    print("Final Data")
+    for i in range(len(ids)):
+        label = variation_labels[i % len(scenarios)]
+        print(f"ID: {ids[i]} | {grouped_data[label][i % len(scenarios)]}")
+
     plt.tight_layout()
     plt.savefig(f"logs/cognitive_graph_{args.steps}.png")
     plt.show()
