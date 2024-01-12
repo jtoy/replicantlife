@@ -1,7 +1,8 @@
 # About
 
 
-replicantlife is a simulation engine for generative agents that can be used in a simulation engine or standalone.
+replicantlife is a simulation engine for generative agents  that can be used in a simulation engine or standalone.
+Agents are powered with metacognition modules that allow that to learn and adjust their strategy over time.
 
 Read the paper: https://arxiv.org/abs/5336760
 
