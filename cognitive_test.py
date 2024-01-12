@@ -224,8 +224,8 @@ if args.graph:
 
     print("Final Data")
     for i in range(len(ids)):
-        label = variation_labels[i % 4]
-        print(f"ID: {ids[i]} | {grouped_data[label][i % 3]}")
+        label = variation_labels[i % len(scenarios)]
+        print(f"ID: {ids[i]} | {grouped_data[label][i % len(scenarios)]}")
 
     plt.tight_layout()
     plt.savefig(f"logs/cognitive_graph_{args.steps}.png")
