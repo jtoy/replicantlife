@@ -396,6 +396,14 @@ Answer the question from the point of view of {self} thinking to themselves, res
         self.short_memory.append(content)
 
     def perceive(self, other_agents, environment, timestamp):
+        if (self.matrix is not None and self.matrix.allow_observance_flag == 0) or (self.matrix is None and ALLOW_OBSERVE == 0):
+            perceived_coordinates = []
+            perceived_agents = []
+            perceived_agents = []
+            perceived_coordinates = []
+
+            return perceived_agents, perceived_locations, perceived_areas, perceived_objects
+
         perceived_coordinates = []
         if self.matrix is None:
             perception_range = PERCEPTION_RANGE
@@ -471,11 +479,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
                         print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
                         print_and_log(interaction, f"{self.matrix.id}:agent_conversations") # Temporarily here
 
-                if (self.matrix is not None and self.matrix.allow_observance_flag == 1) or (self.matrix is None and ALLOW_OBSERVANCE == 1):
-                    self.addMemory("observation", interaction, timestamp, random.randint(0, 2))
-                    #self.add_short_memory(interaction, timestamp)
-                    # Limit Short Memory Capacity
-                    #self.short_memory = self.short_memory[-SHORT_MEMORY_CAPACITY:]
+                self.addMemory("observation", interaction, timestamp, random.randint(0, 2))
 
             for loc in perceived_locations:
                 if loc not in self.spatial_memory:
