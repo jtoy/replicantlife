@@ -450,10 +450,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
                             self.addMemory("observation", interaction, timestamp, random.randint(6, 9))
 
 
-                    if (self.matrix is not None and self.matrix.allow_observance_flag == 1) or (self.matrix is None and ALLOW_OBSERVANCE == 1):
-                        print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
-                        #print_and_log(interaction, f"{self.matrix.id}:agent_conversations") # Temporarily here
-                        #self.add_short_memory(interaction, timestamp)
+                    print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
 
                     if a.name not in self.connections:
                         self.connections.append(a.name)
@@ -475,9 +472,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
             for obj in perceived_objects:
                 interaction = f"{timestamp} - {self} saw {obj.name.lower()} at {obj.area.name} of {obj.area.location.name}."
                 if self.matrix is not None:
-                    if self.matrix.allow_observance_flag == 1:
-                        print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
-                        print_and_log(interaction, f"{self.matrix.id}:agent_conversations") # Temporarily here
+                    print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
+                    print_and_log(interaction, f"{self.matrix.id}:agent_conversations")
 
                 self.addMemory("observation", interaction, timestamp, random.randint(0, 2))
 
@@ -485,9 +481,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
                 if loc not in self.spatial_memory:
                     interaction = f"{timestamp} - {self} discovered {loc.name}."
                     if self.matrix is not None:
-                        if self.matrix.allow_observance_flag == 1:
-                            print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
-                            print_and_log(interaction, f"{self.matrix.id}:agent_conversations") # Temporarily here
+                        print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
+                        print_and_log(interaction, f"{self.matrix.id}:agent_conversations")
 
                     self.addMemory("observation", interaction, timestamp, random.randint(2, 5))
                     self.spatial_memory.append(loc)
