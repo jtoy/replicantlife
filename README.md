@@ -19,8 +19,11 @@ Recent advances in Large Language Models (LLMs) have shown impressive capabiliti
 
 ![Flow diagram of metacognition](images/flow-diag.jpg?raw=true )
 
-![Zombie scenario](images/zombie.jpeg?raw=true)
+# Goal
 
+Our goal is to build the most powerful generative AI agent and simulation framework.
+
+We are looking for help on this project. If you know python or know how to use chatgpt, you can contribute :)
 
 
 
@@ -63,6 +66,8 @@ Just follow the format of `def_environment.json`, run the engine with
 `--scenario` and `--env` flag indicating the scenario and environment simulation you want.
 
 ## Test Simulations
+
+![Zombie scenario](images/zombie.jpeg?raw=true)
 
 ### Spyfall
 
