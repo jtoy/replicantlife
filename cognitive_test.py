@@ -25,35 +25,40 @@ variations = [
         { "steps": args.steps, "allow_plan": 0, "allow_reflect": 0, "allow_observance": 1, "allow_meta": 1, "llm_action": 1, "llm_importance": 0 }, #Architecture With Meta Only
         { "steps": args.steps, "allow_plan": 0, "allow_reflect": 1, "allow_observance": 1, "allow_meta": 0, "llm_action": 1, "llm_importance": 0 }, #Architecture With Reflect Only
         { "steps": args.steps, "allow_plan": 0, "allow_reflect": 0, "allow_observance": 0, "allow_meta": 0, "llm_action": 1, "llm_importance": 0 } #Reflect and Meta Off
-
 ]
 
 scenarios = [
     "configs/christmas_party_situation.json",
     "configs/secret_santa_situation.json",
-    "configs/zombie_situation.json"
+    "configs/zombie_situation.json",
+    "configs/murder_situation.json"
 ]
 
 ids = [
     "xmas_p1_r1_o1_m1",
     "ss_p1_r1_o1_m1",
     "z_p1_r1_o1_m1",
+    "m_p1_r1_o1_m1",
 
     "xmas_p1_r1_o1_m0",
     "ss_p1_r1_o1_m0",
     "z_p1_r1_o1_m0",
+    "m_p1_r1_o1_m0",
 
     "xmas_p0_r0_o1_m1",
     "ss_p0_r0_o1_m1",
     "z_p0_r0_o1_m1",
+    "m_p0_r0_o1_m1",
 
     "xmas_p0_r1_o1_m0",
     "ss_p0_r1_o1_m0",
     "z_p0_r1_o1_m0",
+    "m_p0_r1_o1_m0",
 
     "xmas_p0_r0_o0_m0",
     "ss_p0_r0_o0_m0",
-    "z_p0_r0_o0_m0"
+    "z_p0_r0_o0_m0",
+    "m_p0_r0_o0_m0"
 ]
 
 variation_labels = [
