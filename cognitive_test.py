@@ -66,7 +66,7 @@ variation_labels = [
     "Full Architecture Without Meta",
     "Architecture With Meta Only",
     "Architecture With Reflect Only",
-    "Architecture With Reflect, Meta, and Conversation Off"
+    "Architecture With Reflect, Meta, and Observation Off"
 ]
 
 @contextmanager
