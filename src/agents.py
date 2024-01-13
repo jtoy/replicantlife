@@ -396,6 +396,14 @@ Answer the question from the point of view of {self} thinking to themselves, res
         self.short_memory.append(content)
 
     def perceive(self, other_agents, environment, timestamp):
+        if (self.matrix is not None and self.matrix.allow_observance_flag == 0) or (self.matrix is None and ALLOW_OBSERVE == 0):
+            perceived_objects = []
+            perceived_locations = []
+            perceived_agents = []
+            perceived_areas = []
+
+            return perceived_agents, perceived_locations, perceived_areas, perceived_objects
+
         perceived_coordinates = []
         if self.matrix is None:
             perception_range = PERCEPTION_RANGE
@@ -442,10 +450,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
                             self.addMemory("observation", interaction, timestamp, random.randint(6, 9))
 
 
-                    if (self.matrix is not None and self.matrix.allow_observance_flag == 1) or (self.matrix is None and ALLOW_OBSERVANCE == 1):
-                        print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
-                        #print_and_log(interaction, f"{self.matrix.id}:agent_conversations") # Temporarily here
-                        #self.add_short_memory(interaction, timestamp)
+                    print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
 
                     if a.name not in self.connections:
                         self.connections.append(a.name)
@@ -467,23 +472,17 @@ Answer the question from the point of view of {self} thinking to themselves, res
             for obj in perceived_objects:
                 interaction = f"{timestamp} - {self} saw {obj.name.lower()} at {obj.area.name} of {obj.area.location.name}."
                 if self.matrix is not None:
-                    if self.matrix.allow_observance_flag == 1:
-                        print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
-                        print_and_log(interaction, f"{self.matrix.id}:agent_conversations") # Temporarily here
+                    print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
+                    print_and_log(interaction, f"{self.matrix.id}:agent_conversations")
 
-                if (self.matrix is not None and self.matrix.allow_observance_flag == 1) or (self.matrix is None and ALLOW_OBSERVANCE == 1):
-                    self.addMemory("observation", interaction, timestamp, random.randint(0, 2))
-                    #self.add_short_memory(interaction, timestamp)
-                    # Limit Short Memory Capacity
-                    #self.short_memory = self.short_memory[-SHORT_MEMORY_CAPACITY:]
+                self.addMemory("observation", interaction, timestamp, random.randint(0, 2))
 
             for loc in perceived_locations:
                 if loc not in self.spatial_memory:
                     interaction = f"{timestamp} - {self} discovered {loc.name}."
                     if self.matrix is not None:
-                        if self.matrix.allow_observance_flag == 1:
-                            print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
-                            print_and_log(interaction, f"{self.matrix.id}:agent_conversations") # Temporarily here
+                        print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
+                        print_and_log(interaction, f"{self.matrix.id}:agent_conversations")
 
                     self.addMemory("observation", interaction, timestamp, random.randint(2, 5))
                     self.spatial_memory.append(loc)
