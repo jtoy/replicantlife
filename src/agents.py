@@ -397,10 +397,10 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
     def perceive(self, other_agents, environment, timestamp):
         if (self.matrix is not None and self.matrix.allow_observance_flag == 0) or (self.matrix is None and ALLOW_OBSERVE == 0):
-            perceived_coordinates = []
+            perceived_objects = []
+            perceived_locations = []
             perceived_agents = []
-            perceived_agents = []
-            perceived_coordinates = []
+            perceived_areas = []
 
             return perceived_agents, perceived_locations, perceived_areas, perceived_objects
 
