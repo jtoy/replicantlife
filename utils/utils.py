@@ -16,7 +16,6 @@ try:
 except ImportError:
     print("vllm Module not found. Skipping...")
 
-
 '''
 Print Debug Function
 '''
@@ -64,8 +63,8 @@ class Llm:
         self.sampling_params = None
 
         # Pre-warm Llm
-        if self.model != "off":
-            self.generate("41+1=?")
+        #if self.model != "off":
+        #    self.generate("41+1=?")
 
     def generate(self, prompt, fallback="Llm Error"):
         # Truncate more than 1400 words
