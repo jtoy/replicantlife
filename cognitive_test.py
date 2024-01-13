@@ -114,7 +114,7 @@ if args.generate and not args.reeval:
             report_file_name = f"report-{ids[(var_index * len(scenarios)) + scene_index]}_s{args.steps}.txt"
             eval_file_name = f"eval-{ids[(var_index * len(scenarios)) + scene_index]}_s{args.steps}.txt"
 
-            if os.path.existsCategories(f"logs/{log_file_name}"):
+            if os.path.exists(f"logs/{log_file_name}"):
                 if args.overwrite:
                     os.remove(f"logs/{log_file_name}")
                 else:
