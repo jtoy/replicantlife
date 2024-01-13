@@ -47,6 +47,8 @@ class Matrix:
         self.sim_start_time = None
         self.simulation_runtime = None
         self.llm_calls = 0
+        self.performance_metrics = {}
+        self.performance_evals = {}
 
         self.num_npc = NUM_AGENTS
         self.num_zombies = NUM_ZOMBIES
@@ -56,6 +58,8 @@ class Matrix:
         # Build Environment
         self.environment = Environment({ "filename": self.environment_file })
         self.background = None
+        self.performance_metrics[self.performance_evals["numerator"]] = 0
+        self.performance_metrics["denominator"] = self.performance_evals["denominator"]
 
         # Setup Scenario
         if self.scenario_file is not None:
@@ -186,19 +190,19 @@ class Matrix:
             "runtime": runtime_string, # Include the string representation
             "server_info": self.get_server_info(),
             "created_at": self.sim_start_time.strftime("%Y-%m-%d %H:%M:%S"),
-            "Model": self.model,
-            "Total_steps": self.steps,
-            "Meta_flag": self.allow_meta_flag,
-            "Reflect_flag": self.allow_reflect_flag,
-            "Conversation_counter": self.conversation_counter,
-            "Total_meta_memories": total_metas,
-            "Total_reflect_memories": total_reflections,
-            "Total_agents": sum(1 for agent in self.agents if agent.kind != 'zombie'),
-            "Total_zombies": sum(1 for agent in self.agents if agent.kind == 'zombie'),
-            "Total_dead": sum(1 for agent in self.agents if agent.status == 'dead'),
-            "Llm_call_counter": llm.call_counter,
-            "Avg_runtime_per_step": total_seconds / self.steps,
-            "Avg_llm_calls_per_step": llm.call_counter / self.steps
+            "model": self.model,
+            "total_steps": self.steps,
+            "meta_flag": self.allow_meta_flag,
+            "reflect_flag": self.allow_reflect_flag,
+            "conversation_counter": self.conversation_counter,
+            "total_meta_memories": total_metas,
+            "total_reflect_memories": total_reflections,
+            "total_agents": sum(1 for agent in self.agents if agent.kind != 'zombie'),
+            "total_zombies": sum(1 for agent in self.agents if agent.kind == 'zombie'),
+            "total_dead": sum(1 for agent in self.agents if agent.status == 'dead'),
+            "llm_call_counter": llm.call_counter,
+            "avg_runtime_per_step": total_seconds / self.steps,
+            "avg_llm_calls_per_step": llm.call_counter / self.steps
         }
 
 
@@ -761,11 +765,19 @@ class Matrix:
             for agent in dead_agents + living_agents:
                 results = []
                 for question in self.interview_questions:
+                    metric = question.get("metric", None)
                     #if agent.status == "dead":
                     #    pd(f"{agent} dead, can't ask questions")
                     #    results.append("Agent is dead, cannot answer questions")
                     #elif question["who"] == "all" or question["who"] == agent.name:
                     answer = agent.answer(question["question"])
+                    if metric:
+                        match = re.search(r"Answer: (\d)", answer)
+                        if match:
+                            score = int(match.group(0))
+                        else:
+                            score = 0
+                        self.performance_metrics[metric] += score
                     answer_data = {
                         "question": question["question"],
                         "answer": answer

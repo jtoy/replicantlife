@@ -107,7 +107,7 @@ def parse_score(eval_result):
     except Exception as e:
         return 0
 
-if args.generate:
+if args.generate and not args.reeval:
     for var_index in range(len(variations)):
         for scene_index in range(len(scenarios)):
             log_file_name = f"fulllogs-{ids[(var_index * len(scenarios)) + scene_index]}_s{args.steps}.txt"
@@ -143,7 +143,7 @@ if args.generate:
                 matrix.run_interviews()
                 save_report(matrix, f"{ids[(var_index * len(scenarios)) + scene_index]}_s{args.steps}.txt")
 
-if args.reeval:
+if args.reeval and args.generate:
     for i in range(len(ids)):
         if os.path.exists(f"logs/report-{ids[i]}_s{args.steps}.txt"):
             command = f"python reevaluate.py --report logs/report-{ids[i]}_s{args.steps}.txt"
@@ -190,6 +190,7 @@ if args.graph:
             rd = sum(reflective_depth_scores) / len(reflective_depth_scores)
             ka = sum(knowledge_application_scores) / len(knowledge_application_scores)
             cf = sum(cognitive_flexibility_scores) / len(cognitive_flexibility_scores)
+            ps = float(re.search(r"Performance Score: (\d+\.\d+)", input_string).group(1))
 
             grouped_data[variation_labels[i // len(scenarios)]].append({
                 "progressive_understanding": pu,
@@ -197,7 +198,8 @@ if args.graph:
                 "reflective_depth": rd,
                 "knowledge_application": ka,
                 "cognitive_flexibility": cf,
-                "overall": pu + ac + rd + ka + cf
+                "performance": ps,
+                "overall": pu + ac + rd + ka + cf + ps
             })
         else:
             grouped_data[variation_labels[i // len(scenarios)]].append({
@@ -206,6 +208,7 @@ if args.graph:
                 "reflective_depth": 0,
                 "knowledge_application": 0,
                 "cognitive_flexibility": 0,
+                "performance": 0,
                 "overall": 0
             })
 

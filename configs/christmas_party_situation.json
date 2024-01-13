@@ -59,7 +59,7 @@
     },
     { "who": "all", "question": "Have you achieved your goal?" },
     { "who": "all", "question": "When and where was the party?"},
-    { "who": "all", "question": "Did you attend a xmas party? answer 1 for yes, 0 for no","metric":"attended_party"},
+    { "who": "all", "question": "Did you attend a christmas party? answer 1 for yes, 0 for no","metric":"attended_party"},
     {
       "who": "all",
       "question": "What are the locations that you know and discovered based on your memories?"

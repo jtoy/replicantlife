@@ -35,6 +35,8 @@ if os.path.exists(args.report):
     with open(args.report) as file:
         input_string = file.read()
 
+    total_agents = int(re.search(r"Total_agents: (\d+)", input_string).group(1))
+    total_dead = int(re.search(r"Total_dead: (\d+)", input_string).group(1))
     interview_part = re.search(r'Interview Question Results:(.*?)(Conversation Log:|\Z)', input_string, re.DOTALL).group(1).strip()
     scenario_part = re.search(r'Scenario:(.*?)(Goals Log:|\Z)', input_string, re.DOTALL).group(1).strip()
     goals_part = re.search(r'Goals Log:(.*?)(Interview Question Results:|\Z)', input_string, re.DOTALL).group(1).strip()
@@ -83,7 +85,7 @@ if os.path.exists(args.report):
     # Write to re-eval file
     reeval_filename = args.report.replace("report", "reeval")
     with open(reeval_filename, "w") as file:
-        file.write("\n\nAUTO EVALUATIONS\n")
+        file.write("\n\nauto evaluations\n")
 
     for i in conversation_matches:
         if "Zombie" in i:
@@ -94,7 +96,7 @@ if os.path.exists(args.report):
             "agent": i,
             "conversation_part": conversation_matches[i],
             "reflect_part": reflection_matches[i],
-            "interview_part": interview_matches[i]
+            "interview_part": interview_matches[i],
         }
         generated_correctly = False
         while not generated_correctly:
@@ -135,6 +137,7 @@ if os.path.exists(args.report):
         "cognitive_flexibility": cf,
         "overall": pu + ac + rd + ka + cf
     }
+    print(score_data)
 else:
-    print("Report file {args.report} does not exist")
+    print("report file {args.report} does not exist")
 
