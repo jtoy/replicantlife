@@ -114,7 +114,7 @@ if args.generate and not args.reeval:
             report_file_name = f"report-{ids[(var_index * len(scenarios)) + scene_index]}_s{args.steps}.txt"
             eval_file_name = f"eval-{ids[(var_index * len(scenarios)) + scene_index]}_s{args.steps}.txt"
 
-            if os.path.exists(f"logs/{log_file_name}"):
+            if os.path.existsCategories(f"logs/{log_file_name}"):
                 if args.overwrite:
                     os.remove(f"logs/{log_file_name}")
                 else:
@@ -193,6 +193,7 @@ if args.graph:
             ps = float(re.search(r"Performance Score: (\d+\.\d+)", input_string).group(1))
 
             grouped_data[variation_labels[i // len(scenarios)]].append({
+                "id": ids[i],
                 "progressive_understanding": pu,
                 "adaptive_communication": ac,
                 "reflective_depth": rd,
@@ -203,6 +204,7 @@ if args.graph:
             })
         else:
             grouped_data[variation_labels[i // len(scenarios)]].append({
+                "id": ids[i],
                 "progressive_understanding": 0,
                 "adaptive_communication": 0,
                 "reflective_depth": 0,
@@ -211,6 +213,41 @@ if args.graph:
                 "performance": 0,
                 "overall": 0
             })
+
+    score_labels = [
+        "progressive_understanding",
+        "adaptive_communication",
+        "reflective_depth",
+        "knowledge_application",
+        "cognitive_flexibility",
+        "performance",
+        "overall"
+    ]
+
+    for score_label in score_labels:
+        values = []
+        for var in variation_labels:
+            values.append([d[score_label] for d in grouped_data[var]])
+
+        values = np.array(values)
+
+        num_groups = values.shape[1]
+        bar_width = 0.2
+
+        positions = np.arange(len(variation_labels))
+
+        for i in range(num_groups):
+            plt.bar(positions + i * bar_width, values[:, i], width=bar_width, label=scenarios[i].replace("configs/", "").replace(".json", "").replace("_", " ").upper())
+
+        plt.xlabel('Variation')
+        plt.ylabel('Score')
+        plt.title(f"{score_label.upper()} SCORES")
+        plt.xticks(positions + (bar_width * (num_groups - 1)) / 2, variation_labels)
+        plt.legend()
+
+        plt.show()
+        print(1/0)
+
 
     means = [np.mean([item.get('overall', 0) for item in grouped_data[label]]) for label in variation_labels]
     std_devs = [np.std([item.get('overall', 0) for item in grouped_data[label]]) for label in variation_labels]
@@ -231,9 +268,10 @@ if args.graph:
         ax.text(bar.get_x() + bar.get_width() / 2, height + 0.1, f'{mean:.2f} ± {std_dev:.2f}', ha='center', va='bottom')
 
     print("Final Data")
-    for i in range(len(ids)):
-        label = variation_labels[i % len(scenarios)]
-        print(f"ID: {ids[i]} | {grouped_data[label][i % len(scenarios)]}")
+    for d in grouped_data:
+        print(d)
+        for c in grouped_data[d]:
+            print(c)
 
     plt.tight_layout()
     plt.savefig(f"logs/cognitive_graph_{args.steps}.png")

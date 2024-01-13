@@ -58,8 +58,6 @@ class Matrix:
         # Build Environment
         self.environment = Environment({ "filename": self.environment_file })
         self.background = None
-        self.performance_metrics[self.performance_evals["numerator"]] = 0
-        self.performance_metrics["denominator"] = self.performance_evals["denominator"]
 
         # Setup Scenario
         if self.scenario_file is not None:
@@ -76,6 +74,10 @@ class Matrix:
         self.perception_range = data.get("perception_range", PERCEPTION_RANGE)
         self.allow_movement = data.get("allow_movement", ALLOW_MOVEMENT)
         self.background = data.get("background", "")
+        self.performance_evals = data.get("performance", {})
+        self.performance_metrics[self.performance_evals["numerator"]] = 0
+        self.performance_metrics["denominator"] = self.performance_evals["denominator"]
+
         if self.steps <= 0:
             self.steps = data.get("steps", 100)
         if self.num_npc <= 0:
