@@ -236,45 +236,24 @@ if args.graph:
 
         positions = np.arange(len(variation_labels))
 
+        fig, ax = plt.subplots(figsize=(1920/80, 1080/80), dpi=80)
+
         for i in range(num_groups):
-            plt.bar(positions + i * bar_width, values[:, i], width=bar_width, label=scenarios[i].replace("configs/", "").replace(".json", "").replace("_", " ").upper())
+            ax.bar(positions + i * bar_width, values[:, i], width=bar_width, label=scenarios[i].replace("configs/", "").replace(".json", "").replace("_", " ").upper())
 
-        plt.xlabel('Variation')
-        plt.ylabel('Score')
-        plt.title(f"{score_label.upper()} SCORES")
-        plt.xticks(positions + (bar_width * (num_groups - 1)) / 2, variation_labels)
-        plt.legend()
+        ax.set_xlabel('Variation')
+        ax.set_ylabel('Score')
+        ax.set_title(f"{score_label.upper()} SCORES")
+        ax.set_xticks(positions + (bar_width * (num_groups - 1)) / 2)
+        ax.set_xticklabels(variation_labels)
+        ax.legend()
 
+        plt.tight_layout()
+        plt.savefig(f"logs/{score_label}_graph_{args.steps}.png")
         plt.show()
-        print(1/0)
 
-
-    means = [np.mean([item.get('overall', 0) for item in grouped_data[label]]) for label in variation_labels]
-    std_devs = [np.std([item.get('overall', 0) for item in grouped_data[label]]) for label in variation_labels]
-
-    fig, ax = plt.subplots()
-    x = np.arange(len(variation_labels))
-
-    bars = ax.bar(x, means, yerr=std_devs, align='center', alpha=0.7, ecolor='black', capsize=10)
-
-    ax.set_xticks(x)
-    ax.set_xticklabels(variation_labels, rotation=45, ha="right")
-    ax.set_ylabel('Overall Score')
-    ax.set_title('Overall Score by Variation with Standard Deviation')
-    ax.legend()
-
-    for bar, mean, std_dev in zip(bars, means, std_devs):
-        height = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width() / 2, height + 0.1, f'{mean:.2f} ± {std_dev:.2f}', ha='center', va='bottom')
-
-    print("Final Data")
     for d in grouped_data:
         print(d)
         for c in grouped_data[d]:
             print(c)
-
-    plt.tight_layout()
-    plt.savefig(f"logs/cognitive_graph_{args.steps}.png")
-    plt.show()
-
 
