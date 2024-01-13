@@ -129,7 +129,7 @@ class Matrix:
             agent.x = new_position[0]
             agent.y = new_position[1]
 
-        if agent.kind != "zombie":
+        if agent.kind != "zombie" and self.allow_observance_flag == 1:
             parsed_spatial_mem = []
             if len(agent.spatial_memory) > 0:
                 for loc in self.environment.locations:
