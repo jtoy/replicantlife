@@ -458,14 +458,15 @@ class Matrix:
         elif decision == "meta_cognize":
             agent.meta_cognize(self.unix_to_strftime(unix_time),True)
         elif decision == "kill":
-            target = find_most_similar(parameters, [a.name for a in other_agents])
-            for a in other_agents:
-                if target == a.name:
-                    agent.kill(a, self.unix_to_strftime(unix_time))
-                    if a.status == "dead":
-                        witnesses = (set(perceived_agents) - {a})
-                        for witness in witnesses:
-                            witness.addMemory("perceive", f"{a} was just murdered by {agent} at {self.environment.get_area_from_coordinates(a.x, a.y)} {self.environment.get_location_from_coordinates(a.x, a.y)}", self.unix_to_strftime(unix_time), 9)
+            if len(other_agents) > 0:
+                target = find_most_similar(parameters, [a.name for a in other_agents])
+                for a in other_agents:
+                    if target == a.name:
+                        agent.kill(a, self.unix_to_strftime(unix_time))
+                        if a.status == "dead":
+                            witnesses = (set(perceived_agents) - {a})
+                            for witness in witnesses:
+                                witness.addMemory("perceive", f"{a} was just murdered by {agent} at {self.environment.get_area_from_coordinates(a.x, a.y)} {self.environment.get_location_from_coordinates(a.x, a.y)}", self.unix_to_strftime(unix_time), 9)
 
         agent.addMemory("decision",f"I decided to {decision} because {explanation}",self.unix_to_strftime(unix_time),random.randint(1,4))
         return agent
