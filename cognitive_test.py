@@ -193,6 +193,7 @@ if args.graph:
             ps = float(re.search(r"Performance Score: (\d+\.\d+)", input_string).group(1))
 
             grouped_data[variation_labels[i // len(scenarios)]].append({
+                "id": ids[i],
                 "progressive_understanding": pu,
                 "adaptive_communication": ac,
                 "reflective_depth": rd,
@@ -203,6 +204,7 @@ if args.graph:
             })
         else:
             grouped_data[variation_labels[i // len(scenarios)]].append({
+                "id": ids[i],
                 "progressive_understanding": 0,
                 "adaptive_communication": 0,
                 "reflective_depth": 0,
@@ -212,31 +214,46 @@ if args.graph:
                 "overall": 0
             })
 
-    means = [np.mean([item.get('overall', 0) for item in grouped_data[label]]) for label in variation_labels]
-    std_devs = [np.std([item.get('overall', 0) for item in grouped_data[label]]) for label in variation_labels]
+    score_labels = [
+        "progressive_understanding",
+        "adaptive_communication",
+        "reflective_depth",
+        "knowledge_application",
+        "cognitive_flexibility",
+        "performance",
+        "overall"
+    ]
 
-    fig, ax = plt.subplots()
-    x = np.arange(len(variation_labels))
+    for score_label in score_labels:
+        values = []
+        for var in variation_labels:
+            values.append([d[score_label] for d in grouped_data[var]])
 
-    bars = ax.bar(x, means, yerr=std_devs, align='center', alpha=0.7, ecolor='black', capsize=10)
+        values = np.array(values)
 
-    ax.set_xticks(x)
-    ax.set_xticklabels(variation_labels, rotation=45, ha="right")
-    ax.set_ylabel('Overall Score')
-    ax.set_title('Overall Score by Variation with Standard Deviation')
-    ax.legend()
+        num_groups = values.shape[1]
+        bar_width = 0.2
 
-    for bar, mean, std_dev in zip(bars, means, std_devs):
-        height = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width() / 2, height + 0.1, f'{mean:.2f} ± {std_dev:.2f}', ha='center', va='bottom')
+        positions = np.arange(len(variation_labels))
 
-    print("Final Data")
-    for i in range(len(ids)):
-        label = variation_labels[i % len(scenarios)]
-        print(f"ID: {ids[i]} | {grouped_data[label][i % len(scenarios)]}")
+        fig, ax = plt.subplots(figsize=(1920/80, 1080/80), dpi=80)
 
-    plt.tight_layout()
-    plt.savefig(f"logs/cognitive_graph_{args.steps}.png")
-    plt.show()
+        for i in range(num_groups):
+            ax.bar(positions + i * bar_width, values[:, i], width=bar_width, label=scenarios[i].replace("configs/", "").replace(".json", "").replace("_", " ").upper())
 
+        ax.set_xlabel('Variation')
+        ax.set_ylabel('Score')
+        ax.set_title(f"{score_label.upper()} SCORES")
+        ax.set_xticks(positions + (bar_width * (num_groups - 1)) / 2)
+        ax.set_xticklabels(variation_labels)
+        ax.legend()
+
+        plt.tight_layout()
+        plt.savefig(f"logs/{score_label}_graph_{args.steps}.png")
+        plt.show()
+
+    for d in grouped_data:
+        print(d)
+        for c in grouped_data[d]:
+            print(c)
 
