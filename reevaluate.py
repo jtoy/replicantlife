@@ -35,8 +35,11 @@ if os.path.exists(args.report):
     with open(args.report) as file:
         input_string = file.read()
 
-    total_agents = int(re.search(r"Total_agents: (\d+)", input_string).group(1))
-    total_dead = int(re.search(r"Total_dead: (\d+)", input_string).group(1))
+    env_vars = {
+        "total_agents": int(re.search(r"total_agents: (\d+)", input_string).group(1)),
+        "total_dead": int(re.search(r"total_dead: (\d+)", input_string).group(1)),
+        "total_alive": int(re.search(r"total_alive: (\d+)", input_string).group(1))
+    }
     interview_part = re.search(r'Interview Question Results:(.*?)(Conversation Log:|\Z)', input_string, re.DOTALL).group(1).strip()
     scenario_part = re.search(r'Scenario:(.*?)(Goals Log:|\Z)', input_string, re.DOTALL).group(1).strip()
     goals_part = re.search(r'Goals Log:(.*?)(Interview Question Results:|\Z)', input_string, re.DOTALL).group(1).strip()
@@ -62,7 +65,8 @@ if os.path.exists(args.report):
         parsed_data[name.strip()] = logs.strip()
     reflection_matches = parsed_data
 
-    interview_matches = re.compile(r"Question: (.+?)\n(.*?)(?=\nQuestion:|$)", re.DOTALL).findall(interview_part)
+    #interview_matches = re.compile(r"Question: (.+?)\n(.*?)(?=\nQuestion:|$)", re.DOTALL).findall(interview_part)
+    interview_matches = re.compile(r"Question: (.+?)\n(.*?)(?:\n\[.*?\])?(?=\nQuestion:|$|\n={10,})", re.DOTALL).findall(interview_part)
     parsed_data = {}
     for question, block in interview_matches:
         answer_match = re.match(r"(\w+):(.+)", block)
@@ -74,6 +78,19 @@ if os.path.exists(args.report):
                 parsed_data[name] = []
 
             parsed_data[name].append({"Question": question.strip(), "Answer": answer})
+
+        else:
+            special_case_pattern = re.compile(r"(\w+): (\d)\n(.*)", re.DOTALL)
+            special_case_match = special_case_pattern.search(block)
+            if special_case_match:
+                name = special_case_match.group(1)
+                answer = special_case_match.group(2)
+
+                if name not in parsed_data:
+                    parsed_data[name] = []
+
+                parsed_data[name].append({"Question": question.strip(), "Answer": answer})
+
     interview_matches = parsed_data
 
     progressive_understanding_scores = []
@@ -81,6 +98,7 @@ if os.path.exists(args.report):
     reflective_depth_scores = []
     knowledge_application_scores = []
     cognitive_flexibility_scores = []
+    performance_scores = []
 
     # Write to re-eval file
     reeval_filename = args.report.replace("report", "reeval")
@@ -117,6 +135,39 @@ if os.path.exists(args.report):
                     file.write(eval)
                     file.write("\n")
 
+                if "xmas_" in args.report:
+                    config_filename = "configs/christmas_party_situation.json"
+                elif "ss_" in args.report:
+                    config_filename = "configs/secret_santa_situation.json"
+                elif "z_" in args.report:
+                    config_filename = "configs/zombie_situation.json"
+                elif "m_" in args.report:
+                    config_filename = "configs/murder_situation.json"
+                else:
+                    config_filename = "configs/def.json"
+
+                with open(config_filename, "r") as config_file:
+                    configs_json = json.load(config_file)
+                    questions = configs_json.get("questions", [])
+                    performance = configs_json.get("performance", {})
+
+                    numerator_key = performance.get("numerator", None)
+                    denominator_key = performance.get("denominator", None)
+
+                    for q in questions:
+                        metric = q.get("metric", None)
+                        if metric:
+                            answer = 0
+                            for interview in interview_matches[i]:
+                                if q['question'] == interview['Question']:
+                                    answer = llm.generate(f"Based on the excerpt:\n{interview['Question']}\n{interview['Answer']}\n\nDid the character achieve the question? 1 for yes, 0 for no.\nFormat your answer like this:\n\nExplanation: <string>\nAnswer: <0 or 1 only>")
+                                    answer = int(re.search(r"Answer: (\d+)", answer).group(1)) * 10
+
+                        else:
+                            answer = (env_vars.get(numerator_key, 0) / env_vars.get(denominator_key, 1)) * 10
+
+                    performance_scores.append(answer)
+
             except Exception as e:
                 print(f"Wrong evaluation format response error: {e}, retrying...")
 
@@ -128,6 +179,9 @@ if os.path.exists(args.report):
     rd = sum(reflective_depth_scores) / len(reflective_depth_scores)
     ka = sum(knowledge_application_scores) / len(knowledge_application_scores)
     cf = sum(cognitive_flexibility_scores) / len(cognitive_flexibility_scores)
+    ps = sum(performance_scores) / len(performance_scores)
+    with open(reeval_filename, "a") as file:
+        file.write(f"\n\n++++ Performance Score: {ps}\n")
     score_data = {
         "file": args.report,
         "progressive_understanding": pu,
@@ -135,7 +189,8 @@ if os.path.exists(args.report):
         "reflective_depth": rd,
         "knowledge_application": ka,
         "cognitive_flexibility": cf,
-        "overall": pu + ac + rd + ka + cf
+        "performance": ps,
+        "overall": pu + ac + rd + ka + cf + ps
     }
     print(score_data)
 else:
