@@ -163,8 +163,10 @@ if args.graph:
         if os.path.exists(f"logs/eval-{ids[i]}_s{args.steps}.txt"):
             if args.reeval:
                 eval_file = f"logs/reeval-{ids[i]}_s{args.steps}.txt"
+                pre_name_str = "re_"
             else:
                 eval_file = f"logs/eval-{ids[i]}_s{args.steps}.txt"
+                pre_name_str = ""
             with open(eval_file) as file:
                 input_string = file.read()
 
@@ -190,7 +192,7 @@ if args.graph:
             rd = sum(reflective_depth_scores) / len(reflective_depth_scores)
             ka = sum(knowledge_application_scores) / len(knowledge_application_scores)
             cf = sum(cognitive_flexibility_scores) / len(cognitive_flexibility_scores)
-            ps = float(re.search(r"Performance Score: (\d+\.\d+)", input_string).group(1))
+            ps = float(re.search(r"++++ Performance Score: (\d+\.\d+)", input_string).group(1))
 
             grouped_data[variation_labels[i // len(scenarios)]].append({
                 "id": ids[i],
@@ -249,8 +251,30 @@ if args.graph:
         ax.legend()
 
         plt.tight_layout()
-        plt.savefig(f"logs/{score_label}_graph_{args.steps}.png")
+        plt.savefig(f"logs/{pre_name_str}{score_label}_graph_{args.steps}.png")
         plt.show()
+
+    means = [np.mean([item.get('overall', 0) for item in grouped_data[label]]) for label in variation_labels]
+    std_devs = [np.std([item.get('overall', 0) for item in grouped_data[label]]) for label in variation_labels]
+
+    fig, ax = plt.subplots(figsize=(1920/80, 1080/80), dpi=80)
+    x = np.arange(len(variation_labels))
+
+    bars = ax.bar(x, means, yerr=std_devs, align='center', alpha=0.7, ecolor='black', capsize=10)
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(variation_labels, rotation=45, ha="right")
+    ax.set_ylabel('Overall Score')
+    ax.set_title('Overall Score by Variation with Standard Deviation')
+    ax.legend()
+
+    for bar, mean, std_dev in zip(bars, means, std_devs):
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width() / 2, height + 0.1, f'{mean:.2f} ± {std_dev:.2f}', ha='center', va='bottom')
+
+    plt.tight_layout()
+    plt.savefig(f"logs/{pre_name_str}sd_graph_{args.steps}.png")
+    plt.show()
 
     for d in grouped_data:
         print(d)

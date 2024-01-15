@@ -202,6 +202,7 @@ class Matrix:
             "total_agents": sum(1 for agent in self.agents if agent.kind != 'zombie'),
             "total_zombies": sum(1 for agent in self.agents if agent.kind == 'zombie'),
             "total_dead": sum(1 for agent in self.agents if agent.status == 'dead'),
+            "total_alive": sum(1 for agent in self.agents if agent.status != 'dead'),
             "llm_call_counter": llm.call_counter,
             "avg_runtime_per_step": total_seconds / self.steps,
             "avg_llm_calls_per_step": llm.call_counter / self.steps
