@@ -192,7 +192,9 @@ if args.graph:
             rd = sum(reflective_depth_scores) / len(reflective_depth_scores)
             ka = sum(knowledge_application_scores) / len(knowledge_application_scores)
             cf = sum(cognitive_flexibility_scores) / len(cognitive_flexibility_scores)
-            ps = float(re.search(r"++++ Performance Score: (\d+\.\d+)", input_string).group(1))
+            print(eval_file)
+            print(input_string)
+            ps = float(re.search(r"\+\+\+\+ Performance Score: (\d+\.\d+)", input_string).group(1))
 
             grouped_data[variation_labels[i // len(scenarios)]].append({
                 "id": ids[i],
