@@ -252,7 +252,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         }
 
         msg = llm.prompt(prompt_name="summarize_conversation", variables=variables)
-        interaction = f"{timestamp} - {self} summarized their conversation with {self.last_conversation.other_agent.name}: {msg}"
+        interaction = f"{timestamp} - {self} summarized the conversation: {msg}"
         if self.matrix is not None:
             print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
 
@@ -305,9 +305,6 @@ Answer the question from the point of view of {self} thinking to themselves, res
         relevant_memories_string = relevant_memories_string + "\n".join([mem for mem in self.short_memory[-5:] if "said" not in mem])
         previous_conversations = "\n".join([convo for convo in self.last_conversation.messages])
 
-
-
-
         variables = {
             'selfContext': self.getSelfContext(),
             'relevant_memories': relevant_memories_string,
@@ -333,10 +330,10 @@ Answer the question from the point of view of {self} thinking to themselves, res
             print_and_log(interaction, f"{self.matrix.id}:conversations:{other_agent.name}")
             print_and_log(interaction, f"{self.matrix.id}:agent_conversations") # Temporarily here
 
-        #self.short_memory.append(interaction)
-        #self.add_short_memory(interaction, timestamp)
-        self.last_conversation.messages.append(interaction)
-        other_agent.last_conversation.messages.append(interaction)
+        if self.last_conversation is not None:
+            self.last_conversation.messages.append(interaction)
+        if other_agent.last_conversation is not None:
+            other_agent.last_conversation.messages.append(interaction)
 
     def talk_many(self, perceived_agents, timestamp):
         relevant_memories = self.getMemories(f"{[a.name for a in perceived_agents]}", timestamp)
