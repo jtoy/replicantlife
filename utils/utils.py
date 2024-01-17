@@ -141,6 +141,19 @@ class Llm:
                       self.call_counter += 1
                   else:
                       msg = fallback
+              elif self.model == "vllm":
+                  data = {
+                      "prompt": prompt,
+                      "use_beam_search": True,
+                      "n": 4,
+                      "temperature": 0
+                  }
+                  response = requests.post(f"{VLLM_URL}/generate", json=data, timeout=LLAMA_TIMEOUT)
+                  if response.status_code == 200:
+                      msg = response.json()['text'][0]
+                      self.call_counter += 1
+                  else:
+                      msg = fallback + ": " + response.text
               else:
                   response = requests.post(f"{current_url}/generate", json=data, timeout=LLAMA_TIMEOUT)
 

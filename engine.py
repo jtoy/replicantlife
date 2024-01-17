@@ -30,6 +30,7 @@ class Matrix:
         self.allow_reflect_flag = matrix_data.get("allow_reflect", ALLOW_REFLECT)
         self.allow_meta_flag = matrix_data.get("allow_meta", ALLOW_META)
         self.allow_observance_flag = matrix_data.get("allow_observance", ALLOW_OBSERVANCE)
+        self.max_workers = matrix_data.get("max_workers", MAX_WORKERS)
 
         self.id = matrix_data.get("id", str(uuid.uuid4()))
         self.scenario_file = matrix_data.get("scenario", "configs/def.json")
@@ -294,37 +295,42 @@ class Matrix:
         self.sim_start_time = datetime.now()
         self.send_matrix_to_redis()
         for step in range(self.steps):
+            self.cur_step = step
             with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
                 if self.status == "stop":
                     pd("stopping simulation")
                     break
                 start_time = datetime.now()
+                pd(f"Step {step + 1}:")
 
-                pd(f"Step {step}:")
+                redis_log(self.get_arr_2D(), f"{self.id}:matrix_states")
+                #redis_connection.lpush(f"{self.id}:agent_conversations", json.dumps(f"Step: {step + 1} | {self.unix_to_strftime(self.unix_time)}"))
+                redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
+                print_and_log(f"Step: {step + 1} | {self.unix_to_strftime(self.unix_time)}", f"{self.id}:agent_conversations")
 
-                redis_connection.lpush(f"{self.id}:agent_conversations", json.dumps(f"Step: {step + 1} | {self.unix_to_strftime(self.unix_time)}"))
+                self.log_agents_to_redis()
+
+                for a in self.agents:
+                    print_and_log(f"Step: {step + 1} | {self.unix_to_strftime(self.unix_time)}", f"{self.id}:events:{a.name}")
+                    print_and_log(f"Step: {step + 1} | {self.unix_to_strftime(self.unix_time)}", f"{self.id}:conversations:{a.name}")
 
                 # Submit agent actions concurrently
                 if LLM_ACTION == 1:
-                  futures = [executor.submit(self.llm_action, agent, self.unix_time,step) for agent in self.agents]
+                    futures = [executor.submit(self.llm_action, agent, self.unix_time) for agent in self.agents]
                 else:
-                  futures = [executor.submit(self.agent_action, agent, self.unix_time) for agent in self.agents]
+                    futures = [executor.submit(self.agent_action, agent, self.unix_time) for agent in self.agents]
+
                 # Retrieve results from futures
                 updated_agents = [future.result() for future in futures]
-                # Update the agents' states. Reflect
-
-                #for i, updated_agent in enumerate(updated_agents):
-                #    self.agents[i].__dict__.update(updated_agent.__dict__)
 
                 if PRINT_MAP == 1:
                     self.print_matrix()
 
-                redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
                 self.unix_time = self.unix_time + 10
                 end_time = datetime.now()
                 pd(f"LLm calls for Step {step}: {llm.call_counter - self.llm_calls} calls")
                 self.llm_calls = llm.call_counter
-                pd(f"Step {step} ran in {end_time - start_time}")
+                pd(f"Step {step + 1} ran in {end_time - start_time}")
                 if SLEEP_STEP and SLEEP_STEP > 0:
                     time.sleep(SLEEP_STEP)
 
@@ -863,8 +869,11 @@ def main():
     # Run
     start_time = datetime.now()
 
-    #matrix.run()
-    matrix.run_singlethread()
+    if MAX_WORKERS == 0:
+        matrix.run_singlethread()
+    else:
+        matrix.run()
+
     end_time = datetime.now()
     matrix.run_interviews()
 
