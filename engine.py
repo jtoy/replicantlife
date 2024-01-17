@@ -30,6 +30,7 @@ class Matrix:
         self.allow_reflect_flag = matrix_data.get("allow_reflect", ALLOW_REFLECT)
         self.allow_meta_flag = matrix_data.get("allow_meta", ALLOW_META)
         self.allow_observance_flag = matrix_data.get("allow_observance", ALLOW_OBSERVANCE)
+        self.max_workers = matrix_data.get("max_workers", MAX_WORKERS)
 
         self.id = matrix_data.get("id", str(uuid.uuid4()))
         self.scenario_file = matrix_data.get("scenario", "configs/def.json")
