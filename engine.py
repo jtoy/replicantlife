@@ -58,8 +58,6 @@ class Matrix:
         # Build Environment
         self.environment = Environment({ "filename": self.environment_file })
         self.background = None
-        self.performance_metrics[self.performance_evals["numerator"]] = 0
-        self.performance_metrics["denominator"] = self.performance_evals["denominator"]
 
         # Setup Scenario
         if self.scenario_file is not None:
@@ -76,6 +74,10 @@ class Matrix:
         self.perception_range = data.get("perception_range", PERCEPTION_RANGE)
         self.allow_movement = data.get("allow_movement", ALLOW_MOVEMENT)
         self.background = data.get("background", "")
+        self.performance_evals = data.get("performance", {})
+        self.performance_metrics[self.performance_evals["numerator"]] = 0
+        self.performance_metrics["denominator"] = self.performance_evals["denominator"]
+
         if self.steps <= 0:
             self.steps = data.get("steps", 100)
         if self.num_npc <= 0:
@@ -200,6 +202,7 @@ class Matrix:
             "total_agents": sum(1 for agent in self.agents if agent.kind != 'zombie'),
             "total_zombies": sum(1 for agent in self.agents if agent.kind == 'zombie'),
             "total_dead": sum(1 for agent in self.agents if agent.status == 'dead'),
+            "total_alive": sum(1 for agent in self.agents if agent.status != 'dead'),
             "llm_call_counter": llm.call_counter,
             "avg_runtime_per_step": total_seconds / self.steps,
             "avg_llm_calls_per_step": llm.call_counter / self.steps
