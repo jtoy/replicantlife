@@ -139,8 +139,8 @@ class Matrix:
                         parsed_spatial_mem.append(loc)
 
 
-            interaction = f"{self.unix_to_strftime(self.unix_time)} - {agent} knows the locations: {agent.spatial_memory}."
-            agent.addMemory("observation", interaction, self.unix_to_strftime(self.unix_time), random.randint(0,2))
+            interaction = f"{unix_to_strftime(self.unix_time)} - {agent} knows the locations: {agent.spatial_memory}."
+            agent.addMemory("observation", interaction, unix_to_strftime(self.unix_time), random.randint(0,2))
             agent.spatial_memory = parsed_spatial_mem
         else:
             agent.spatial_memory = self.environment.locations
@@ -238,13 +238,13 @@ class Matrix:
 
             redis_log(self.get_arr_2D(), f"{self.id}:matrix_states")
             redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
-            print_and_log(f"Step: {step + 1} | {self.unix_to_strftime(self.unix_time)}", f"{self.id}:agent_conversations")
+            print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:agent_conversations")
 
             self.log_agents_to_redis()
 
             for a in self.agents:
-                print_and_log(f"Step: {step + 1} | {self.unix_to_strftime(self.unix_time)}", f"{self.id}:events:{a.name}")
-                print_and_log(f"Step: {step + 1} | {self.unix_to_strftime(self.unix_time)}", f"{self.id}:conversations:{a.name}")
+                print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:events:{a.name}")
+                print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:conversations:{a.name}")
 
             control_cmd = redis_connection.lpop(f"{self.id}:communications")
             if control_cmd:
@@ -259,7 +259,7 @@ class Matrix:
                     if name:
                         for agent in self.agents:
                             if name == agent.name:
-                                agent.addMemory(kind=control_type, content=msg, timestamp=self.unix_to_strftime(self.unix_time), score=10)
+                                agent.addMemory(kind=control_type, content=msg, timestamp=unix_to_strftime(self.unix_time), score=10)
                 except json.JSONDecodeError as e:
                     print(f"Error decoding control_cmd: {e}")
 
@@ -302,7 +302,7 @@ class Matrix:
 
                 pd(f"Step {step}:")
 
-                redis_connection.lpush(f"{self.id}:agent_conversations", json.dumps(f"Step: {step + 1} | {self.unix_to_strftime(self.unix_time)}"))
+                redis_connection.lpush(f"{self.id}:agent_conversations", json.dumps(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}"))
 
                 # Submit agent actions concurrently
                 if LLM_ACTION == 1:
@@ -336,8 +336,6 @@ class Matrix:
         pd(f"made it to step {step + 1}")
         pd(f"Total LLM calls: {llm.call_counter} calls | Average LLM calls: {average_llm_calls} calls")
 
-    def unix_to_strftime(self, unix_time):
-        return datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
 
     def llm_action(self, agent, unix_time):
         if agent.status == "dead":
@@ -345,15 +343,15 @@ class Matrix:
 
         # It is 12:00, time to make plans
         if unix_time % 86400 == 0 and self.allow_plan_flag == 1:
-            agent.make_plans(self.unix_to_strftime(unix_time))
+            agent.make_plans(unix_to_strftime(unix_time))
 
         # Recent memories importance > 100, time to reflect
         if self.allow_reflect_flag == 1 and agent.recent_memories_importance() > self.reflect_threshold:
-            agent.reflect(self.unix_to_strftime(unix_time))
+            agent.reflect(unix_to_strftime(unix_time))
 
         if self.allow_meta_flag == 1 and random.randint(0,100) < 25:
         #if self.allow_meta_flag == 1 and agent.recent_meta_importance() > 30
-            agent.evaluate_progress(self.unix_to_strftime(unix_time))
+            agent.evaluate_progress(unix_to_strftime(unix_time))
             #agent.meta_cognize(self.unix_to_strftime(unix_time))
 
         agent.conversation_cooldown -= 1
@@ -364,8 +362,8 @@ class Matrix:
             if len(agent.last_conversation.messages) >= CONVERSATION_DEPTH:
                 other_agent = agent.last_conversation.other_agent
 
-                agent.summarize_conversation(self.unix_to_strftime(unix_time))
-                other_agent.summarize_conversation(self.unix_to_strftime(unix_time))
+                agent.summarize_conversation(unix_to_strftime(unix_time))
+                other_agent.summarize_conversation(unix_to_strftime(unix_time))
 
                 agent.conversation_cooldown = CONVERSATION_COOLDOWN
                 other_agent.conversation_cooldown = CONVERSATION_COOLDOWN
@@ -373,12 +371,12 @@ class Matrix:
         # In here, if agent is locked to a conversation, no need then to let them decide
         # we let them talk
         if agent.is_locked_to_convo():
-            agent.talk({ "other_agents": [agent.last_conversation.other_agent], "timestamp": self.unix_to_strftime(unix_time) })
+            agent.talk({ "other_agents": [agent.last_conversation.other_agent], "timestamp": unix_to_strftime(unix_time) })
             return agent
 
-        perceived_agents, perceived_locations, perceived_areas, perceived_objects = agent.perceive([a for a in self.agents if a != agent], self.environment, self.unix_to_strftime(self.unix_time))
+        perceived_agents, perceived_locations, perceived_areas, perceived_objects = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
 
-        relevant_memories = agent.getMemories(agent.goal, self.unix_to_strftime(unix_time))
+        relevant_memories = agent.getMemories(agent.goal, unix_to_strftime(unix_time))
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
         current_location = self.environment.get_location_from_coordinates(agent.x, agent.y)
         current_area = self.environment.get_area_from_coordinates(agent.x, agent.y)
@@ -434,7 +432,7 @@ class Matrix:
             'location': current_location.name if current_location is not None else "",
             'area': current_area if current_area is not None else "",
             'spatial_memory': [loc.name for loc in agent.spatial_memory],
-            'time': self.unix_to_strftime(unix_time)
+            'time': unix_to_strftime(unix_time)
         }
 
         msg = llm.prompt("decide", variables)
@@ -451,7 +449,7 @@ class Matrix:
 
         if decision == "talk":
             if len(agents_available_to_talk) > 0:
-                agent.talk({ "target": parameters, "other_agents": agents_available_to_talk, "timestamp": self.unix_to_strftime(unix_time) })
+                agent.talk({ "target": parameters, "other_agents": agents_available_to_talk, "timestamp": unix_to_strftime(unix_time) })
                 self.conversation_counter += 1
         elif decision == "move":
             agent.move({ "target": parameters, "environment": self.environment })
@@ -459,19 +457,19 @@ class Matrix:
             if agent.current_destination is not None:
                 agent.move({ "environment": self.environment })
         elif decision == "meta_cognize":
-            agent.meta_cognize(self.unix_to_strftime(unix_time),True)
+            agent.meta_cognize(unix_to_strftime(unix_time),True)
         elif decision == "kill":
             if len(other_agents) > 0:
                 target = find_most_similar(parameters, [a.name for a in other_agents])
                 for a in other_agents:
                     if target == a.name:
-                        agent.kill(a, self.unix_to_strftime(unix_time))
+                        agent.kill(a, unix_to_strftime(unix_time))
                         if a.status == "dead":
                             witnesses = (set(perceived_agents) - {a})
                             for witness in witnesses:
-                                witness.addMemory("perceive", f"{a} was just murdered by {agent} at {self.environment.get_area_from_coordinates(a.x, a.y)} {self.environment.get_location_from_coordinates(a.x, a.y)}", self.unix_to_strftime(unix_time), 9)
+                                witness.addMemory("perceive", f"{a} was just murdered by {agent} at {self.environment.get_area_from_coordinates(a.x, a.y)} {self.environment.get_location_from_coordinates(a.x, a.y)}", unix_to_strftime(unix_time), 9)
 
-        agent.addMemory("decision",f"I decided to {decision} because {explanation}",self.unix_to_strftime(unix_time),random.randint(1,4))
+        agent.addMemory("decision",f"I decided to {decision} because {explanation}",unix_to_strftime(unix_time),random.randint(1,4))
         return agent
 
     def agent_action(self, agent, unix_time):
@@ -481,35 +479,35 @@ class Matrix:
         if agent.kind != 'zombie':
             # Recent memories importance > reflect_threshold, time to reflect
             if agent.recent_memories_importance() > self.reflect_threshold and self.allow_reflect_flag == 1:
-                agent.reflect(self.unix_to_strftime(unix_time))
+                agent.reflect(unix_to_strftime(unix_time))
 
             agent.conversation_cooldown -= 1
             if agent.last_conversation is not None:
                 if len(agent.last_conversation.messages) >= CONVERSATION_DEPTH:
                     other_agent = agent.last_conversation.other_agent
 
-                    agent.summarize_conversation(self.unix_to_strftime(unix_time))
-                    other_agent.summarize_conversation(self.unix_to_strftime(unix_time))
+                    agent.summarize_conversation(unix_to_strftime(unix_time))
+                    other_agent.summarize_conversation(unix_to_strftime(unix_time))
 
                     agent.conversation_cooldown = CONVERSATION_COOLDOWN
                     other_agent.conversation_cooldown = CONVERSATION_COOLDOWN
 
             if agent.is_locked_to_convo():
-                agent.talk({ "other_agents": [agent.last_conversation.other_agent], "timestamp": self.unix_to_strftime(unix_time) })
+                agent.talk({ "other_agents": [agent.last_conversation.other_agent], "timestamp": unix_to_strftime(unix_time) })
                 return agent
 
-        perceived_agents, perceived_locations, perceived_areas, perceived_objects = agent.perceive([a for a in self.agents if a != agent], self.environment, self.unix_to_strftime(self.unix_time))
+        perceived_agents, perceived_locations, perceived_areas, perceived_objects = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
 
         if len(perceived_agents) > 0:
             other_agent = random.choice(perceived_agents)
             # Killing condition
             if "kill" in agent.actions and other_agent.status != "dead":
                 if random.randint(0, 100) < agent.kill_rate - (5 * len(perceived_agents)):
-                    agent.kill(other_agent, self.unix_to_strftime(unix_time))
+                    agent.kill(other_agent, unix_to_strftime(unix_time))
                     if other_agent.status == "dead":
                         witnesses = (set(perceived_agents) - {other_agent})
                         for witness in witnesses:
-                            witness.addMemory("perceive", f"{other_agent} was just murdered by {agent} at {self.environment.get_area_from_coordinates(other_agent.x, other_agent.y)} {self.environment.get_location_from_coordinates(other_agent.x, other_agent.y)}", self.unix_to_strftime(unix_time), 9)
+                            witness.addMemory("perceive", f"{other_agent} was just murdered by {agent} at {self.environment.get_area_from_coordinates(other_agent.x, other_agent.y)} {self.environment.get_location_from_coordinates(other_agent.x, other_agent.y)}", unix_to_strftime(unix_time), 9)
 
                     return agent
 
@@ -519,7 +517,7 @@ class Matrix:
                 if len(agents_can_hear) > 0:
                     other_agent = random.choice(agents_can_hear)
                     if random.randint(0, 100) < agent.talk_rate and len(agents_can_hear) > 0:
-                        agent.talk({ "target": other_agent.name, "other_agents": [other_agent], "timestamp": self.unix_to_strftime(unix_time) })
+                        agent.talk({ "target": other_agent.name, "other_agents": [other_agent], "timestamp": unix_to_strftime(unix_time) })
                         self.conversation_counter += 1
                         return agent
 

@@ -3,6 +3,7 @@ import requests
 import time
 import os
 import redis
+from datetime import datetime
 import json
 from urllib.parse import urlparse
 import uuid
@@ -19,14 +20,17 @@ except ImportError:
 '''
 Print Debug Function
 '''
-def pd(msg, debug=DEBUG):
-    if debug == "1":
+def pd(msg):
+    if os.getenv("DEBUG") == "1":
         print(f"{msg}")
     url = "https://discord.com/api/webhooks/1179589082540675113/o8NLAfbISn82hZ9SmGyJ3GAJavIc7OIDS8Qbjl8OoO-jWOBSVLuQ6kgv-_UDju1yWf8M"
     data = {'content': msg}
     headers = {'Content-Type': 'application/json'}
     #try:
     #response = requests.post(url, json=data, headers=headers)
+
+def unix_to_strftime(unix_time):
+    return datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
 
 '''
 Llm class wrapper

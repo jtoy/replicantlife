@@ -337,6 +337,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         #self.add_short_memory(interaction, timestamp)
         self.last_conversation.messages.append(interaction)
         other_agent.last_conversation.messages.append(interaction)
+        return msg
 
     def talk_many(self, perceived_agents, timestamp):
         relevant_memories = self.getMemories(f"{[a.name for a in perceived_agents]}", timestamp)

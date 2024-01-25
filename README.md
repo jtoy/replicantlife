@@ -30,6 +30,10 @@ Recent advances in Large Language Models (LLMs) have shown impressive capabiliti
 
 `python engine.py`
 
+# Run standalone chat
+
+`python chat.py`
+
 
 ## Simulation flags
 
