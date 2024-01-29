@@ -24,6 +24,10 @@ from src.location import Location, Area, Object
 
 class Matrix:
     def __init__(self, matrix_data={}):
+        if matrix_data.get('logs',None):
+            with open(matrix_data['logs'], "r") as file:
+                for line in file:
+                    substep = json.load(line)
         self.steps = matrix_data.get("steps", SIMULATION_STEPS)
         self.llm_action_flag = matrix_data.get("llm_action", LLM_ACTION)
         self.allow_plan_flag = matrix_data.get("allow_plan", ALLOW_PLAN)
@@ -41,6 +45,7 @@ class Matrix:
         self.interview_results = {}
         self.reflect_threshold = REFLECT_THRESHOLD
         self.cur_step = 0
+        self.current_substep = 0
         self.unix_time = DEFAULT_TIME
         self.status = "init"
         self.conversation_counter = 0
@@ -65,6 +70,7 @@ class Matrix:
 
 
         self.agent_locks = { agent: threading.Lock() for agent in self.agents }
+
 
     def parse_scenario_file(self, filename):
         with open(filename, 'r') as file:
@@ -146,6 +152,13 @@ class Matrix:
             agent.spatial_memory = self.environment.locations
 
         self.agents.append(agent)
+
+    def add_to_logs(self,object):
+        object["step"] = self.cur_step
+        object["substep"] = self.current_substep
+        with open("logs.json", "a") as file:
+            json.dump(object,file,indent=2)
+        self.current_substep += 1
 
     def get_server_info(self):
         try:
@@ -229,6 +242,7 @@ class Matrix:
         self.send_matrix_to_redis()
         for step in range(self.steps):
             self.cur_step = step
+            self.current_substep = 0
             if self.status == "stop":
                 pd("stopping simulation")
                 break

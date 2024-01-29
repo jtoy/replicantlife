@@ -82,18 +82,18 @@ Just follow the format of `def_environment.json`, run the engine with
 
 ### Secret Santa Game
 
-`python engine.py --scenario configs/secret_santa_situation.json --world configs/largev2.tmj`
+`python engine.py --scenario configs/secret_santa_situation.json --env configs/largev2.tmj`
 
 
 
 ### Murder
 Someone is killing people
 
-`python engine.py --scenario configs/murder_situation.json --world configs/largev2.tmj`
+`python engine.py --scenario configs/murder_situation.json --env configs/largev2.tmj`
 
 ### Zombie
 There are zombies killing people
-`NUM_ZOMBIES=5 python engine.py --scenario configs/zombie_situation.json --world configs/largev2.tmj`
+`NUM_ZOMBIES=5 python engine.py --scenario configs/zombie_situation.json --env configs/largev2.tmj`
 
 
 ## Adding New Tilemap Assets

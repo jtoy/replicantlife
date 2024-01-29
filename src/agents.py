@@ -10,12 +10,13 @@ import numpy as np
 import json
 import heapq
 import re
+import base64
 from fuzzywuzzy import fuzz
 
 
 class Agent:
     def __init__(self, agent_data={}):
-        self.id = str(uuid.uuid4())
+        self.id = agent_data.get('id',str(uuid.uuid4()))
         self.name = agent_data.get('name', random.choice(DEFAULT_NAMES))
         self.description = agent_data.get('description', random.choice(DEFAULT_DESCRIPTIONS))
         self.goal = agent_data.get('goal', random.choice(DEFAULT_GOALS))
@@ -208,6 +209,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         if len(self.destination_cache) == 0:
             self.current_destination = None
 
+        self.matrix.add_to_logs({"agent_id":self.id,"action":"move","x":self.x,"y":self.y})
         return self
 
     def heuristic(self, current, target):
@@ -509,6 +511,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
         else:
             memory = Memory(kind, content, timestamp, timestamp, score)
             self.memory.append(memory)
+        bc = base64.b64encode(content.encode('utf-8')).decode('utf-8')
+        self.matrix.add_to_logs({"agent_id":self.id,"action":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": bc})
 
     def reflect(self, timestamp, force=False):
         relevant_memories = self.memory[-100:]
