@@ -174,3 +174,23 @@ MODEL=off python run_all_sims.py
 `python frontend.py`
 
 This should start a basic webserver that would allow us to view the game state at `http://localhost:5000`
+
+## Creating Maps
+
+1. Layer Hierarchy:
+
+    * Collisions `represents tiles that cannot be traversed`
+
+    * Location_name/ `group folder that contains rooms for that current location`
+
+        * Bounds `represents tiles occupied by current location`
+
+        * Room_name/ `group folder that contains objects for current room`
+
+            * Bounds `represents tiles occupied by current room`
+
+            * Object_name `represents an object inside the current room`
+
+2. Save as JSON map format. Move to `configs/<your_map_name>.tmj`
+
+3. Pass in to `engine.py` with `--environment` flag.
