@@ -158,6 +158,7 @@ class Matrix:
         object["substep"] = self.current_substep
         with open("logs.json", "a") as file:
             json.dump(object,file,indent=2)
+            file.write("\n")
         self.current_substep += 1
 
     def get_server_info(self):

@@ -339,6 +339,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
         #self.add_short_memory(interaction, timestamp)
         self.last_conversation.messages.append(interaction)
         other_agent.last_conversation.messages.append(interaction)
+        bc = base64.b64encode(msg.encode('utf-8')).decode('utf-8')
+        self.matrix.add_to_logs({"agent_id":self.id,"to_id":other_agent.id,"action":"talk","content": bc})
         return msg
 
     def talk_many(self, perceived_agents, timestamp):
@@ -490,6 +492,9 @@ Answer the question from the point of view of {self} thinking to themselves, res
                     self.addMemory("observation", interaction, timestamp, random.randint(2, 5))
                     self.spatial_memory.append(loc)
 
+        perceived_agent_ids = [agent.id for agent in perceived_agents]
+        self.matrix.add_to_logs({"agent_id":self.id,"action":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
+        #missing locations,areas,objects
         return perceived_agents, perceived_locations, perceived_areas, perceived_objects
 
     def setPosition(self, position):
