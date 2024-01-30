@@ -2,6 +2,7 @@ import random
 import math
 from collections import deque
 from utils.utils import *
+from configs.configs import *
 from src.memory import Memory
 from src.conversation import Conversation
 from datetime import datetime

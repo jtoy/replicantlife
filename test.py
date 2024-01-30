@@ -269,6 +269,7 @@ class TestMemoryFunctions(unittest.TestCase):
         }
 
         matrix = Matrix(matrix_data)
+        matrix.boot()
 
         for i in range(2):  # Assuming 10 steps for the test
             #matrix.print_matrix()

@@ -29,6 +29,7 @@ def main():
         matrix = Matrix({ "scenario": args.scenario, "environment": args.environment, "id": args.id })
     else:
         matrix = Matrix({ "scenario": args.scenario, "environment": args.environment })
+    matrix.boot()
     # matrix.send_matrix_to_redis()
 
     pd(f"model:#{MODEL}")
