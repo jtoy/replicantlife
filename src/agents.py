@@ -50,7 +50,9 @@ class Agent:
 
         self.conversation_cooldown = 0
 
-        self.matrix = agent_data.get('matrix', None)
+        self.matrix = agent_data.get('matrix')
+        if self.matrix:
+            self.matrix.add_to_logs({"agent_id":self.id,"action":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind})
 
     def ask_meta_questions(self, timestamp):
         #relevant_memories = self.memory[-50:]
@@ -209,7 +211,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
         if len(self.destination_cache) == 0:
             self.current_destination = None
 
-        self.matrix.add_to_logs({"agent_id":self.id,"action":"move","x":self.x,"y":self.y})
+        if self.matrix:
+            self.matrix.add_to_logs({"agent_id":self.id,"action":"move","x":self.x,"y":self.y})
         return self
 
     def heuristic(self, current, target):
@@ -339,8 +342,9 @@ Answer the question from the point of view of {self} thinking to themselves, res
         #self.add_short_memory(interaction, timestamp)
         self.last_conversation.messages.append(interaction)
         other_agent.last_conversation.messages.append(interaction)
-        bc = base64.b64encode(msg.encode('utf-8')).decode('utf-8')
-        self.matrix.add_to_logs({"agent_id":self.id,"to_id":other_agent.id,"action":"talk","content": bc})
+        if self.matrix:
+            safe = base64.b64encode(msg.encode('utf-8')).decode('utf-8')
+            self.matrix.add_to_logs({"agent_id":self.id,"to_id":other_agent.id,"action":"talk","content": safe})
         return msg
 
     def talk_many(self, perceived_agents, timestamp):
@@ -493,7 +497,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
                     self.spatial_memory.append(loc)
 
         perceived_agent_ids = [agent.id for agent in perceived_agents]
-        self.matrix.add_to_logs({"agent_id":self.id,"action":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
+        if self.matrix:
+            self.matrix.add_to_logs({"agent_id":self.id,"action":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
         #missing locations,areas,objects
         return perceived_agents, perceived_locations, perceived_areas, perceived_objects
 
@@ -516,8 +521,9 @@ Answer the question from the point of view of {self} thinking to themselves, res
         else:
             memory = Memory(kind, content, timestamp, timestamp, score)
             self.memory.append(memory)
-        bc = base64.b64encode(content.encode('utf-8')).decode('utf-8')
-        self.matrix.add_to_logs({"agent_id":self.id,"action":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": bc})
+        if self.matrix:
+            bc = base64.b64encode(content.encode('utf-8')).decode('utf-8')
+            self.matrix.add_to_logs({"agent_id":self.id,"action":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": bc})
 
     def reflect(self, timestamp, force=False):
         relevant_memories = self.memory[-100:]
