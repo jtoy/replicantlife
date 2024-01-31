@@ -20,23 +20,23 @@ from src.environment import Environment
 from src.npc import Npc
 from src.location import Location, Area, Object
 
-class MatrixConfig:
-    def __init__(self,data={}):
-        pass
 
+def set_globals(config):
+    for key, value in config.items():
+        globals()[key] = value
 class Matrix:
-    def __init__(self, matrix_data={}):
-        self.replay = matrix_data.get("replay")
-        self.steps = matrix_data.get("steps",SIMULATION_STEPS) 
-        self.llm_action_flag = matrix_data.get("llm_action", LLM_ACTION)
-        self.allow_plan_flag = matrix_data.get("allow_plan", ALLOW_PLAN)
-        self.allow_reflect_flag = matrix_data.get("allow_reflect", ALLOW_REFLECT)
-        self.allow_meta_flag = matrix_data.get("allow_meta", ALLOW_META)
-        self.allow_observance_flag = matrix_data.get("allow_observance", ALLOW_OBSERVANCE)
+    def __init__(self, config={}):
+        set_globals(config)
+        self.steps = SIMULATION_STEPS
+        self.llm_action_flag = LLM_ACTION
+        self.allow_plan_flag = ALLOW_PLAN
+        self.allow_reflect_flag = ALLOW_REFLECT
+        self.allow_meta_flag = ALLOW_META
+        self.allow_observance_flag = ALLOW_OBSERVANCE
 
-        self.id = matrix_data.get("id", str(uuid.uuid4()))
-        self.scenario_file = matrix_data.get("scenario", "configs/def.json")
-        self.environment_file = matrix_data.get("environment", "configs/largev2.tmj")
+        self.id = config.get("id", str(uuid.uuid4()))
+        self.scenario_file = config.get("scenario")
+        self.environment_file = config.get("environment")
         self.agents = []
         self.default_goals = []
         self.default_descriptions = []
@@ -54,32 +54,52 @@ class Matrix:
         self.llm_calls = 0
         self.performance_metrics = {}
         self.performance_evals = {}
-
         self.num_npc = NUM_AGENTS
         self.num_zombies = NUM_ZOMBIES
         self.perception_range = PERCEPTION_RANGE
-        self.allow_movement = matrix_data.get("allow_movement", ALLOW_MOVEMENT)
+        self.allow_movement = ALLOW_MOVEMENT
         self.model = MODEL
-
-
+        self.replay = None
+        self.add_to_logs({"action":"world_init","data":config})
         self.agent_locks = { agent: threading.Lock() for agent in self.agents }
-
-    def boot(self):
-        #agents should get initialized here
-        # Setup Scenario
         self.environment = Environment({ "filename": self.environment_file })
         if self.scenario_file is not None:
             self.parse_scenario_file(self.scenario_file)
+        #above line reads
+        #then agent initialization
         # Build Environment
         self.background = None
-        if self.replay:
-            with open(self.replay, "r") as file:
-                for line in file:
-                    substep = json.load(line)
+
+    def boot(self):
+        # Add Agents
+        for agent_data in self.data.get("agents", []):
+            agent_data['matrix'] = self
+            agent = Agent(agent_data)
+            self.add_agent_to_simulation(agent)
+
+        # Add NPCs
+        for i in range(self.num_npc):
+            if len(self.default_goals) == 1:
+              description = f"{random.choice(self.default_descriptions)}"
+              goal = self.default_goals[0]
+            else:
+                description, goal = random.choice(list(zip(self.default_descriptions, self.default_goals)))
+            name = self.generate_unique_name()
+            agent = Agent({ "name": name, "description": description, "goal": goal, "kind": "npc","matrix":self })
+            self.add_agent_to_simulation(agent)
+
+        # Add Zombies
+        for i in range(self.num_zombies):
+            zombie = Agent({ "name": f"Zombie_{i}", "kind": "zombie", "actions": ["kill"],"matrix":self })
+            self.add_agent_to_simulation(zombie)
+
+
+
 
     def parse_scenario_file(self, filename):
         with open(filename, 'r') as file:
             data = json.load(file)
+            self.data = data
 
         # Build Scenario
         self.perception_range = data.get("perception_range", PERCEPTION_RANGE)
@@ -104,33 +124,11 @@ class Matrix:
         self.interview_questions = data.get("questions", DEFAULT_QUESTIONS)
         self.unix_time = data.get("unix_time", DEFAULT_TIME)
 
-        # Add Agents
-        for agent_data in data.get("agents", []):
-            agent_data['matrix'] = self
-            agent = Agent(agent_data)
-            self.add_agent_to_simulation(agent)
-
         for goal in data.get("default_goals", DEFAULT_GOALS):
             self.default_goals.append(goal)
 
         for description in data.get("default_descriptions", DEFAULT_DESCRIPTIONS):
             self.default_descriptions.append(description)
-
-        # Add NPCs
-        for i in range(self.num_npc):
-            if len(self.default_goals) == 1:
-              description = f"{random.choice(self.default_descriptions)}"
-              goal = self.default_goals[0]
-            else:
-                description, goal = random.choice(list(zip(self.default_descriptions, self.default_goals)))
-            name = self.generate_unique_name()
-            agent = Agent({ "name": name, "description": description, "goal": goal, "kind": "npc","matrix":self })
-            self.add_agent_to_simulation(agent)
-
-        # Add Zombies
-        for i in range(self.num_zombies):
-            zombie = Agent({ "name": f"Zombie_{i}", "kind": "zombie", "actions": ["kill"],"matrix":self })
-            self.add_agent_to_simulation(zombie)
 
     def add_agent_to_simulation(self, agent):
         valid_coordinates = self.environment.get_valid_coordinates()
@@ -241,6 +239,7 @@ class Matrix:
             redis_connection.rpush(f"{self.id}:agents:{agent.name}", json.dumps(agent_data))
 
     def run_singlethread(self):
+        self.boot()
         self.status = "running"
         self.sim_start_time = datetime.now()
         self.send_matrix_to_redis()

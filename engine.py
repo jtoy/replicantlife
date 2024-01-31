@@ -2,6 +2,7 @@ import sys
 import time
 import signal
 import argparse
+import json
 
 from concurrent.futures import ThreadPoolExecutor
 from src.matrix import Matrix
@@ -11,25 +12,40 @@ from save_report import save_report #TODO refactor
 
 matrix = None
 
+def update_from_env(config):
+    for key, value in config.items():
+        env_var = os.getenv(key)
+        if env_var is not None:
+            # Update the value from the environment variable
+            config[key] = type(value)(env_var) if value is not None else env_var
+    return config
+
+def load_config():
+    filename = "configs/defaults.json"
+    with open(filename, 'r') as file:
+        config = json.load(file)
+    config = update_from_env(config)
+    return config
+
+
 def main():
     global matrix
     #Base.metadata.create_all(engine)
     # Parse Args
     parser = argparse.ArgumentParser(description='Matrix Simulation')
-    #parser.add_argument('--agents', kind=str, default='configs/def_environment.json', help='Path to the env file')
-    #parser.add_argument('--world', kind=str, default='configs/def_environment.json', help='Path to the env file')
     parser.add_argument('--scenario', type=str, default='configs/def.json', help='Path to the scenario file')
     parser.add_argument('--environment', type=str, default='configs/largev2.tmj', help='Path to the env file')
-    parser.add_argument('--id', type=str, default='', help='Custom Simulation ID')
+    parser.add_argument('--id', type=str, default=None, help='Custom Simulation ID')
     args = parser.parse_args()
 
     #matrix_data = {"agents_file":args.agents, "world_file":args.world}
     #matrix = Matrix(matrix_data)
-    if args.id != '':
-        matrix = Matrix({ "scenario": args.scenario, "environment": args.environment, "id": args.id })
-    else:
-        matrix = Matrix({ "scenario": args.scenario, "environment": args.environment })
-    matrix.boot()
+    config = load_config()
+    config['scenario'] = args.scenario
+    config['environment'] = args.environment
+    config['id'] = args.id
+    matrix = Matrix(config)
+
     # matrix.send_matrix_to_redis()
 
     pd(f"model:#{MODEL}")
