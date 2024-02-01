@@ -260,6 +260,13 @@ def redis_log(content, key):
     if LOG_TO_REDIS == 1:
         redis_connection.rpush(key, json.dumps(content))
 
+def find_most_similar(input, arr):
+    most_similar = difflib.get_close_matches(input, arr, n=1, cutoff=0.8)
+
+    if most_similar:
+        return most_similar[0]
+    else:
+        return arr[0]
 '''
 DATABASE
 '''

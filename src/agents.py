@@ -721,11 +721,4 @@ def find_path(start, target, valid_positions):
         print("Path finding failed")
     return []
 
-def find_most_similar(input, arr):
-    most_similar = difflib.get_close_matches(input, arr, n=1, cutoff=0.8)
-
-    if most_similar:
-        return most_similar[0]
-    else:
-        return arr[0]
 
