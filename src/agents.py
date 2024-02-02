@@ -165,9 +165,11 @@ Answer the question from the point of view of {self} thinking to themselves, res
             return
         if random.random() < 0.9:
             print(f"{self} killed {other_agent}")
+            other_agent.status = "dead"
+            if self.matrix:
+                self.matrix.add_to_logs({"agent_id":self.id,"action":"agent_set","status":"dead"})
             self.addMemory("interaction",f"{self} successfully killed {other_agent}",timestamp, 9)
             other_agent.addMemory("interaction",f"{self} killed you",timestamp, 9)
-            other_agent.status = "dead"
         else:
             #tried to kill, but failed, memories should note this
             self.addMemory("interaction",f"{self} tried to killed {other_agent}",timestamp, 9)
