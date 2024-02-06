@@ -34,7 +34,6 @@ class Matrix:
         self.allow_meta_flag = ALLOW_META
         self.allow_observance_flag = ALLOW_OBSERVANCE
 
-        print(list(config.keys()))
         self.id = config.get("id", str(uuid.uuid4()))
         if self.id == None:
             self.id = str(uuid.uuid4())
@@ -63,7 +62,7 @@ class Matrix:
         self.allow_movement = ALLOW_MOVEMENT
         self.model = MODEL
         self.replay = None
-        self.add_to_logs({"action":"world_init","data":config})
+        self.add_to_logs({"step_type":"world_init","data":config})
         self.agent_locks = { agent: threading.Lock() for agent in self.agents }
         self.environment = Environment({ "filename": self.environment_file })
         if self.scenario_file is not None:

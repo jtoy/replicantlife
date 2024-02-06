@@ -53,7 +53,7 @@ class Agent:
 
         self.matrix = agent_data.get('matrix')
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.id,"action":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind})
+            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind})
 
     def ask_meta_questions(self, timestamp):
         #relevant_memories = self.memory[-50:]
@@ -167,7 +167,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             print(f"{self} killed {other_agent}")
             other_agent.status = "dead"
             if self.matrix:
-                self.matrix.add_to_logs({"agent_id":self.id,"action":"agent_set","status":"dead"})
+                self.matrix.add_to_logs({"agent_id":self.id,"step_type":"agent_set","status":"dead"})
             self.addMemory("interaction",f"{self} successfully killed {other_agent}",timestamp, 9)
             other_agent.addMemory("interaction",f"{self} killed you",timestamp, 9)
         else:
@@ -215,7 +215,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             self.current_destination = None
 
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.id,"action":"move","x":self.x,"y":self.y})
+            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"move","x":self.x,"y":self.y})
         return self
 
     def heuristic(self, current, target):
@@ -347,7 +347,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         other_agent.last_conversation.messages.append(interaction)
         if self.matrix:
             safe = base64.b64encode(msg.encode('utf-8')).decode('utf-8')
-            self.matrix.add_to_logs({"agent_id":self.id,"to_id":other_agent.id,"action":"talk","content": safe})
+            self.matrix.add_to_logs({"agent_id":self.id,"to_id":other_agent.id,"step_type":"talk","content": safe})
         return msg
 
     def talk_many(self, perceived_agents, timestamp):
@@ -501,7 +501,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
         perceived_agent_ids = [agent.id for agent in perceived_agents]
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.id,"action":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
+            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
         #missing locations,areas,objects
         return perceived_agents, perceived_locations, perceived_areas, perceived_objects
 
@@ -526,7 +526,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             self.memory.append(memory)
         if self.matrix:
             bc = base64.b64encode(content.encode('utf-8')).decode('utf-8')
-            self.matrix.add_to_logs({"agent_id":self.id,"action":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": bc})
+            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": bc})
 
     def reflect(self, timestamp, force=False):
         relevant_memories = self.memory[-100:]
