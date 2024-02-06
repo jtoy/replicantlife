@@ -34,7 +34,10 @@ class Matrix:
         self.allow_meta_flag = ALLOW_META
         self.allow_observance_flag = ALLOW_OBSERVANCE
 
+        print(list(config.keys()))
         self.id = config.get("id", str(uuid.uuid4()))
+        if self.id == None:
+            self.id = str(uuid.uuid4())
         self.scenario_file = config.get("scenario")
         self.environment_file = config.get("environment")
         self.agents = []
@@ -154,12 +157,20 @@ class Matrix:
 
         self.agents.append(agent)
 
-    def add_to_logs(self,object):
-        object["step"] = self.cur_step
-        object["substep"] = self.current_substep
+    def add_to_logs(self,obj):
+        obj["step"] = self.cur_step
+        obj["substep"] = self.current_substep
+        obj["sim_id"] = self.id # i think we will change this to sim id everywhere
+
         with open("logs.json", "a") as file:
-            json.dump(object,file,indent=2)
+            json.dump(obj,file,indent=2)
             file.write("\n")
+        stream = f"{obj['sim_id']}_stream"
+        queue = f"{obj['sim_id']}_queue"
+        wtf = json.loads(json.dumps(obj, default=str))
+        #redis_connection.xadd(stream, wtf)
+        redis_connection.lpush(queue,json.dumps(obj))
+
         self.current_substep += 1
 
     def get_server_info(self):

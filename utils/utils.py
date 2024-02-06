@@ -3,6 +3,7 @@ import requests
 import time
 import os
 import redis
+import difflib
 from datetime import datetime
 import json
 from urllib.parse import urlparse

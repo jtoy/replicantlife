@@ -43,7 +43,8 @@ def main():
     config = load_config()
     config['scenario'] = args.scenario
     config['environment'] = args.environment
-    config['id'] = args.id
+    if args.id:
+        config['id'] = args.id
     matrix = Matrix(config)
 
     # matrix.send_matrix_to_redis()
