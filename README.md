@@ -195,3 +195,7 @@ This should start a basic webserver that would allow us to view the game state a
 
 3. Pass in to `engine.py` with `--environment` flag.
 
+
+
+TODO:
+refactor add_agents bc of jumping

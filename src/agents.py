@@ -264,6 +264,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
 
         self.addMemory("conversation", interaction, timestamp, random.randint(4, 6))
+        self.matrix.add_to_logs({"step_type":"agent_set","convo":"complete","from":self.id,"to":self.last_conversation.other_agent.id,"convo_id":self.last_conversation.mid})
         self.last_conversation = None
 
     def talk(self, opts={}):
@@ -345,9 +346,10 @@ Answer the question from the point of view of {self} thinking to themselves, res
         self.last_conversation.messages.append(interaction)
         other_agent.last_conversation.messages.append(interaction)
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.id,"to_id":other_agent.id,"step_type":"talk","content": msg})
+            self.matrix.add_to_logs({"agent_id":self.id,"to_id":other_agent.id,"step_type":"talk","content": msg,"convo_id":self.last_conversation.mid})
         return msg
 
+    # TO DELETE
     def talk_many(self, perceived_agents, timestamp):
         relevant_memories = self.getMemories(f"{[a.name for a in perceived_agents]}", timestamp)
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""

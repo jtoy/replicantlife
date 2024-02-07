@@ -62,7 +62,7 @@ class Matrix:
         self.allow_movement = ALLOW_MOVEMENT
         self.model = MODEL
         self.replay = None
-        self.add_to_logs({"step_type":"world_init","data":config})
+        self.add_to_logs({"step_type":"matrix_init","data":config})
         self.agent_locks = { agent: threading.Lock() for agent in self.agents }
         self.environment = Environment({ "filename": self.environment_file })
         if self.scenario_file is not None:
