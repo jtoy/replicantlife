@@ -346,8 +346,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         self.last_conversation.messages.append(interaction)
         other_agent.last_conversation.messages.append(interaction)
         if self.matrix:
-            safe = base64.b64encode(msg.encode('utf-8')).decode('utf-8')
-            self.matrix.add_to_logs({"agent_id":self.id,"to_id":other_agent.id,"step_type":"talk","content": safe})
+            self.matrix.add_to_logs({"agent_id":self.id,"to_id":other_agent.id,"step_type":"talk","content": msg})
         return msg
 
     def talk_many(self, perceived_agents, timestamp):
@@ -525,8 +524,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             memory = Memory(kind, content, timestamp, timestamp, score)
             self.memory.append(memory)
         if self.matrix:
-            bc = base64.b64encode(content.encode('utf-8')).decode('utf-8')
-            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": bc})
+            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": content})
 
     def reflect(self, timestamp, force=False):
         relevant_memories = self.memory[-100:]

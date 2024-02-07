@@ -139,7 +139,7 @@ class Matrix:
             new_position = random.choice(valid_coordinates)
             agent.x = new_position[0]
             agent.y = new_position[1]
-            self.matrix.add_to_logs({"agent_id":agent.id,"step_type":"agent_set","x":agent.x,"y":agent.y})
+            #self.matrix.add_to_logs({"agent_id":agent.id,"step_type":"agent_set","x":agent.x,"y":agent.y})
 
         if agent.kind != "zombie" and self.allow_observance_flag == 1:
             parsed_spatial_mem = []
