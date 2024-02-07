@@ -11,7 +11,6 @@ import numpy as np
 import json
 import heapq
 import re
-import base64
 from fuzzywuzzy import fuzz
 
 

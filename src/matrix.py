@@ -310,6 +310,7 @@ class Matrix:
                 time.sleep(SLEEP_STEP)
 
         self.status = "complete"
+        self.add_to_logs({"step_type":"matrix_set","status":"complete"})
         average_llm_calls = llm.call_counter / (step + 1)
         sim_end_time = datetime.now()
         self.simulation_runtime = sim_end_time - self.sim_start_time
