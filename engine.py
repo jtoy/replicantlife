@@ -60,6 +60,7 @@ def main():
     start_time = datetime.now()
 
     #matrix.run()
+    matrix.boot()
     matrix.run_singlethread()
     end_time = datetime.now()
     matrix.run_interviews()

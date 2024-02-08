@@ -119,8 +119,10 @@ class Matrix:
                 matrix = Matrix(record['data'])
             elif matrix:
                 if record['step_type'] == 'agent_init':
+                    #data
                     config = record
                     config['matrix'] = matrix
+                    # is this some kind of double linking
                     agent = Agent(config)
                     matrix.add_agent_to_simulation(agent)
                 elif record['step_type'] == "agent_set":
@@ -303,7 +305,7 @@ class Matrix:
             redis_connection.rpush(f"{self.id}:agents:{agent.name}", json.dumps(agent_data))
 
     def run_singlethread(self):
-        self.boot()
+        #self.boot()
         self.status = "running"
         self.sim_start_time = datetime.now()
         self.send_matrix_to_redis()
