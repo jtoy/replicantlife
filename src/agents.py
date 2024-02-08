@@ -512,20 +512,20 @@ Answer the question from the point of view of {self} thinking to themselves, res
     def getPosition(self):
         return (self.x, self.y)
 
-    def addMemory(self, kind, content, timestamp=None, score=None):
+    def addMemory(self, kind, content, timestamp=None, score=None,embedding=None):
         if timestamp is None:
             timestamp = datetime.now()
             timestamp = timestamp.strftime("%A %B %d, %Y")
 
         if kind == "observation":
-            if (self.matrix is not None and self.matrix.allow_observance_flag == 1) or (self.matrix is None and ALLOW_OBSERVANCE == 1):
-                memory = Memory(kind, content, timestamp, timestamp, score)
+            if (self.matrix is not None and self.matrix.allow_observance_flag == 1):
+                memory = Memory(kind, content, timestamp, timestamp, score,embedding)
                 self.memory.append(memory)
         else:
-            memory = Memory(kind, content, timestamp, timestamp, score)
+            memory = Memory(kind, content, timestamp, timestamp, score,embedding)
             self.memory.append(memory)
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": content})
+            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": content,"embedding":memory.embedding})
 
     def reflect(self, timestamp, force=False):
         relevant_memories = self.memory[-100:]
@@ -628,7 +628,7 @@ Give {self}'s answer to the question in first person point of view.
             context_embedding = llm.embeddings(context)
 
         for mem in self.memory:
-            relevancy_score = Memory.calculateRelevanceScore(mem.embedding_score, context_embedding)
+            relevancy_score = Memory.calculateRelevanceScore(mem.embedding, context_embedding)
             min_relevancy_score = min(min_relevancy_score, relevancy_score)
             max_relevancy_score = max(max_relevancy_score, relevancy_score)
 

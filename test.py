@@ -221,13 +221,13 @@ class TestMemoryFunctions(unittest.TestCase):
 
         context_embedding = llm.embeddings(context)
         sorted_memory = sorted(agent.memory,
-                              key=lambda mem: Memory.calculateRelevanceScore(mem.embedding_score, context_embedding),
+                              key=lambda mem: Memory.calculateRelevanceScore(mem.embedding, context_embedding),
                               reverse=True)
 
         print(f"Context: {context}")
         for mem in sorted_memory:
             print(f"Current Memory: {mem}")
-            print(f"Relevance Score: {Memory.calculateRelevanceScore(mem.embedding_score, context_embedding)}")
+            print(f"Relevance Score: {Memory.calculateRelevanceScore(mem.embedding, context_embedding)}")
         self.assertTrue(len(sorted_memory) > 0)
 
     def test_talk(self):

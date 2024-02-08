@@ -95,6 +95,59 @@ class Matrix:
             zombie = Agent({ "name": f"Zombie_{i}", "kind": "zombie", "actions": ["kill"],"matrix":self })
             self.add_agent_to_simulation(zombie)
 
+    @classmethod
+    def from_timeline(cls,src,step=None):
+        if src.startswith("redis://"):
+             r = redis_connection.from_url(src)
+             queue = "josh_queue"
+             data = r.lrange(queue, 0, -1)
+        else:
+            with open(src, 'r') as file:
+                content = file.read()
+            data = content.split('\n\n')
+        matrix = None
+        current_step = 0 
+        current_substep = 0
+        for datum in data:
+            record = json.loads(datum)
+            if step and record["step"] > step:
+                break
+
+            print(f"at step {record['step']}.{record['substep']}")
+            if matrix is None and record['step'] == 0 and record['substep'] == 0:
+                set_globals(record['data'])
+                matrix = Matrix(record['data'])
+            elif matrix:
+                if record['step_type'] == 'agent_init':
+                    config = record
+                    config['matrix'] = matrix
+                    agent = Agent(config)
+                    matrix.add_agent_to_simulation(agent)
+                elif record['step_type'] == "agent_set":
+                    agent = next((agent for agent in matrix.agents if agent.id == record['agent_id']), None)
+                    if agent:
+                        if record["status"]:
+                            agent.status = record["status"]
+                elif record['step_type'] == "talk":
+                    pass
+                    # need to do some refactoring with convos....
+                elif record['step_type'] == "move":
+                    agent = next((agent for agent in matrix.agents if agent.id == record['agent_id']), None)
+                    if agent:
+                        agent.x = record['x']
+                        agent.y = record['y']
+                elif record['step_type'] == "add_memory":
+                    agent = next((agent for agent in matrix.agents if agent.id == record['agent_id']), None)
+                    if agent:
+                        agent.addMemory(record["kind"],record["wcontent"],record["last_accessed_at"],record["score"])
+                elif record["step_type"] == "perceived":
+                    pass
+                else:
+                    print(f"unprocessd step {record['step_type']}")
+
+        return(matrix)
+
+
 
 
 
@@ -164,7 +217,7 @@ class Matrix:
 
         with open("logs.json", "a") as file:
             json.dump(obj,file,indent=2)
-            file.write("\n")
+            file.write("\n\n")
         stream = f"{obj['sim_id']}_stream"
         queue = f"{obj['sim_id']}_queue"
         wtf = json.loads(json.dumps(obj, default=str))

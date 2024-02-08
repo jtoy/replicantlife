@@ -7,7 +7,7 @@ from utils.utils import *
 from sklearn.metrics.pairwise import cosine_similarity
 
 class Memory:
-    def __init__(self, kind, content, created_at, last_accessed_at, score=None, memories=[]):
+    def __init__(self, kind, content, created_at, last_accessed_at, score=None,embedding=None, memories=[]):
         self.id = str(uuid.uuid4())
         self.kind = kind
         self.content = content
@@ -22,7 +22,10 @@ class Memory:
         self.recency_score = 1
         self.relevancy_score = 1
         self.overall_score = 1
-        self.embedding_score = llm.embeddings(content)
+        if embedding:
+            self.embedding = embedding
+        else:
+            self.embedding = llm.embeddings(content)
         #self.simulation_id = simulation_id
 
         #session.add(self)
