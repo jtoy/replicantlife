@@ -126,7 +126,7 @@ class Matrix:
                     agent = Agent(config)
                     matrix.add_agent_to_simulation(agent)
                 elif record['step_type'] == "agent_set":
-                    agent = next((agent for agent in matrix.agents if agent.id == record['agent_id']), None)
+                    agent = next((agent for agent in matrix.agents if agent.mid == record['agent_id']), None)
                     if agent:
                         if record["status"]:
                             agent.status = record["status"]
@@ -134,14 +134,13 @@ class Matrix:
                     pass
                     # need to do some refactoring with convos....
                 elif record['step_type'] == "move":
-                    agent = next((agent for agent in matrix.agents if agent.id == record['agent_id']), None)
+                    agent = next((agent for agent in matrix.agents if agent.mid == record['agent_id']), None)
                     if agent:
-                        agent.x = record['x']
-                        agent.y = record['y']
+                        agent.move({"x":record["x"],"y":record["y"]})
                 elif record['step_type'] == "add_memory":
-                    agent = next((agent for agent in matrix.agents if agent.id == record['agent_id']), None)
+                    agent = next((agent for agent in matrix.agents if agent.mid == record['agent_id']), None)
                     if agent:
-                        agent.addMemory(record["kind"],record["wcontent"],record["last_accessed_at"],record["score"])
+                        agent.addMemory(record["kind"],record["content"],record["last_accessed_at"],record["score"])
                 elif record["step_type"] == "perceived":
                     pass
                 else:

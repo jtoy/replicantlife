@@ -16,7 +16,15 @@ from fuzzywuzzy import fuzz
 
 class Agent:
     def __init__(self, agent_data={}):
-        self.id = agent_data.get('id',str(uuid.uuid4()))
+        #self.mid = agent_data.get('mid',str(uuid.uuid4()))
+
+        if agent_data.get("agent_id"):
+            self.mid = agent_data.get("agent_id")
+        elif agent_data.get("mid"):
+            self.mid = agent_data.get("mid")
+        else:
+            self.mid = str(uuid.uuid4())
+
         self.name = agent_data.get('name', random.choice(DEFAULT_NAMES))
         self.description = agent_data.get('description', random.choice(DEFAULT_DESCRIPTIONS))
         self.goal = agent_data.get('goal', random.choice(DEFAULT_GOALS))
@@ -52,7 +60,7 @@ class Agent:
 
         self.matrix = agent_data.get('matrix')
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind})
+            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind})
 
     def ask_meta_questions(self, timestamp):
         #relevant_memories = self.memory[-50:]
@@ -166,7 +174,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             print(f"{self} killed {other_agent}")
             other_agent.status = "dead"
             if self.matrix:
-                self.matrix.add_to_logs({"agent_id":self.id,"step_type":"agent_set","status":"dead"})
+                self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_set","status":"dead"})
             self.addMemory("interaction",f"{self} successfully killed {other_agent}",timestamp, 9)
             other_agent.addMemory("interaction",f"{self} killed you",timestamp, 9)
         else:
@@ -178,43 +186,48 @@ Answer the question from the point of view of {self} thinking to themselves, res
         environment = opts.get("environment", None)
         name_target = opts.get("target", None)
         target_coordinate = None
+        if opts["x"] and opts["y"]: # only come in here because of replay
+            self.x = opts["x"]
+            self.y = opts["y"]
 
-
-        if name_target is None and self.current_destination is None:
-            target_coordinate = random.choice(self.current_destination.valid_coordinates)
-        elif name_target is not None and len(self.destination_cache) == 0:
-            start_time = time.time()
-            target = find_most_similar(name_target, [location.name for location in self.spatial_memory])
-
-            start_time = time.time()
-            for location in self.spatial_memory:
-                if target == location.name:
-                    target_coordinate = random.choice(location.valid_coordinates)
-                    self.current_destination = location
-                    break
-
-        if WARP == 1 and target_coordinate != None:
-            print(f"Target Coordinate: {target_coordinate}")
-            self.x = target_coordinate[0]
-            self.y = target_coordinate[1]
-            return self
-        elif target_coordinate != None:
-            self.destination_cache = find_path((self.x, self.y), target_coordinate, environment.get_valid_coordinates())
-            print(f"Path: {self.destination_cache}")
-
-
-        if len(self.destination_cache) != 0:
-            new_position = self.destination_cache.pop(0)
-            self.x = new_position[0]
-            self.y = new_position[1]
         else:
-            pd(f"Path finding Error.")
 
-        if len(self.destination_cache) == 0:
-            self.current_destination = None
+
+            if name_target is None and self.current_destination is None:
+                target_coordinate = random.choice(self.current_destination.valid_coordinates)
+            elif name_target is not None and len(self.destination_cache) == 0:
+                start_time = time.time()
+                target = find_most_similar(name_target, [location.name for location in self.spatial_memory])
+
+                start_time = time.time()
+                for location in self.spatial_memory:
+                    if target == location.name:
+                        target_coordinate = random.choice(location.valid_coordinates)
+                        self.current_destination = location
+                        break
+
+            if WARP == 1 and target_coordinate != None:
+                print(f"Target Coordinate: {target_coordinate}")
+                self.x = target_coordinate[0]
+                self.y = target_coordinate[1]
+                return self
+            elif target_coordinate != None:
+                self.destination_cache = find_path((self.x, self.y), target_coordinate, environment.get_valid_coordinates())
+                print(f"Path: {self.destination_cache}")
+
+
+            if len(self.destination_cache) != 0:
+                new_position = self.destination_cache.pop(0)
+                self.x = new_position[0]
+                self.y = new_position[1]
+            else:
+                pd(f"Path finding Error.")
+
+            if len(self.destination_cache) == 0:
+                self.current_destination = None
 
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"move","x":self.x,"y":self.y})
+            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"move","x":self.x,"y":self.y})
         return self
 
     def heuristic(self, current, target):
@@ -264,7 +277,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
 
         self.addMemory("conversation", interaction, timestamp, random.randint(4, 6))
-        self.matrix.add_to_logs({"step_type":"agent_set","convo":"complete","from":self.id,"to":self.last_conversation.other_agent.id,"convo_id":self.last_conversation.mid})
+        self.matrix.add_to_logs({"step_type":"agent_set","convo":"complete","from":self.mid,"to":self.last_conversation.other_agent.id,"convo_id":self.last_conversation.mid})
         self.last_conversation = None
 
     def talk(self, opts={}):
@@ -346,7 +359,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         self.last_conversation.messages.append(interaction)
         other_agent.last_conversation.messages.append(interaction)
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.id,"to_id":other_agent.id,"step_type":"talk","content": msg,"convo_id":self.last_conversation.mid})
+            self.matrix.add_to_logs({"agent_id":self.mid,"to_id":other_agent.mid,"step_type":"talk","content": msg,"convo_id":self.last_conversation.mid})
         return msg
 
     # TO DELETE
@@ -501,7 +514,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
         perceived_agent_ids = [agent.id for agent in perceived_agents]
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
+            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
         #missing locations,areas,objects
         return perceived_agents, perceived_locations, perceived_areas, perceived_objects
 
@@ -525,7 +538,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             memory = Memory(kind, content, timestamp, timestamp, score,embedding)
             self.memory.append(memory)
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.id,"step_type":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": content,"embedding":memory.embedding})
+            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": content,"embedding":memory.embedding})
 
     def reflect(self, timestamp, force=False):
         relevant_memories = self.memory[-100:]

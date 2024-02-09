@@ -198,4 +198,8 @@ This should start a basic webserver that would allow us to view the game state a
 
 
 TODO:
-refactor add_agents bc of jumping
+* remove the llm calls in init
+* refactor add_agents bc of jumping
+* add_to_logs should use a better class structure?
+* jsonl , a unit test to export and import. https://jsonlines.readthedocs.io/en/latest/
+* perceived
