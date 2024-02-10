@@ -432,10 +432,10 @@ class Matrix:
         if self.allow_reflect_flag == 1 and agent.recent_memories_importance() > self.reflect_threshold:
             agent.reflect(unix_to_strftime(unix_time))
 
-        if self.allow_meta_flag == 1 and random.randint(0,100) < 25:
-        #if self.allow_meta_flag == 1 and agent.recent_meta_importance() > 30
+        if self.allow_meta_flag == 1 and random.randint(0,100) < 50:
             agent.evaluate_progress(unix_to_strftime(unix_time))
-            #agent.meta_cognize(self.unix_to_strftime(unix_time))
+        #    agent.meta_cognize(self.unix_to_strftime(unix_time))
+        #agent.evaluate_progress(unix_to_strftime(unix_time))
 
         agent.conversation_cooldown -= 1
 

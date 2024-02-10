@@ -87,6 +87,9 @@ And {self}'s recent memories:
 {relevant_memories_string}
 Rate your progress towards your goal with an integer from 1-5, 1 being bad, 5 being good.
 
+
+Write in the first person from the point of view of {self}.
+Write in natural short response style.
 Format your response like:
 Explanation: I didnt get my groceries today
 Score: 1
@@ -96,6 +99,7 @@ Score: 1
         explanation = explanation_match.group(1) if explanation_match else None
         match = re.search(r"Score:\s*(\d+)", msg)
         score = int(match.group(1)) if match else None
+        print(f"my reflection: #{msg}")
 
         if score and explanation:
             self.addMemory("meta", explanation, timestamp, 10)
@@ -186,7 +190,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         environment = opts.get("environment", None)
         name_target = opts.get("target", None)
         target_coordinate = None
-        if opts["x"] and opts["y"]: # only come in here because of replay
+        if opts.get("x") and opts.get("y"): # only come in here because of replay
             self.x = opts["x"]
             self.y = opts["y"]
 
@@ -227,7 +231,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
                 self.current_destination = None
 
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"move","x":self.x,"y":self.y})
+            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"move","x":self.x,"y":self.y,"target":name_target})
         return self
 
     def heuristic(self, current, target):
@@ -277,7 +281,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
 
         self.addMemory("conversation", interaction, timestamp, random.randint(4, 6))
-        self.matrix.add_to_logs({"step_type":"agent_set","convo":"complete","from":self.mid,"to":self.last_conversation.other_agent.id,"convo_id":self.last_conversation.mid})
+        self.matrix.add_to_logs({"step_type":"agent_set","convo":"complete","from":self.mid,"to":self.last_conversation.other_agent.mid,"convo_id":self.last_conversation.mid})
         self.last_conversation = None
 
     def talk(self, opts={}):
@@ -457,21 +461,22 @@ Answer the question from the point of view of {self} thinking to themselves, res
             if (a.x, a.y) in perceived_coordinates:
                 perceived_agents.append(a)
                 if self.kind == "human":
-                    if a.name not in self.connections:
-                        if a.kind == "human":
-                            self.addMemory("observation", f"{timestamp} - {self.name} met {a.name}", timestamp, random.randint(2, 5))
-                            self.connections.append(a.name)
-
                     a_area = environment.get_area_from_coordinates(a.x, a.y)
                     a_loc = environment.get_location_from_coordinates(a.x, a.y)
+                    location_name = f"{'' if a_area is None else a_area.name} {a_loc.name}"
+                    if a.name not in self.connections:
+                        if a.kind == "human":
+                            self.addMemory("observation", f"{timestamp} - {self.name} met {a.name} at {location_name}", timestamp, random.randint(2, 5))
+                            self.connections.append(a.name)
+
 
                     if a.status == "dead":
-                        interaction = f"{timestamp} - {self} saw {a.name} dead at {'' if a_area is None else a_area.name} {a_loc.name}."
+                        interaction = f"{timestamp} - {self} saw {a.name} dead at {location_name}"
                     else:
                         if a.kind == "human":
-                            interaction = f"{timestamp} - {self} saw {a.name} at {'' if a_area is None else a_area.name} {a_loc.name}."
+                            interaction = f"{timestamp} - {self} saw {a.name} at {location_name}"
                         else:
-                            interaction = f"{timestamp} - {self} saw {a.kind} at {'' if a_area is None else a_area.name} {a_loc.name}."
+                            interaction = f"{timestamp} - {self} saw {a.kind} at {location_name}"
                             self.addMemory("observation", interaction, timestamp, random.randint(6, 9))
 
 
@@ -512,18 +517,11 @@ Answer the question from the point of view of {self} thinking to themselves, res
                     self.addMemory("observation", interaction, timestamp, random.randint(2, 5))
                     self.spatial_memory.append(loc)
 
-        perceived_agent_ids = [agent.id for agent in perceived_agents]
+        perceived_agent_ids = [agent.mid for agent in perceived_agents]
         if self.matrix:
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
         #missing locations,areas,objects
         return perceived_agents, perceived_locations, perceived_areas, perceived_objects
-
-    def setPosition(self, position):
-        self.x = position[0]
-        self.y = position[1]
-
-    def getPosition(self):
-        return (self.x, self.y)
 
     def addMemory(self, kind, content, timestamp=None, score=None,embedding=None):
         if timestamp is None:
