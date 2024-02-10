@@ -37,7 +37,7 @@ When choosing your action, take into consideration "{{agent.meta_questions|rando
 
 Guidelines for Response:
 
-Provide a concise explanation based on {{agent}}'s context, memories, and current state.
+Provide a concise explanation based on {{agent}}'s context, memories, and current state. Write in the first person point of view of {{agent}}.
 Select only one action from {{actions}}.
 Avoid suggesting multiple actions or using terms like "OR"/"/" to indicate options.
 
