@@ -198,6 +198,7 @@ This should start a basic webserver that would allow us to view the game state a
 
 
 THINKING ABOUT::
+* finalize on logging, data vs flat
 * remove the llm calls in init
 * refactor add_agents bc of jumping
 * add_to_logs should use a better class structure?
@@ -206,3 +207,4 @@ THINKING ABOUT::
 * refactor llm_action and agent_action to be one function
 * refactor functions and time, should never need to pass time
 * some memories have timestamps inside of them, no value?
+* logs, should hold it open, and output to a file

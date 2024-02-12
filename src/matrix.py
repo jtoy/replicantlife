@@ -9,6 +9,7 @@ import json
 import redis
 import requests
 import threading
+import jsonlines
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -97,14 +98,19 @@ class Matrix:
 
     @classmethod
     def from_timeline(cls,src,step=None):
+        # TODO dont load this all in memory
         if src.startswith("redis://"):
              r = redis_connection.from_url(src)
              queue = "josh_queue"
              data = r.lrange(queue, 0, -1)
         else:
-            with open(src, 'r') as file:
-                content = file.read()
-            data = content.split('\n\n')
+            #with open(src, 'r') as file:
+            #    content = file.read()
+            #data = content.split('\n\n')
+            data = []
+            with jsonlines.open(src, mode='r') as reader:
+                for line in reader:
+                    data.append(line)
         matrix = None
         current_step = 0 
         current_substep = 0
@@ -216,9 +222,12 @@ class Matrix:
         obj["substep"] = self.current_substep
         obj["sim_id"] = self.id # i think we will change this to sim id everywhere
 
-        with open("logs.json", "a") as file:
-            json.dump(obj,file,indent=2)
-            file.write("\n\n")
+        file = "logs.jsonl"
+        #with open("logs.json", "a") as file:
+        #    json.dump(obj,file,indent=2)
+        #    file.write("\n\n")
+        with jsonlines.open(file, mode='a') as writer:
+            writer.write(json.dumps(obj))
         stream = f"{obj['sim_id']}_stream"
         queue = f"{obj['sim_id']}_queue"
         wtf = json.loads(json.dumps(obj, default=str))
