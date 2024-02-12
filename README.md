@@ -209,3 +209,4 @@ THINKING ABOUT::
 * some memories have timestamps inside of them, no value?
 * logs, should hold it open, and output to a file
 * importance calculated based off recent memories
+* nearby moving vs far away destinations

@@ -76,6 +76,7 @@
     "Learn and spread hot gossips.",
     "Build meaningful connections with others.",
     "Learn and share intriguing stories.",
+    "No idea what I'm doing",
     "Help others in times of need."
   ],
   "DEFAULT_ACTIONS": ["move", "talk", "continue_to_destination", "meta_cognize"],

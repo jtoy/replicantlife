@@ -62,12 +62,30 @@ class Agent:
         if self.matrix:
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind})
 
+    def update_goals(self):
+        # this assumes 8+ importance is always worth changing /reevaluating goals
+        # do i need to update my goals. if so, give me new goals
+        relevant_memories = self.getMemories(None,unix_to_strftime(self.matrix.unix_time))
+        relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
+        prompt = f'''
+About {self}:
+{self.getSelfContext()}
+
+{self}'s goal is {self.goal}.
+And {self}'s recent memories:
+{relevant_memories_string}
+Write out what my new overarching goal should be in a short sentence.
+Write in the first person from the point of view of {self}.
+Write in natural short response style.
+    '''
+        msg = llm.generate(prompt)
+        self.addMemory("observation",f"I updated my goal to be \"{msg}\"", unix_to_strftime(self.matrix.unix_time), random.randint(5, 8))
+        self.goal = msg
+
     def ask_meta_questions(self, timestamp):
         #relevant_memories = self.memory[-50:]
         relevant_memories = self.getMemories(None, timestamp)
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
-        prompt = f'''
-        '''
         vars = {"agent":self,"relevant_memories_string":relevant_memories_string}
         msg = llm.prompt("ask_meta_questions", vars)
         print(f"{self} new question {msg}")
@@ -99,7 +117,6 @@ Score: 1
         explanation = explanation_match.group(1) if explanation_match else None
         match = re.search(r"Score:\s*(\d+)", msg)
         score = int(match.group(1)) if match else None
-        print(f"my reflection: #{msg}")
 
         if score and explanation:
             self.addMemory("meta", explanation, timestamp, 10)
@@ -530,6 +547,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         return perceived_agents, perceived_locations, perceived_areas, perceived_objects
 
     def addMemory(self, kind, content, timestamp=None, score=None,embedding=None):
+        memory = None
         if timestamp is None:
             timestamp = datetime.now()
             timestamp = timestamp.strftime("%A %B %d, %Y")
@@ -543,6 +561,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
             self.memory.append(memory)
         if self.matrix:
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": content,"embedding":memory.embedding,"importance":memory.importance})
+    
+        return memory
 
     def reflect(self, timestamp, force=False):
         relevant_memories = self.memory[-100:]

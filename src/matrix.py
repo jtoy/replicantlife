@@ -561,7 +561,9 @@ class Matrix:
                             for witness in witnesses:
                                 witness.addMemory("perceived", f"{a} was murdered by {agent} at {self.environment.get_area_from_coordinates(a.x, a.y)} {self.environment.get_location_from_coordinates(a.x, a.y)}", unix_to_strftime(unix_time), 9)
 
-        agent.addMemory("decision",f"I decided to {decision} because {explanation}",unix_to_strftime(unix_time),random.randint(1,4))
+        memory = agent.addMemory("decision",f"I decided to {decision} because {explanation}",unix_to_strftime(unix_time),random.randint(1,4))
+        if memory and memory.importance >= 6:
+            agent.update_goals()
         return agent
 
     def agent_action(self, agent, unix_time):
