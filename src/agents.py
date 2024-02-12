@@ -186,16 +186,21 @@ Answer the question from the point of view of {self} thinking to themselves, res
             self.addMemory("interaction",f"{self} tried to killed {other_agent}",timestamp, 9)
             other_agent.addMemory("interaction",f"{self} tried to kill you",timestamp, 9)
 
+    def current_location_name(self):
+        for location in self.spatial_memory:
+            if (self.x, self.y) in location.valid_coordinates:
+                return location.name
+        return None  # Return None if the location is not found
+
     def move(self, opts={}):
         environment = opts.get("environment", None)
         name_target = opts.get("target", None)
         target_coordinate = None
+
         if opts.get("x") and opts.get("y"): # only come in here because of replay
             self.x = opts["x"]
             self.y = opts["y"]
-
         else:
-
 
             if name_target is None and self.current_destination is None:
                 target_coordinate = random.choice(self.current_destination.valid_coordinates)
@@ -227,7 +232,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
             else:
                 pd(f"Path finding Error.")
 
-            if len(self.destination_cache) == 0:
+            if len(self.destination_cache) == 0: #this means arrived at destination
+                self.addMemory("observation",f"arrived at {self.current_location_name()}" , self.matrix.unix_time, random.randint(5, 9))
                 self.current_destination = None
 
         if self.matrix:
@@ -536,7 +542,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             memory = Memory(kind, content, timestamp, timestamp, score,embedding)
             self.memory.append(memory)
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": content,"embedding":memory.embedding})
+            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"add_memory","kind":kind,"timestamp":timestamp,"last_accessed_at":timestamp,"score":score,"content": content,"embedding":memory.embedding,"importance":memory.importance})
 
     def reflect(self, timestamp, force=False):
         relevant_memories = self.memory[-100:]

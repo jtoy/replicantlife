@@ -559,7 +559,7 @@ class Matrix:
                         if a.status == "dead":
                             witnesses = (set(perceived_agents) - {a})
                             for witness in witnesses:
-                                witness.addMemory("perceive", f"{a} was just murdered by {agent} at {self.environment.get_area_from_coordinates(a.x, a.y)} {self.environment.get_location_from_coordinates(a.x, a.y)}", unix_to_strftime(unix_time), 9)
+                                witness.addMemory("perceived", f"{a} was murdered by {agent} at {self.environment.get_area_from_coordinates(a.x, a.y)} {self.environment.get_location_from_coordinates(a.x, a.y)}", unix_to_strftime(unix_time), 9)
 
         agent.addMemory("decision",f"I decided to {decision} because {explanation}",unix_to_strftime(unix_time),random.randint(1,4))
         return agent
@@ -599,7 +599,7 @@ class Matrix:
                     if other_agent.status == "dead":
                         witnesses = (set(perceived_agents) - {other_agent})
                         for witness in witnesses:
-                            witness.addMemory("perceive", f"{other_agent} was just murdered by {agent} at {self.environment.get_area_from_coordinates(other_agent.x, other_agent.y)} {self.environment.get_location_from_coordinates(other_agent.x, other_agent.y)}", unix_to_strftime(unix_time), 9)
+                            witness.addMemory("perceived", f"{other_agent} was murdered by {agent} at {self.environment.get_area_from_coordinates(other_agent.x, other_agent.y)} {self.environment.get_location_from_coordinates(other_agent.x, other_agent.y)}", unix_to_strftime(unix_time), 9)
 
                     return agent
 

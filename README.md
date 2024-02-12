@@ -202,9 +202,10 @@ THINKING ABOUT::
 * remove the llm calls in init
 * refactor add_agents bc of jumping
 * add_to_logs should use a better class structure?
-* jsonl , a unit test to export and import. https://jsonlines.readthedocs.io/en/latest/
 * perceived - should it be used in logs?
 * refactor llm_action and agent_action to be one function
 * refactor functions and time, should never need to pass time
+* there seems to be issues with arriving at destinations, validate it works
 * some memories have timestamps inside of them, no value?
 * logs, should hold it open, and output to a file
+* importance calculated based off recent memories
