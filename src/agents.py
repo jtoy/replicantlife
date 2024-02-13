@@ -92,9 +92,9 @@ Write in natural short response style.
         m = re.compile('([\d]+\. )(.*?)(?=([\d]+\.)|($))', re.DOTALL).findall(msg)
         self.meta_questions.extend(x[1] for x in m if x[1] not in self.meta_questions)
 
-    def evaluate_progress(self, timestamp):
+    def evaluate_progress(self):
         #relevant_memories = self.memory[-50:]
-        relevant_memories = self.getMemories(self.goal, timestamp)
+        relevant_memories = self.getMemories(self.goal, unix_to_strftime(self.matrix.unix_time))
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
         prompt = f'''
 About {self}:
@@ -119,9 +119,9 @@ Score: 1
         score = int(match.group(1)) if match else None
 
         if score and explanation:
-            self.addMemory("meta", explanation, timestamp, 10)
+            self.addMemory("meta", explanation, unix_to_strftime(self.matrix.unix_time) , 10)
             if score and int(score) < 3:
-                self.meta_cognize(timestamp, True)
+                self.meta_cognize(unix_to_strftime(self.matrix.unix_time), True)
 
     def meta_cognize(self,timestamp,force=False):
         #if not force and random.randint(0, 100) < 50:
