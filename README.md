@@ -198,6 +198,7 @@ This should start a basic webserver that would allow us to view the game state a
 
 
 THINKING ABOUT::
+* fix time, dont need to pass time everywhere!
 * finalize on logging, data vs flat
 * remove the llm calls in init
 * refactor add_agents bc of jumping

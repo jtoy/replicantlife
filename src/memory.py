@@ -12,13 +12,19 @@ class Memory:
         self.kind = kind
         self.content = content
         self.created_at = created_at
-        self.last_accessed_at = last_accessed_at
-        if not isinstance(self.last_accessed_at, str):
+        if not isinstance(last_accessed_at, str):
             print("last_accessed_at should be string timestamp format")
+            self.last_accessed_at = unix_to_strftime(last_accessed_at)
+            print(type(self.last_accessed_at))
+        else:
+            self.last_accessed_at = last_accessed_at
+        #print(f"WTF {content} {type(created_at)} {type(last_accessed_at)}   ")
+        #print(f"{type(LLM_IMPORTANCE)} {LLM_IMPORTANCE}")
         if LLM_IMPORTANCE == 0:
             self.importance = score
         else:
             self.importance = Memory.calculateImportanceScore(self.content, memories)
+
         self.recency_score = 1
         self.relevancy_score = 1
         self.overall_score = 1
@@ -107,6 +113,8 @@ People see doors everyday, this is mundane
 
     def calculateRecencyScore(last_accessed_at, time, decay=0.99):
         try:
+            #print(f"laa {last_accessed_at} {type(last_accessed_at)}")
+            #print(f"time {time} {type(time)}")
             last_accessed_at = int(datetime.strptime(last_accessed_at, "%Y-%m-%d %H:%M:%S").timestamp())
             time = int(datetime.strptime(time, "%Y-%m-%d %H:%M:%S").timestamp())
             return float(decay ** int(time - last_accessed_at))

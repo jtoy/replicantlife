@@ -1,4 +1,5 @@
 from configs.configs import *
+#TODO remove this
 import requests
 import time
 import os
@@ -133,6 +134,8 @@ class Llm:
               "prompt": prompt,
               "stream": False
           }
+          #"temperature": 0.4,
+          #print(data)
           current_url = self.urls[self.call_counter % len(self.urls)]
           try:
               if self.model == "powerinf":
@@ -162,9 +165,9 @@ class Llm:
         self.log_calls(prompt, msg, end_time - start_time)
         self.call_times.append(end_time - start_time)
         if len(self.urls) > 1:
-          pd(f"current url {current_url}")
-        pd(f"INPUT:\n {prompt}")
-        pd(f"OUTPUT:\n {msg}")
+            pd(f"current url {current_url}")
+        #print(f"INPUT:\n {prompt}")
+        #print(f"OUTPUT:\n {msg}")
         pd(f"runtime: {end_time - start_time}")
         return msg
 
@@ -247,7 +250,6 @@ class Llm:
         return output
 
 llm = Llm()
-
 '''
 REDIS
 '''

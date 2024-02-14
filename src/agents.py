@@ -66,24 +66,28 @@ class Agent:
         # this assumes 8+ importance is always worth changing /reevaluating goals
         # do i need to update my goals. if so, give me new goals
         relevant_memories = self.getMemories(None,unix_to_strftime(self.matrix.unix_time))
-        relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
+        relevant_memories_string = "\n".join(f"Memory {i + 1}: \"{memory}\"" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
         prompt = f'''
-About {self}:
+you are a character in a world.
 {self.getSelfContext()}
 
-{self}'s goal is {self.goal}.
+goal:"{self.goal}".
 And {self}'s recent memories:
 {relevant_memories_string}
-Write out what my new overarching goal should be in a short sentence.
+Write out what my new goal should be in a short sentence given recent memories.
+Take into account what happened recently to help you focus.
 Write in the first person from the point of view of {self}.
-Write in natural short response style.
+Write out the goal only in json:
+{{"goal":"goal"}}
     '''
         msg = llm.generate(prompt)
         self.addMemory("observation",f"I updated my goal to be \"{msg}\"", unix_to_strftime(self.matrix.unix_time), random.randint(5, 8))
         self.goal = msg
 
+    def decide(self):
+        self.matrix.llm_action(self,self.matrix.unix_time)
+
     def ask_meta_questions(self, timestamp):
-        #relevant_memories = self.memory[-50:]
         relevant_memories = self.getMemories(None, timestamp)
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
         vars = {"agent":self,"relevant_memories_string":relevant_memories_string}
@@ -93,7 +97,6 @@ Write in natural short response style.
         self.meta_questions.extend(x[1] for x in m if x[1] not in self.meta_questions)
 
     def evaluate_progress(self):
-        #relevant_memories = self.memory[-50:]
         relevant_memories = self.getMemories(self.goal, unix_to_strftime(self.matrix.unix_time))
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
         prompt = f'''
@@ -121,7 +124,8 @@ Score: 1
         if score and explanation:
             self.addMemory("meta", explanation, unix_to_strftime(self.matrix.unix_time) , 10)
             if score and int(score) < 3:
-                self.meta_cognize(unix_to_strftime(self.matrix.unix_time), True)
+                #self.meta_cognize(unix_to_strftime(self.matrix.unix_time), True)
+                pass
 
     def meta_cognize(self,timestamp,force=False):
         #if not force and random.randint(0, 100) < 50:
@@ -549,8 +553,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
     def addMemory(self, kind, content, timestamp=None, score=None,embedding=None):
         memory = None
         if timestamp is None:
-            timestamp = datetime.now()
-            timestamp = timestamp.strftime("%A %B %d, %Y")
+            timestamp = datetime.utcfromtimestamp(self.matrix.unix_time).strftime("%A %B %d, %Y")
+
 
         if kind == "observation":
             if (self.matrix is not None and self.matrix.allow_observance_flag == 1):
@@ -669,6 +673,9 @@ Give {self}'s answer to the question in first person point of view.
             min_relevancy_score = min(min_relevancy_score, relevancy_score)
             max_relevancy_score = max(max_relevancy_score, relevancy_score)
 
+            #print("PPPP")
+            #print(mem.content)
+            #print(mem.kind)
             recency_score = Memory.calculateRecencyScore(mem.last_accessed_at, timestamp)
             min_recency_score = min(min_recency_score, recency_score)
             max_recency_score = max(max_recency_score, recency_score)

@@ -25,6 +25,7 @@ from src.location import Location, Area, Object
 def set_globals(config):
     for key, value in config.items():
         globals()[key] = value
+
 class Matrix:
     def __init__(self, config={}):
         set_globals(config)
@@ -49,6 +50,8 @@ class Matrix:
         self.cur_step = 0
         self.current_substep = 0
         self.unix_time = DEFAULT_TIME
+        #print(f"PPPP {self.unix_time} {type(self.unix_time)}")
+        #print(f"PPPP {LLM_IMPORTANCE} OOOOOO")
         self.status = "init"
         self.conversation_counter = 0
         self.sim_start_time = None
@@ -62,6 +65,7 @@ class Matrix:
         self.perception_range = PERCEPTION_RANGE
         self.allow_movement = ALLOW_MOVEMENT
         self.model = MODEL
+
         self.replay = None
         self.add_to_logs({"step_type":"matrix_init","data":config})
         self.agent_locks = { agent: threading.Lock() for agent in self.agents }
