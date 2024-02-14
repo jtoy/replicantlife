@@ -199,7 +199,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             print(f"{self} killed {other_agent}")
             other_agent.status = "dead"
             if self.matrix:
-                self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_set","status":"dead"})
+                self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_set", "attribute_name": "status", "status":"dead"})
             self.addMemory("interaction",f"{self} successfully killed {other_agent}",timestamp, 9)
             other_agent.addMemory("interaction",f"{self} killed you",timestamp, 9)
         else:
@@ -308,7 +308,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
 
         self.addMemory("conversation", interaction, timestamp, random.randint(4, 6))
-        self.matrix.add_to_logs({"step_type":"agent_set","convo":"complete","from":self.mid,"to":self.last_conversation.other_agent.mid,"convo_id":self.last_conversation.mid})
+        self.matrix.add_to_logs({"step_type":"agent_set", "attribute_name": "convo", "attribute_data": {"status": "complete", "from":self.mid, "to":self.last_conversation.other_agent.mid, "convo_id":self.last_conversation.mid}})
         self.last_conversation = None
 
     def talk(self, opts={}):
