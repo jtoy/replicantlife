@@ -1,0 +1,169 @@
+{
+    "steps": [
+        {
+            "step_id": 0,
+            "substep_id": 1,
+            "agent_name": "Lily",
+            "agent_id": "agent23",
+            "step_type": "new_agent",
+            "position": {
+                "x": 10,
+                "y": 10
+            }
+        },
+        {
+            "step_id": 0,
+            "substep_id": 2,
+            "agent_name": "Viktor",
+            "agent_id": 24,
+            "step_type": "new_agent",
+            "position": {
+                "x": 13,
+                "y": 11
+            }
+        },
+        {
+            "step_id": 0,
+            "substep_id": 3,
+            "agent_name": "Lily",
+            "agent_id": "agent23",
+            "step_type": "add_memory",
+            "embedding": {}
+        },
+        {
+            "step_id": 0,
+            "substep_id": 4,
+            "agent_name": "Lily",
+            "agent_id": 25,
+            "step_type": "new_agent",
+            "position": {
+                "x": 20,
+                "y": 18
+            }
+        },
+        {
+            "step_id": 1,
+            "substep_id": 1,
+            "agent_name": "Lily",
+            "agent_id": "agent23",
+            "step_type": "move",
+            "direction": "right"
+        },
+        {
+            "step_id": 1,
+            "substep_id": 2,
+            "agent_name": "Viktor",
+            "agent_id": 24,
+            "step_type": "move",
+            "direction": "left"
+        },
+        {
+            "step_id": 1,
+            "substep_id": 3,
+            "agent_name": "Lily",
+            "agent_id": 25,
+            "step_type": "move",
+            "direction": "down"
+        },
+        {
+            "step_id": 2,
+            "substep_id": 1,
+            "agent_name": "Lily",
+            "agent_id": "agent23",
+            "step_type": "talk",
+            "to_agent_id": "agent24",
+            "message": "Hello! How ya doing Viktor?"
+        },
+        {
+            "step_id": 2,
+            "substep_id": 2,
+            "agent_name": "Lily",
+            "agent_id": 25,
+            "step_type": "move",
+            "direction": "down"
+        },
+        {
+            "step_id": 2,
+            "substep_id": 3,
+            "agent_name": "Viktor",
+            "agent_id": 24,
+            "step_type": "talk",
+            "to_agent_id": 23,
+            "message": "Hi. How are you?"
+        },
+        {
+            "step_id": 3,
+            "substep_id": 1,
+            "agent_name": "Lily",
+            "agent_id": "agent23",
+            "step_type": "move",
+            "direction": "right"
+        },
+        {
+            "step_id": 3,
+            "substep_id": 2,
+            "agent_name": "Viktor",
+            "agent_id": 24,
+            "step_type": "move",
+            "direction": "right"
+        },
+        {
+            "step_id": 3,
+            "substep_id": 3,
+            "agent_name": "Lily",
+            "agent_id": 25,
+            "step_type": "move",
+            "direction": "down"
+        },
+        {
+            "step_id": 4,
+            "substep_id": 1,
+            "agent_name": "Lily",
+            "agent_id": "agent23",
+            "step_type": "move",
+            "direction": "right"
+        },
+        {
+            "step_id": 4,
+            "substep_id": 2,
+            "agent_name": "Viktor",
+            "agent_id": 24,
+            "step_type": "move",
+            "direction": "right"
+        },
+        {
+            "step_id": 5,
+            "substep_id": 1,
+            "agent_name": "Lily",
+            "agent_id": "agent23",
+            "step_type": "move",
+            "direction": "down"
+        },
+        {
+            "step_id": 5,
+            "substep_id": 2,
+            "agent_name": "Viktor",
+            "agent_id": 24,
+            "step_type": "move",
+            "direction": "down"
+        },
+        {
+            "step_id": 6,
+            "substep_id": 1,
+            "agent_name": "Lily",
+            "agent_id": "agent23",
+            "step_type": "talk",
+            "to_agent_id": 24,
+            "message": "OK, but I'm not sure why this is way over here? "
+        },
+        {
+            "step_id": 6,
+            "substep_id": 2,
+            "agent_name": "Viktor",
+            "agent_id": 24,
+            "step_type": "talk",
+            "to_agent_id": 23,
+            "message": "Who knows. I have no idea what's going on."
+        }
+    ]
+}
