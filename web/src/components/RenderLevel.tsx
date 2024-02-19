@@ -55,7 +55,8 @@ const RenderLevel: React.FC<{simId: string}> = ({ simId }) => {
             }
         };
 
-        const interval = setInterval(fetchData, 6000);
+        fetchData();
+        const interval = setInterval(fetchData, 12000);
 
         return () => {
             isMounted = false;
