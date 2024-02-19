@@ -1,0 +1,83 @@
+* {
+  box-sizing: border-box;
+
+}
+
+:root {
+  --game-viewport-width: 4800px;
+  --game-viewport-height: 4800px;
+  --game-cell-size: 32px;
+  --pixel-size: 1;
+  --center-offset: 434px;
+}
+
+html, body {
+  /*position: relative;
+  margin: 0;
+  padding: 0;
+  height: 100%;*/
+
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  background-color: #464646;
+
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: -moz-crisp-edges;
+}
+
+@media(min-width: 360px) {
+  :root {
+      --pixel-size: 0.5;
+      --game-viewport-width: 260px;
+      --game-viewport-height: 260px;
+      --center-offset: 134px;
+  }
+}
+
+/* 3x */
+@media(min-width: 540px) {
+  :root {
+      --pixel-size: 0.75;
+      --game-viewport-width: 500px;
+      --game-viewport-height: 500px;
+      --center-offset: 234;
+  }
+}
+/* 4x */
+@media(min-width: 720px) {
+  :root {
+      --pixel-size: 1;
+      --game-viewport-width: 520px;
+      --game-viewport-height: 520px;
+      --center-offset: 334px;
+  }
+}
+/* 5x */
+@media(min-width: 900px) {
+  :root {
+      --pixel-size: 1.25;
+      --game-viewport-width: 700px;
+      --game-viewport-height: 700px;
+      --center-offset: 334px;
+  }
+}
+/* 6x */
+@media(min-width: 1080px) {
+  :root {
+      --pixel-size: 1.5;
+      --game-viewport-width: 880px;
+      --game-viewport-height: 880px;
+      --center-offset: 334px;
+  }
+}
+/* 7x */
+@media(min-width: 1260px) {
+  :root {
+      --pixel-size: 0.875;
+  }
+}

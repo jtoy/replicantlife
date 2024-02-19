@@ -1,0 +1,55 @@
+.sidebar {
+    position: absolute;
+    margin: 15px;
+    right: 0;
+    top: 0;
+    z-index: 3;
+    max-height: 100vh;
+    width: 300px;
+    overflow: scroll;
+}
+
+.gameControls {
+    background-color: rgba(255, 255, 255, 0.6);
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.gameControls:hover {
+    background-color: rgba(255, 255, 255, 1); 
+}
+
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+}
+
+.agentModule {
+    display: flex;
+    border: 3px dashed #00bcd4;
+    background-color: sandybrown;
+    margin-top: 15px;
+    width: 100%;
+    padding: 15px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.agentName {
+    font-size: x-large;
+    padding-left: 10px;
+}
+
+.thoughtSelector {
+    margin-left: auto; 
+    display: flex; 
+    align-items: center; 
+    justify-content: flex-end;
+}

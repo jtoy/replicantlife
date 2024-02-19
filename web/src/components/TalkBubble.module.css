@@ -1,0 +1,73 @@
+.bubble {
+	position: relative;
+	display: inline-block;
+	margin: 20px;
+	text-align: justify;
+	animation-duration: 1.0s;
+	/*font-family: var(--font-press-start-2p);
+	font-size: small;
+	line-height: 1.1em;*/
+	background-color: #fff;
+	color: #000;
+	padding: 12px;
+	box-shadow: 0 -4px #fff, 0 -8px #000, 4px 0 #fff, 4px -4px #000, 8px 0 #000, 0 4px #fff, 0 8px #000, -4px 0 #fff, -4px 4px #000, -8px 0 #000, -4px -4px #000, 4px 4px #000;
+	box-sizing: border-box;
+	width: 250px;
+}
+.bubble::after {
+	content: '';
+	display: block;
+	position: absolute;
+	box-sizing: border-box;
+}
+.bubble.shadow {
+	box-shadow: 0 -4px #fff, 0 -8px #000, 4px 0 #fff, 4px -4px #000, 8px 0 #000, 0 4px #fff, 0 8px #000, -4px 0 #fff, -4px 4px #000, -8px 0 #000, -4px -4px #000, 4px 4px #000, 4px 12px rgba(0, 0, 0, 0.1), 12px 4px rgba(0, 0, 0, 0.1), 8px 8px rgba(0, 0, 0, 0.1);
+}
+.bubble.mini {
+	width: 110px;
+	font-size: 16px;
+	padding: 4px;
+	font-family: monospace;
+}
+.bubble.medium {
+	width: 350px;
+}
+.bubble.large {
+	width: 560px;
+	font-size: 24px;
+	text-align: left;
+	text-transform: uppercase;
+}
+.bubble.grow {
+	width: initial;
+}
+.bubble.top::after {
+	height: 4px;
+	width: 4px;
+	top: -8px;
+	left: 32px;
+	box-shadow: 0 -4px #000, 0 -8px #000, 0 -12px #000, 0 -16px #000, -4px -12px #000, -8px -8px #000, -12px -4px #000, -4px -4px #fff, -8px -4px #fff, -4px -8px #fff, -4px 0 #fff, -8px 0 #fff, -12px 0 #fff;
+}
+.bubble.right::after {
+	height: 4px;
+	width: 4px;
+	top: 84px;
+	right: -8px;
+	background: white;
+	box-shadow: 4px -4px #fff, 4px 0 #fff, 8px 0 #fff, 0 -8px #fff, 4px 4px #000, 8px 4px #000, 12px 4px #000, 16px 4px #000, 12px 0 #000, 8px -4px #000, 4px -8px #000, 0 -4px #fff;
+}
+.bubble.bottom::after {
+	height: 4px;
+	width: 4px;
+	bottom: -8px;
+	left: 32px;
+	box-shadow: 0 4px #000, 0 8px #000, 0 12px #000, 0 16px #000, -4px 12px #000, -8px 8px #000, -12px 4px #000, -4px 4px #fff, -8px 4px #fff, -4px 8px #fff, -4px 0 #fff, -8px 0 #fff, -12px 0 #fff;
+}
+.bubble.left::after {
+	height: 4px;
+	width: 4px;
+	top: 20px;
+	left: -8px;
+	background: white;
+	box-shadow: -4px -4px #fff, -4px 0 #fff, -8px 0 #fff, 0 -8px #fff, -4px 4px #000, -8px 4px #000, -12px 4px #000, -16px 4px #000, -12px 0 #000, -8px -4px #000, -4px -8px #000, 0 -4px #fff;
+}

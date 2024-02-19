@@ -1,0 +1,52 @@
+.fullScreenContainer {
+    width: 100vw; /* 100% of the viewport width */
+    height: 100vh; /* 100% of the viewport height */
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* Center children horizontally */
+    align-items: center; /* Center children vertically */
+}
+
+@media(min-width: 540px) {
+    .fullScreenContainer {
+        width: 100vw; /* 100% of the viewport width */
+        height: 100vh; /* 100% of the viewport height */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center children horizontally */
+    }
+}
+
+.gameContainer {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    overflow: hidden;
+    z-index: 2;
+}
+
+.gameContainer > div {
+    /*transition: transform 0.3s ease-in-out;*/
+}
+
+.placement {
+    transition: left 1.5s linear 0s, top 1.5s linear 0s;
+}
+  
+.sidebar {
+    border: 1px solid red;
+    background-color: grey;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+.component {
+    width: 100px;
+    height: 100px;
+    border: 1px solid red;
+}
+
+.sidebarVisible {
+    width: 200px; /*calc(var(--game-viewport-width) * 0.30);*/
+}

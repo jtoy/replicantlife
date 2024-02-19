@@ -1,0 +1,19 @@
+.leftChatIcon {
+    position: absolute;
+    left: -28px;
+    top: -10px;
+}
+
+.thoughtBubbleIcon {
+    position: absolute;
+    right: 8px;
+    top: -12px;
+}
+
+.agent {
+    position: relative;
+}
+  
+.hidden {
+    visibility: hidden;
+}
