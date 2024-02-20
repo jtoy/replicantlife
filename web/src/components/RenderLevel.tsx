@@ -55,7 +55,8 @@ const RenderLevel: React.FC<{simId: string}> = ({ simId }) => {
             }
         };
 
-        const interval = setInterval(fetchData, 6000);
+        fetchData();
+        const interval = setInterval(fetchData, 12000);
 
         return () => {
             isMounted = false;
@@ -104,7 +105,7 @@ const RenderLevel: React.FC<{simId: string}> = ({ simId }) => {
             <div className={styles.gameContainer}>
 
                 <Camera followAgent={followAgent} setFollowAgent={setFollowAgent}>
-                    <img src="/images/maps/Large.png" alt="Default Map" />
+                    <img src={process.env.NEXT_PUBLIC_BASE_PATH +"/images/maps/Large.png"} alt="Default Map" />
                     <>
                         {renderAgents()}
                     </>
