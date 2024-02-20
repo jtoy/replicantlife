@@ -52,12 +52,21 @@ function sortSteps(a: any, b: any) {
   return a.step - b.step;
 }
 
+// Return a list of `params` to populate the [slug] dynamic segment
+export async function generateStaticParams() {
+  return [{id: 'skip'}];
+}
+
 export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }
   
     ) {
         const id = params.id;
+        if (id === 'skip'){
+          return Response.json([]);
+        }
+        
         const fromIndex = Number(request.nextUrl.searchParams.get('fromIndex')) || 0;
 
         const [totalSteps, allSteps] = await getStepsFromRedis(id, fromIndex);

@@ -105,7 +105,7 @@ const RenderLevel: React.FC<{simId: string}> = ({ simId }) => {
             <div className={styles.gameContainer}>
 
                 <Camera followAgent={followAgent} setFollowAgent={setFollowAgent}>
-                    <img src="/images/maps/Large.png" alt="Default Map" />
+                    <img src={process.env.NEXT_PUBLIC_BASE_PATH +"/images/maps/Large.png"} alt="Default Map" />
                     <>
                         {renderAgents()}
                     </>
