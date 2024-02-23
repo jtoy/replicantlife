@@ -58,9 +58,10 @@ This will run the simulation without LLM
 
 You can also choose to add these params to `.env` file.
 
-### Connecting to Live Production Redis
+### web ui
+start a simulation and get its simulation id.
+cd into web and run `npm i` then `npm run dev` then go to http://localhost:3000/SIMULATION_ID to see it running
 
-Just pass in `REDIS_URL=<redis url>` as param for running simulation.
 
 ### Changing Environment
 
@@ -197,7 +198,7 @@ This should start a basic webserver that would allow us to view the game state a
 
 
 
-THINKING ABOUT::
+THINKING ABOUT:
 * fix time, dont need to pass time everywhere!
 * finalize on logging, data vs flat
 * remove the llm calls in init
@@ -211,3 +212,6 @@ THINKING ABOUT::
 * logs, should hold it open, and output to a file
 * importance calculated based off recent memories
 * nearby moving vs far away destinations
+* make all cognitive modules flags work on a user basis
+* normalize flag names
+* see a stranger
