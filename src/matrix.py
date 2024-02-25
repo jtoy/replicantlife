@@ -39,6 +39,9 @@ class Matrix:
         self.id = config.get("id", str(uuid.uuid4()))
         if self.id == None:
             self.id = str(uuid.uuid4())
+        print(f"matrix id is {self.id}")
+        print(f"you can view replay at http://localhost:3000/?sim_id={self.id}")
+
         self.scenario_file = config.get("scenario")
         self.environment_file = config.get("environment")
         self.agents = []
@@ -76,6 +79,7 @@ class Matrix:
         #then agent initialization
         # Build Environment
         self.background = None
+        print(config)
 
     def boot(self):
         # Add Agents
@@ -233,7 +237,7 @@ class Matrix:
         with jsonlines.open(file, mode='a') as writer:
             writer.write(json.dumps(obj))
         stream = f"{obj['sim_id']}_stream"
-        queue = f"{obj['sim_id']}_queue"
+        queue = f"{obj['sim_id']}"
         wtf = json.loads(json.dumps(obj, default=str))
         #redis_connection.xadd(stream, wtf)
         redis_connection.lpush(queue,json.dumps(obj))
@@ -445,7 +449,7 @@ class Matrix:
         if self.allow_reflect_flag == 1 and agent.recent_memories_importance() > self.reflect_threshold:
             agent.reflect(unix_to_strftime(unix_time))
 
-        if self.allow_meta_flag == 1 and random.randint(0,100) < 50:
+        if self.allow_meta_flag == 1 and random.randint(0,100) < 25:
             agent.evaluate_progress()
 
         agent.conversation_cooldown -= 1
@@ -563,10 +567,13 @@ class Matrix:
                             for witness in witnesses:
                                 witness.addMemory("perceived", f"{a} was murdered by {agent} at {self.environment.get_area_from_coordinates(a.x, a.y)} {self.environment.get_location_from_coordinates(a.x, a.y)}", unix_to_strftime(unix_time), 9)
 
-        memory = agent.addMemory("decision",f"I decided to {decision} because {explanation}",unix_to_strftime(unix_time),random.randint(1,4))
+        memory = None
+        #memory = agent.addMemory("decision",f"I decided to {decision} because {explanation}",unix_to_strftime(unix_time),random.randint(1,4))
         if memory and memory.importance >= 6:
             agent.update_goals()
         return agent
+
+
 
     def agent_action(self, agent, unix_time):
         if agent.status == "dead":

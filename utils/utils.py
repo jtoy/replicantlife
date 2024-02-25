@@ -5,6 +5,7 @@ import time
 import os
 import redis
 import difflib
+import random
 from datetime import datetime
 import json
 from urllib.parse import urlparse
@@ -14,6 +15,11 @@ from sqlalchemy import create_engine, Column, Float, DateTime, Integer, String, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, column_property
 import requests
+
+import nltk
+nltk.download('brown')
+from nltk.corpus import brown
+
 try:
     from vllm import LLM, SamplingParams
 except ImportError:
@@ -34,6 +40,11 @@ def pd(msg):
 def unix_to_strftime(unix_time):
     return datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
 
+def random_common_word():
+    #TODO store the array in memory
+    common_words = [word.lower() for word in brown.words() if len(word) > 2 and word.isalpha()]
+    random_common_word = random.choice(common_words)
+    return random_common_word
 '''
 Llm class wrapper
 
@@ -166,8 +177,8 @@ class Llm:
         self.call_times.append(end_time - start_time)
         if len(self.urls) > 1:
             pd(f"current url {current_url}")
-        #print(f"INPUT:\n {prompt}")
-        #print(f"OUTPUT:\n {msg}")
+        print(f"INPUT:\n {prompt}")
+        print(f"OUTPUT:\n {msg}")
         pd(f"runtime: {end_time - start_time}")
         return msg
 
@@ -249,6 +260,7 @@ class Llm:
         output = self.generate(new_prompt, fallback)
         return output
 
+
 llm = Llm()
 '''
 REDIS
@@ -256,6 +268,7 @@ REDIS
 redis_connection = redis.Redis.from_url(REDIS_URL)
 
 def print_and_log(content, key):
+    return
     redis_log(content, key)
     print(content)
 

@@ -11,3 +11,4 @@ SQLAlchemy==2.0.23
 vllm==0.2.6
 python-Levenshtein
 jsonlines
+nltk

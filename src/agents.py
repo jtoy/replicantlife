@@ -68,18 +68,16 @@ class Agent:
         relevant_memories = self.getMemories(None,unix_to_strftime(self.matrix.unix_time))
         relevant_memories_string = "\n".join(f"Memory {i + 1}: \"{memory}\"" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
         prompt = f'''
-you are a character in a world.
 {self.getSelfContext()}
 
-goal:"{self.goal}".
 And {self}'s recent memories:
 {relevant_memories_string}
 Write out what my new goal should be in a short sentence given recent memories.
-Take into account what happened recently to help you focus.
+The goal should be something a real human would follow.
+Take into account what happened recently to help you focus as your goal may need to change given circumstances.
 Write in the first person from the point of view of {self}.
-Write out the goal only in json:
-{{"goal":"goal"}}
-    '''
+Express your goal using only the action or outcome. Avoid adding phrases like 'my goal should be'
+'''
         msg = llm.generate(prompt)
         self.addMemory("observation",f"I updated my goal to be \"{msg}\"", unix_to_strftime(self.matrix.unix_time), random.randint(5, 8))
         self.goal = msg
@@ -96,26 +94,17 @@ Write out the goal only in json:
         m = re.compile('([\d]+\. )(.*?)(?=([\d]+\.)|($))', re.DOTALL).findall(msg)
         self.meta_questions.extend(x[1] for x in m if x[1] not in self.meta_questions)
 
-    def evaluate_progress(self):
+    def evaluate_progress(self,opts={}):
         relevant_memories = self.getMemories(self.goal, unix_to_strftime(self.matrix.unix_time))
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
-        prompt = f'''
-About {self}:
-{self.getSelfContext()}
-
-{self}'s goal is {self.goal}.
-And {self}'s recent memories:
-{relevant_memories_string}
-Rate your progress towards your goal with an integer from 1-5, 1 being bad, 5 being good.
-
-
-Write in the first person from the point of view of {self}.
-Write in natural short response style.
-Format your response like:
-Explanation: I didnt get my groceries today
-Score: 1
-    '''
-        msg = llm.generate(prompt, f"How am I doing?")
+        random_prime = opts.get("random_prime",False)
+        variables = {
+            'agent': self,
+            'random_prime': random_common_word(),
+            'selfContext': self.getSelfContext()
+        }
+        #msg = llm.generate(prompt, f"How am I doing?")
+        msg = llm.prompt("evaluate_progress", variables)
         explanation_match = re.search(r"Explanation:\s*(.+)", msg)
         explanation = explanation_match.group(1) if explanation_match else None
         match = re.search(r"Score:\s*(\d+)", msg)
@@ -698,7 +687,8 @@ Give {self}'s answer to the question in first person point of view.
         for mem in sorted(self.memory, key=lambda x: x.overall_score, reverse=True)[:n]:
             # Last accessed now
             mem.last_accessed_at = timestamp
-            relevant_memories.append(mem.content)
+            relevant_memories.append(mem)
+            #relevant_memories.append(mem.content)
 
         return relevant_memories
 
@@ -714,6 +704,7 @@ Give {self}'s answer to the question in first person point of view.
             return f"Agent(name: {self.name}, position: ({self.x}, {self.y}), description: {self.description}, goal: {self.goal})"
         else:
             return f"{self.name}"
+
 
 def find_path(start, target, valid_positions):
     start_time = time.time()

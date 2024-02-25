@@ -39,7 +39,7 @@ class Memory:
     def to_dict(self):
         return vars(self)
 
-    def __str__(self, verbose=True):
+    def __str__(self, verbose=False):
         if verbose:
             return (
                 f"Memory(c={self.content}, "
@@ -47,6 +47,7 @@ class Memory:
                 f"rel={self.relevancy_score}, "
                 f"rec={self.recency_score}, "
                 f"i={self.importance}, "
+                f"o={self.overall_score}, "
                 f"c_at={self.created_at}, "
                 f"a_at={self.last_accessed_at})"
             )
