@@ -59,8 +59,9 @@ This will run the simulation without LLM
 You can also choose to add these params to `.env` file.
 
 ### web ui
+If you want to visualize simulations, you must have redis running as the engine will send the logs to redis and the web ui reads from redis. You can set REDIS_URL or just use the default redis url.
 start a simulation and get its simulation id.
-cd into web and run `npm i` then `npm run dev` then go to http://localhost:3000/SIMULATION_ID to see it running
+cd into web and run `npm i` then `npm run dev` then go to http://localhost:3000/?sim_id=SIMULATION_ID to see it running
 
 
 ### Changing Environment
