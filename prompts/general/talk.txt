@@ -1,3 +1,6 @@
+{% if primer %}
+prime your thoughts but dont mention: "{{primer}}". 
+{% endif %}
 {{selfContext}}
 
 {{relevant_memories}}

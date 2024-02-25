@@ -240,6 +240,15 @@ class Matrix:
         queue = f"{obj['sim_id']}"
         wtf = json.loads(json.dumps(obj, default=str))
         #redis_connection.xadd(stream, wtf)
+        max_retries = 3
+        retry_delay = 1
+        for attempt in range(max_retries):
+            try:
+                redis_connection.lpush(queue, json.dumps(obj))
+                break  # Break the loop if successful
+            except redis.RedisError as e:
+                print(f"Error pushing to Redis queue. Retrying... ({attempt + 1}/{max_retries})")
+                time.sleep(retry_delay)
         redis_connection.lpush(queue,json.dumps(obj))
 
         self.current_substep += 1

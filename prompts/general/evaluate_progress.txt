@@ -1,3 +1,6 @@
+{% if primer %}
+prime your thoughts but dont mention: "{{primer}}". 
+{% endif %}
 About {{agent}}:
 {{agent.getSelfContext()}}
 
@@ -9,9 +12,6 @@ Rate your progress towards your goal with an integer from 1-5, 1 being bad, 5 be
 
 Write in the first person from the point of view of {{agent}}.
 Write in natural short response style.
-{% if random_prime %}
-Think about the word "{{random_prime}}". 
-{% endif %}
 Base your evaluation on your past memories only.
 Format your response like:
 Explanation: I didnt get my groceries today

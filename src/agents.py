@@ -97,10 +97,10 @@ Express your goal using only the action or outcome. Avoid adding phrases like 'm
     def evaluate_progress(self,opts={}):
         relevant_memories = self.getMemories(self.goal, unix_to_strftime(self.matrix.unix_time))
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
-        random_prime = opts.get("random_prime",False)
+        primer = opts.get("random_prime",False)
         variables = {
             'agent': self,
-            'random_prime': random_common_word(),
+            'primer': random.randint(1, 1000000),
             'selfContext': self.getSelfContext()
         }
         #msg = llm.generate(prompt, f"How am I doing?")
@@ -355,6 +355,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             'agent': self,
             'connections': self.connections,
             'meta_questions': self.meta_questions or "",
+            'primer': random.randint(1, 1000000),
             'other_agent': other_agent,
             "previous_conversations": f"Current Conversation:\n{self.name}\n{previous_conversations}" if previous_conversations else f"Initiate a conversation with {other_agent.name}.",
         }
