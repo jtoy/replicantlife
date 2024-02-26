@@ -100,7 +100,8 @@ Express your goal using only the action or outcome. Avoid adding phrases like 'm
         primer = opts.get("random_prime",False)
         variables = {
             'agent': self,
-            'primer': random.randint(1, 1000000),
+            'primer': random_common_word(),
+            #'primer': random.randint(1, 1000000),
             'selfContext': self.getSelfContext()
         }
         #msg = llm.generate(prompt, f"How am I doing?")
@@ -348,11 +349,26 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
 
 
-
+        all_convo_types = [
+            "Informative: Share information or answer questions.",
+            "Clarification: Provide details to clear up misunderstandings.",
+            "Expressive: Convey emotions, opinions, or sentiments.",
+            "Directive: Offer guidance or instructions.",
+            "Reflective: Acknowledge feelings or thoughts, showing empathy.",
+            "Open-ended: Encourage further discussion by prompting more information.",
+            "Closed-ended: Typically yes/no answers, limiting further discussion.",
+            "Problem-solving: Focus on finding solutions or addressing challenges.",
+            "Probing: Seek additional information or delve deeper into a topic.",
+            "Acknowledgment: Recognize and validate the other person's input.",
+            "Humorous: Introduce humor, creating a lighthearted atmosphere.",
+            "Transactional: Efficiently exchange information or complete tasks."
+            ]
+        random.shuffle(all_convo_types)
         variables = {
             'selfContext': self.getSelfContext(),
             'relevant_memories': relevant_memories_string,
             'agent': self,
+            'convo_types': all_convo_types[:10],
             'connections': self.connections,
             'meta_questions': self.meta_questions or "",
             'primer': random.randint(1, 1000000),

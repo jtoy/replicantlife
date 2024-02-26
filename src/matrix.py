@@ -230,7 +230,7 @@ class Matrix:
         obj["substep"] = self.current_substep
         obj["sim_id"] = self.id # i think we will change this to sim id everywhere
 
-        file = "logs.jsonl"
+        file = f"logs/{obj['sim_id']}.jsonl"
         #with open("logs.json", "a") as file:
         #    json.dump(obj,file,indent=2)
         #    file.write("\n\n")
@@ -249,7 +249,6 @@ class Matrix:
             except redis.RedisError as e:
                 print(f"Error pushing to Redis queue. Retrying... ({attempt + 1}/{max_retries})")
                 time.sleep(retry_delay)
-        redis_connection.lpush(queue,json.dumps(obj))
 
         self.current_substep += 1
 

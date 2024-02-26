@@ -177,8 +177,8 @@ class Llm:
         self.call_times.append(end_time - start_time)
         if len(self.urls) > 1:
             pd(f"current url {current_url}")
-        print(f"INPUT:\n {prompt}")
-        print(f"OUTPUT:\n {msg}")
+        #print(f"INPUT:\n {prompt}")
+        #print(f"OUTPUT:\n {msg}")
         pd(f"runtime: {end_time - start_time}")
         return msg
 

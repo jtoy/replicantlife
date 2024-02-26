@@ -239,8 +239,7 @@ class TestMemoryFunctions(unittest.TestCase):
 
         agent2_data = {
             "name": "Natasha",
-            "description": "You love art",
-            "goal": "Answer questions, think, be rational.",
+            "description": "You love art"
         }
         agent1 = Agent(agent1_data)
         agent2 = Agent(agent2_data)
@@ -249,14 +248,26 @@ class TestMemoryFunctions(unittest.TestCase):
         agent2.connections.append(str(agent1))
 
         unix_time = 1704067200
-
+        convos = []
         for i in range(5):
             timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
-            agent1.talk({ "target": "Natasha", "other_agents": [agent2], "timestamp": timestamp })
-            agent2.talk({ "target": "Viktor", "other_agents": [agent1], "timestamp": timestamp })
+            response = agent1.talk({ "target": "Natasha", "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent1} said to {agent2}: {response}"
+            print(msg)
+            convos.append(msg)
+
+            response = agent2.talk({ "target": "Viktor", "other_agents": [agent1], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent1}: {response}"
+            print(msg)
+            convos.append(msg)
 
             # matrix.print_matrix()
             unix_time = unix_time + 10
+        convos_string = "\n".join(convos)
+        prompt = f"evaluate on a score of 1-10 to tell me if the conversation sounds like a real spoke conversation ,give your explanation, and suggestions for improvements. Does the conversation go on too long? are they repeating themselves?:\n\n{convos_string} \n\n write your response like this:\nScore: 2\nExplanation: It has problems with ....\nSuggestions: how to improve it"
+        result = llm.generate(prompt)
+        print(prompt)
+        print(result)
 
     def test_llmaction(self):
         matrix_data = {

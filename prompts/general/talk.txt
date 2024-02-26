@@ -10,13 +10,22 @@ Below is the current chat history between {{agent}} and {{other_agent}}.
 {{previous_conversations}}
 
 
-
 {% if agent.meta_questions %}
 Before answering, consider "{{agent.meta_questions|random}}"
 {% endif %}
 
-Provide {{agent}}'s response in first person point of view. Only write the response and nothing else.
-DO NOT greet them again. Do NOT use the word "Hey" too often. Keep it concise and no more than 2 sentences.
-DO NOT repeat the same conversation.
-The response should be informal and natural sounding.
+Provide {{agent}}'s response from the first person point of view. 
+DO NOT greet them again.
+Do NOT use the word "Hey" too often.
+Do not keep agreeing positively.
+
+{% if convo_types %}
+You can use one of the following response types that make the conversation flow more naturally:
+{{ convo_types|join("\n") }}
+{% endif %}
+
+Avoid reiterating previous content.
+Craft an informal spoken response.
+Do not start responses with affirmations.
+Only write the response from {agent} and nothing else.
 
