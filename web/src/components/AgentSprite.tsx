@@ -2,6 +2,12 @@ import React from "react";
 import styles from './Agent.module.css';
 
 const AgentSprite: React.FC<{ agentName: string, isTalking: boolean, isThinking: boolean }> = ({ agentName, isTalking, isThinking }) => {
+    let agentImage = `${process.env.NEXT_PUBLIC_BASE_PATH}/images/characters/${agentName}.png`;
+
+    // Check if agentName matches "Zombie" using regex
+    if (/Zombie/.test(agentName)) {
+        agentImage = `${process.env.NEXT_PUBLIC_BASE_PATH}/images/characters/Zombie_1.png`;
+    }
     return (
         <div className={styles.agent}>
             <div>
@@ -23,7 +29,7 @@ const AgentSprite: React.FC<{ agentName: string, isTalking: boolean, isThinking:
                 )}
             </div>
             <img
-                src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/characters/${agentName}.png`} 
+                src={agentImage} 
                 alt={agentName} 
                 width={32}
                 height={32}
