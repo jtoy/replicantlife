@@ -317,7 +317,8 @@ class Matrix:
 
     def send_matrix_to_redis(self):
         if TEST_RUN == 0:
-            redis_connection.set(f"{self.id}:simulations", json.dumps(self.all_env_vars()))
+            #redis_connection.set(f"{self.id}:simulations", json.dumps(self.all_env_vars()))
+            pass
 
     def log_agents_to_redis(self):
         for agent in self.agents:
@@ -327,13 +328,13 @@ class Matrix:
                 "y": agent.y,
                 "status": agent.status
             }
-            redis_connection.rpush(f"{self.id}:agents:{agent.name}", json.dumps(agent_data))
+            #redis_connection.rpush(f"{self.id}:agents:{agent.name}", json.dumps(agent_data))
 
     def run_singlethread(self):
         #self.boot()
         self.status = "running"
         self.sim_start_time = datetime.now()
-        self.send_matrix_to_redis()
+        #self.send_matrix_to_redis()
         for step in range(self.steps):
             self.cur_step = step
             self.current_substep = 0
@@ -344,32 +345,33 @@ class Matrix:
             start_time = datetime.now()
             pd(f"Step {step + 1}:")
 
-            redis_log(self.get_arr_2D(), f"{self.id}:matrix_states")
-            redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
-            print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:agent_conversations")
+            #redis_log(self.get_arr_2D(), f"{self.id}:matrix_states")
+            #redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
+            #print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:agent_conversations")
 
-            self.log_agents_to_redis()
+            #self.log_agents_to_redis()
 
-            for a in self.agents:
-                print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:events:{a.name}")
-                print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:conversations:{a.name}")
+            #for a in self.agents:
+            #    print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:events:{a.name}")
+            #    print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:conversations:{a.name}")
 
-            control_cmd = redis_connection.lpop(f"{self.id}:communications")
-            if control_cmd:
-                control_cmd_str = control_cmd.decode('utf-8')
-                try:
-                    control_cmd_dict = json.loads(control_cmd_str)
+            if redis_connection:
+                control_cmd = redis_connection.lpop(f"{self.id}:communications")
+                if control_cmd:
+                    control_cmd_str = control_cmd.decode('utf-8')
+                    try:
+                        control_cmd_dict = json.loads(control_cmd_str)
 
-                    name = control_cmd_dict.get('name', None)
-                    msg = control_cmd_dict.get('msg', None)
-                    control_type = control_cmd_dict.get('type', None)
+                        name = control_cmd_dict.get('name', None)
+                        msg = control_cmd_dict.get('msg', None)
+                        control_type = control_cmd_dict.get('type', None)
 
-                    if name:
-                        for agent in self.agents:
-                            if name == agent.name:
-                                agent.addMemory(kind=control_type, content=msg, timestamp=unix_to_strftime(self.unix_time), score=10)
-                except json.JSONDecodeError as e:
-                    print(f"Error decoding control_cmd: {e}")
+                        if name:
+                            for agent in self.agents:
+                                if name == agent.name:
+                                    agent.addMemory(kind=control_type, content=msg, timestamp=unix_to_strftime(self.unix_time), score=10)
+                    except json.JSONDecodeError as e:
+                        print(f"Error decoding control_cmd: {e}")
 
             # Submit agent actions concurrently
             for i in range(len(self.agents)):
@@ -401,7 +403,7 @@ class Matrix:
     def run(self):
         self.status = "running"
         self.sim_start_time = datetime.now()
-        self.send_matrix_to_redis()
+        #self.send_matrix_to_redis()
         for step in range(self.steps):
             with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
                 if self.status == "stop":
@@ -411,7 +413,7 @@ class Matrix:
 
                 pd(f"Step {step}:")
 
-                redis_connection.lpush(f"{self.id}:agent_conversations", json.dumps(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}"))
+                #redis_connection.lpush(f"{self.id}:agent_conversations", json.dumps(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}"))
 
                 # Submit agent actions concurrently
                 if LLM_ACTION == 1:
@@ -428,7 +430,7 @@ class Matrix:
                 if PRINT_MAP == 1:
                     self.print_matrix()
 
-                redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
+                #redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
                 self.unix_time = self.unix_time + 10
                 end_time = datetime.now()
                 pd(f"LLm calls for Step {step}: {llm.call_counter - self.llm_calls} calls")
@@ -746,6 +748,7 @@ class Matrix:
         return arr_2D
 
     def clear_redis(self):
+        return
         redis_connection.delete(f"{self.id}:matrix_state")
         redis_connection.delete(f"{self.id}:matrix_states")
         redis_connection.delete(f"{self.id}:agent_conversations")

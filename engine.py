@@ -51,10 +51,10 @@ def main():
 
     pd(f"model:#{MODEL}")
     pd("Initial Agents Positions:")
-    redis_connection.set(f"{matrix.id}:matrix_state", json.dumps(matrix.get_arr_2D()))
+    #redis_connection.set(f"{matrix.id}:matrix_state", json.dumps(matrix.get_arr_2D()))
 
     # Clear convos
-    matrix.clear_redis()
+    #matrix.clear_redis()
 
     # Run
     start_time = datetime.now()
