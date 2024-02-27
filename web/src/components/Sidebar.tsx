@@ -111,7 +111,7 @@ const Sidebar: React.FC<SidebarProps> = (
         return(
             <div className={styles.gameControls}>
                 <div>
-                    Step: {stepId}.{substepId}
+                    Step: {stepId}
                 </div>
                 <div className={styles.buttons}>
                     <button onClick={handleRewind}>Rewind</button>
