@@ -177,7 +177,7 @@ class Llm:
         self.call_times.append(end_time - start_time)
         if len(self.urls) > 1:
             pd(f"current url {current_url}")
-        #print(f"INPUT:\n {prompt}")
+        print(f"INPUT:\n {prompt}")
         #print(f"OUTPUT:\n {msg}")
         pd(f"runtime: {end_time - start_time}")
         return msg
@@ -265,7 +265,11 @@ llm = Llm()
 '''
 REDIS
 '''
-redis_connection = redis.Redis.from_url(REDIS_URL)
+if "REDIS_URL" in os.environ:
+    redis_connection = redis.Redis.from_url(os.environ["REDIS_URL"])
+else:
+    print("REDIS_URL environment variable is not set.")
+    redis_connection = None
 
 def print_and_log(content, key):
     return

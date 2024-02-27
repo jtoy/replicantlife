@@ -229,6 +229,49 @@ class TestMemoryFunctions(unittest.TestCase):
             print(f"Current Memory: {mem}")
             print(f"Relevance Score: {Memory.calculateRelevanceScore(mem.embedding, context_embedding)}")
         self.assertTrue(len(sorted_memory) > 0)
+    def test_talk_stranger(self):
+        agent1_data = {
+            "name": "Viktor",
+            "description": "You love physics",
+            "goal": "Answer questions, think, be rational.",
+        }
+        agent2_data = {
+            "name": "Natasha",
+            "description": "You love art"
+        }
+        agent1 = Agent(agent1_data)
+        agent2 = Agent(agent2_data)
+        unix_time = 1704067200
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent1.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent1} said to {agent2}: {response}"
+            print(msg)
+            response = agent2.talk({ "target": agent1.name, "other_agents": [agent1], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent1}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+        agent1_data = {
+            "name": "John",
+            "description": "Scared of zombies",
+        }
+        agent2_data = {
+            "name": "Alucard",
+            "description": "shy and confused about what is happening"
+        }
+        agent1 = Agent(agent1_data)
+        agent2 = Agent(agent2_data)
+        unix_time = 1704067200
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent1.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent1} said to {agent2}: {response}"
+            print(msg)
+            response = agent2.talk({ "target": agent1.name, "other_agents": [agent1], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent1}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+
 
     def test_talk(self):
         agent1_data = {

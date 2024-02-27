@@ -364,6 +364,11 @@ Answer the question from the point of view of {self} thinking to themselves, res
             "Transactional: Efficiently exchange information or complete tasks."
             ]
         random.shuffle(all_convo_types)
+        if other_agent.name not in self.connections:
+            other_agent_name = "stranger"
+        else:
+            other_agent_name = other_agent.name
+
         variables = {
             'selfContext': self.getSelfContext(),
             'relevant_memories': relevant_memories_string,
@@ -372,8 +377,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
             'connections': self.connections,
             'meta_questions': self.meta_questions or "",
             'primer': random.randint(1, 1000000),
-            'other_agent': other_agent,
-            "previous_conversations": f"Current Conversation:\n{self.name}\n{previous_conversations}" if previous_conversations else f"Initiate a conversation with {other_agent.name}.",
+            'other_agent': other_agent_name,
+            "previous_conversations": f"Current Conversation:\n{self.name}\n{previous_conversations}" if previous_conversations else f"Initiate a conversation with {other_agent_name}.",
         }
 
         msg = llm.prompt(prompt_name="talk", variables=variables)
@@ -384,6 +389,11 @@ Answer the question from the point of view of {self} thinking to themselves, res
             msg = match.group(1).strip()
         else:
             msg = msg.split(": ", 1)[-1] if ": " in msg else msg
+        if other_agent.name not in self.connections:
+            if other_agent.kind == "human":
+                # TODO add back location, need current location!!
+                self.addMemory("observation", f"{timestamp} - {self.name} met {other_agent.name}", timestamp, random.randint(2, 5))
+                self.connections.append(other_agent.name)
 
         interaction = f"{timestamp} - {self} said to {other_agent}: {msg}"
         if self.matrix is not None:
@@ -497,10 +507,10 @@ Answer the question from the point of view of {self} thinking to themselves, res
                     a_area = environment.get_area_from_coordinates(a.x, a.y)
                     a_loc = environment.get_location_from_coordinates(a.x, a.y)
                     location_name = f"{'' if a_area is None else a_area.name} {a_loc.name}"
-                    if a.name not in self.connections:
-                        if a.kind == "human":
-                            self.addMemory("observation", f"{timestamp} - {self.name} met {a.name} at {location_name}", timestamp, random.randint(2, 5))
-                            self.connections.append(a.name)
+                    #if a.name not in self.connections:
+                    #    if a.kind == "human":
+                    #        self.addMemory("observation", f"{timestamp} - {self.name} met {a.name} at {location_name}", timestamp, random.randint(2, 5))
+                    #        self.connections.append(a.name)
 
 
                     if a.status == "dead":

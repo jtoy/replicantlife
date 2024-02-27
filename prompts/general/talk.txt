@@ -5,10 +5,19 @@ prime your thoughts but dont mention: "{{primer}}".
 
 {{relevant_memories}}
 
+
+{% if other_agent == "stranger" %}
+This is your first time talking to this stranger
+{% else %}
 Below is the current chat history between {{agent}} and {{other_agent}}.
 
 {{previous_conversations}}
 
+{% if convo_types %}
+You can use one of the following response types that make the conversation flow more naturally:
+{{ convo_types|join("\n") }}
+{% endif %}
+{% endif %}
 
 {% if agent.meta_questions %}
 Before answering, consider "{{agent.meta_questions|random}}"
@@ -19,13 +28,10 @@ DO NOT greet them again.
 Do NOT use the word "Hey" too often.
 Do not keep agreeing positively.
 
-{% if convo_types %}
-You can use one of the following response types that make the conversation flow more naturally:
-{{ convo_types|join("\n") }}
-{% endif %}
 
 Avoid reiterating previous content.
+keep responses to under 3 sentences.
 Craft an informal spoken response.
 Do not start responses with affirmations.
-Only write the response from {agent} and nothing else.
+Only write the response from {{agent}} and nothing else.
 

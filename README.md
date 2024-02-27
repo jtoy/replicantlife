@@ -197,6 +197,10 @@ This should start a basic webserver that would allow us to view the game state a
 
 3. Pass in to `engine.py` with `--environment` flag.
 
+# engine 
+When working on the main engine,  often times we can shut off all llm calls, in that case, you can turn off all llm calls with a command such as:
+`LLM_IMPORTANCE=0 LLM_ACTION=0 python engine.py --scenario configs/zombie_situation.json --env configs/largev2.tmj`
+
 
 
 THINKING ABOUT:
@@ -215,4 +219,4 @@ THINKING ABOUT:
 * nearby moving vs far away destinations
 * make all cognitive modules flags work on a user basis
 * normalize flag names
-* see a stranger
+* improve convo when meeting strangers
