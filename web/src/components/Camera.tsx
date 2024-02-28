@@ -25,8 +25,8 @@ const Camera: React.FC<CameraProps> = ({ setFollowAgent, followAgent, children }
 
     useEffect(() => {
         if(followAgent) {
-            setX(followAgent.position.x * CELL_SIZE);
-            setY(followAgent.position.y * CELL_SIZE);
+            setX(followAgent.position.y * CELL_SIZE);
+            setY(followAgent.position.x * CELL_SIZE);
         }
     }, [followAgent?.position.x, followAgent?.position.y]);
 
