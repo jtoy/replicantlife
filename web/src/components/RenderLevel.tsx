@@ -84,8 +84,8 @@ const RenderLevel: React.FC<{simId: string}> = ({ simId }) => {
 
             const style: React.CSSProperties = {
                 position: 'absolute',
-                top: y,
-                left: x,
+                top: x,
+                left: y,
             };
 
             return (
