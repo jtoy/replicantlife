@@ -79,8 +79,8 @@ const RenderLevel: React.FC<{simId: string}> = ({ simId }) => {
 
     const renderAgents = () => {
         return levelState.agents.map((agent, index) => {
-            const x = agent.position.x * CELL_SIZE;
-            const y = agent.position.y * CELL_SIZE;
+            const y = agent.position.x * CELL_SIZE;
+            const x = agent.position.y * CELL_SIZE;
 
             const style: React.CSSProperties = {
                 position: 'absolute',
