@@ -253,11 +253,11 @@ class TestMemoryFunctions(unittest.TestCase):
             unix_time = unix_time + 10
         agent1_data = {
             "name": "John",
-            "description": "Scared of zombies",
+            "description": "outgoing and likes to talk",
         }
         agent2_data = {
             "name": "Alucard",
-            "description": "shy and confused about what is happening"
+            "description": "shy"
         }
         agent1 = Agent(agent1_data)
         agent2 = Agent(agent2_data)

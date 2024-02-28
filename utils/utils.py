@@ -29,7 +29,7 @@ except ImportError:
 Print Debug Function
 '''
 def pd(msg):
-    if os.getenv("DEBUG") == "1":
+    if DEBUG == "1":
         print(f"{msg}")
     url = "https://discord.com/api/webhooks/1179589082540675113/o8NLAfbISn82hZ9SmGyJ3GAJavIc7OIDS8Qbjl8OoO-jWOBSVLuQ6kgv-_UDju1yWf8M"
     data = {'content': msg}
@@ -177,8 +177,8 @@ class Llm:
         self.call_times.append(end_time - start_time)
         if len(self.urls) > 1:
             pd(f"current url {current_url}")
-        print(f"INPUT:\n {prompt}")
-        #print(f"OUTPUT:\n {msg}")
+        pd(f"INPUT:\n {prompt}")
+        pd(f"OUTPUT:\n {msg}")
         pd(f"runtime: {end_time - start_time}")
         return msg
 
@@ -265,8 +265,9 @@ llm = Llm()
 '''
 REDIS
 '''
-if "REDIS_URL" in os.environ:
-    redis_connection = redis.Redis.from_url(os.environ["REDIS_URL"])
+#TODO get rid of globals
+if "REDIS_URL" in globals():
+    redis_connection = redis.Redis.from_url(REDIS_URL)
 else:
     print("REDIS_URL environment variable is not set.")
     redis_connection = None
