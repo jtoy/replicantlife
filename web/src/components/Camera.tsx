@@ -19,14 +19,14 @@ const Camera: React.FC<CameraProps> = ({ setFollowAgent, followAgent, children }
     const zoomSpeed = 0.02;
 
     const [scale, setScale] = React.useState(1);
-    const [x, setX] = React.useState(0);
-    const [y, setY] = React.useState(0);
+    const [x, setHorizontal] = React.useState(0); // Changed setX to setHorizontal to avoid confusing names
+    const [y, setVertical] = React.useState(0); // Changed setY to setVertical to avoid confusing names
     const [panning, setPanning] = useState<Panning | undefined>(undefined);
 
     useEffect(() => {
         if(followAgent) {
-            setX(followAgent.position.y * CELL_SIZE);
-            setY(followAgent.position.x * CELL_SIZE);
+            setHorizontal(followAgent.position.y * CELL_SIZE); // setHorizontal (setX) should use the y position to correctly follow the agent
+            setVertical(followAgent.position.x * CELL_SIZE); // setVertical (setY) should use the x position to correctly follow the agent
         }
     }, [followAgent?.position.x, followAgent?.position.y]);
 
@@ -49,8 +49,8 @@ const Camera: React.FC<CameraProps> = ({ setFollowAgent, followAgent, children }
         if(panning) {
             const dx = e.clientX - panning.startX;
             const dy = e.clientY - panning.startY;
-            setX(x - dx);
-            setY(y - dy);
+            setHorizontal(x - dx);
+            setVertical(y - dy);
             setPanning({startX: e.clientX, startY: e.clientY});
         }
     };
