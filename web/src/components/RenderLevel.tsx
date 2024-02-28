@@ -30,7 +30,7 @@ async function getData(sim_id: string, fromIndex: number) {
 const RenderLevel: React.FC<{simId: string}> = ({ simId }) => {   
     const [isPlaying, setIsPlaying] = useState(true);
     const [followAgent, setFollowAgent] = useState<Agent | undefined>(undefined);
-    const [levelState, setLevelState] = useState<LevelState>({stepId: 0, substepId: 0, agents: []});
+    const [levelState, setLevelState] = useState<LevelState>({stepId: 0, substepId: 0, agents: [],levelImage:"Large"});
     const levelRef = useRef<Level>(new Level([], (newState: LevelState) => {
         setLevelState(newState);
     }));
@@ -105,7 +105,7 @@ const RenderLevel: React.FC<{simId: string}> = ({ simId }) => {
             <div className={styles.gameContainer}>
 
                 <Camera followAgent={followAgent} setFollowAgent={setFollowAgent}>
-                    <img src={process.env.NEXT_PUBLIC_BASE_PATH +"/images/maps/Large.png"} alt="Default Map" />
+                    <img src={process.env.NEXT_PUBLIC_BASE_PATH +`/images/maps/${levelState.levelImage}.png`} alt="Default Map" />
                     <>
                         {renderAgents()}
                     </>

@@ -6,6 +6,7 @@ export interface LevelState {
     agents: Agent[];
     stepId: number;
     substepId: number;
+    levelImage: string;
 }
 
 export const findAgentName = (agentId: string, agents: Agent[]) => {
@@ -21,6 +22,8 @@ export default class Level {
     debug: boolean = false;
     simulationComplete: boolean = false;
     isPlaying: boolean = true;
+    levelImage: string = "Large";
+
 
     constructor(placements: Agent[], onEmit: (newLevelState: LevelState) => void) {
         this.agents = placements;
@@ -46,7 +49,8 @@ export default class Level {
         return {
             agents: this.agents,
             stepId: this.stepId,
-            substepId: this.substepId
+            substepId: this.substepId,
+            levelImage: "Large"
         };
     }
 

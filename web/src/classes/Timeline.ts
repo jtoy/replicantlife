@@ -1,4 +1,6 @@
 import { MatrixSetStep } from "@/steps/MatrixSetStep";
+import { MatrixInitStep } from "@/steps/MatrixInitStep";
+
 import { Step } from "../steps/Step";
 import Level from "./Level";
 
@@ -78,6 +80,10 @@ export class Timeline {
           this.dataComplete = true;
         }
       }
+      if (step instanceof MatrixInitStep) {
+        step.applyStep(this.level);
+      }
+      
     });
     //console.log(this.steps);
   }

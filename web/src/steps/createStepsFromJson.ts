@@ -4,6 +4,7 @@ import { TalkJSON, TalkStep } from "./TalkStep";
 import { StepJSON, Step } from "./Step";
 import { AgentSetJSON, AgentSetStep } from "./AgentSetStep";
 import { MatrixSetJSON, MatrixSetStep } from "./MatrixSetStep";
+import { MatrixInitJSON, MatrixInitStep } from "./MatrixInitStep";
 import { ThoughtJSON, ThoughtStep } from "./ThoughtStep";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,6 +27,9 @@ export function createStepsFromJson(stepsData: StepJSON[]): Step[] {
                 break;
             case 'matrix_set':
                 steps.push(MatrixSetStep.fromJSON(stepData as MatrixSetJSON));
+                break;
+            case 'matrix_init':
+                steps.push(MatrixInitStep.fromJSON(stepData as MatrixInitJSON));
                 break;
             case 'add_memory': {
                 const meta = stepData as ThoughtJSON;
