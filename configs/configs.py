@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # DECLARE PARAMS HERE
-DEBUG = os.getenv("DEBUG", default="1")
+DEBUG = os.getenv("DEBUG", default="0")
 LLAMA_URL = os.getenv("LLAMA_URL", default="http://localhost:11434/api")
 POWERINF_URL = os.getenv("POWERINF_URL", default="http://localhost:8080")
 LLAMA_TIMEOUT = int(os.getenv("LLAMA_TIMEOUT", default="600"))

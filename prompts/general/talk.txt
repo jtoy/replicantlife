@@ -1,14 +1,18 @@
-{% if primer %}
-prime your thoughts but dont mention: "{{primer}}". 
-{% endif %}
+roleplay 
 {{selfContext}}
-
 {{relevant_memories}}
 
 
 {% if other_agent == "stranger" %}
-This is your first time talking to this stranger
+This is your first time talking to this stranger.
+
 {% else %}
+
+{% if primer %}
+prime your thoughts but dont mention: "{{primer}}". 
+{% endif %}
+
+{{selfContext}}
 Below is the current chat history between {{agent}} and {{other_agent}}.
 
 {{previous_conversations}}
@@ -17,6 +21,11 @@ Below is the current chat history between {{agent}} and {{other_agent}}.
 You can use one of the following response types that make the conversation flow more naturally:
 {{ convo_types|join("\n") }}
 {% endif %}
+DO NOT greet them again.
+Do NOT use the word "Hey" too often.
+Do not keep agreeing positively.
+Avoid reiterating previous content.
+Do not start responses with affirmations.
 {% endif %}
 
 {% if agent.meta_questions %}
@@ -24,14 +33,9 @@ Before answering, consider "{{agent.meta_questions|random}}"
 {% endif %}
 
 Provide {{agent}}'s response from the first person point of view. 
-DO NOT greet them again.
-Do NOT use the word "Hey" too often.
-Do not keep agreeing positively.
 
 
-Avoid reiterating previous content.
 keep responses to under 3 sentences.
 Craft an informal spoken response.
-Do not start responses with affirmations.
 Only write the response from {{agent}} and nothing else.
 
