@@ -75,6 +75,7 @@ class Matrix:
         self.environment = Environment({ "filename": self.environment_file })
         if self.scenario_file is not None:
             self.parse_scenario_file(self.scenario_file)
+        self.environment.overlay_collisions_on_image()
         #above line reads
         #then agent initialization
         # Build Environment
@@ -651,26 +652,7 @@ class Matrix:
             for memory in agent.memory:
                 pd(memory)
 
-    def is_position_valid(self, position):
-        # Check if the position is within the boundaries of the matrix
-        if not (0 <= position[0] <= self.n and 0 <= position[1] <= self.n):
-            return False
 
-        try:
-            if self.collisions[position[0]][position[1]] == 1:
-                return False
-        except Exception as e:
-            return False
-
-        return True
-
-
-    # Add a helper method to generate a random valid position
-    def generate_random_position(self):
-        position = (random.randint(1, self.n - 2), random.randint(1, self.n - 2))
-        while not self.is_position_valid(position):
-            position = (random.randint(1, self.n - 2), random.randint(1, self.n - 2))
-        return position
 
     # Add a helper method to generate a unique name
     def generate_unique_name(self):

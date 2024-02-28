@@ -204,6 +204,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         return None  # Return None if the location is not found
 
     def move(self, opts={}):
+        start_time = time.time()
         environment = opts.get("environment", None)
         name_target = opts.get("target", None)
         target_coordinate = None
@@ -216,10 +217,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
             if name_target is None and self.current_destination is None:
                 target_coordinate = random.choice(self.current_destination.valid_coordinates)
             elif name_target is not None and len(self.destination_cache) == 0:
-                start_time = time.time()
                 target = find_most_similar(name_target, [location.name for location in self.spatial_memory])
 
-                start_time = time.time()
                 for location in self.spatial_memory:
                     if target == location.name:
                         target_coordinate = random.choice(location.valid_coordinates)
@@ -233,7 +232,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
                 return self
             elif target_coordinate != None:
                 self.destination_cache = find_path((self.x, self.y), target_coordinate, environment.get_valid_coordinates())
-                print(f"Path: {self.destination_cache}")
+                pd(f"Path: {self.destination_cache}")
 
 
             if len(self.destination_cache) != 0:
@@ -247,26 +246,15 @@ Answer the question from the point of view of {self} thinking to themselves, res
                 self.addMemory("observation",f"arrived at {self.current_location_name()}" , self.matrix.unix_time, random.randint(5, 9))
                 self.current_destination = None
 
+        end_time = time.time()
+        pd(f"{self} move time: {end_time-start_time}")
         if self.matrix:
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"move","x":self.x,"y":self.y,"target":name_target})
+        
         return self
 
     def heuristic(self, current, target):
         return abs(current[0] - target[0]) + abs(current[1] - target[1])
-
-    def is_position_valid(self, n, collisions, position):
-        # Check if the position is within the boundaries of the matrix
-        if not (0 <= position[0] < n and 0 <= position[1] < n):
-            return False
-
-        # Check if the position is occupied by a boundary object
-        if position[0] >= len(collisions) or position[1] >= len(collisions[0]):
-            return False
-
-        if collisions[position[0]][position[1]] == 1:
-            return False
-
-        return True
 
     def is_locked_to_convo(self):
         if self.last_conversation is None:
