@@ -113,6 +113,7 @@ const Sidebar: React.FC<SidebarProps> = (
                 <div>
                     Step: {stepId}
                 </div>
+                <span style={{ display: 'none' }}>{substepId}</span>
                 <div className={styles.buttons}>
                     <button onClick={handleRewind}>Rewind</button>
                     <button onClick={handlePause} disabled={!isPlaying}>Pause</button>
