@@ -2,6 +2,7 @@ import json
 import redis
 import sys
 import os
+import jsonlines
 
 def inject_jsonl_to_redis_queue(file_path, queue_name, max_steps=None):
     # Connect to Redis
@@ -9,21 +10,12 @@ def inject_jsonl_to_redis_queue(file_path, queue_name, max_steps=None):
     redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
 
     # Read JSONL file
-    with open(file_path, 'r') as jsonl_file:
-        for step, line in enumerate(jsonl_file, start=1):
+    with jsonlines.open(file_path, mode='r') as reader:
+        for step, line in enumerate(reader, start=1):
+            data = json.loads(line)
+            redis_client.rpush(queue_name, json.dumps(data))
             if max_steps is not None and step > max_steps:
                 break
-
-            try:
-                # Parse JSON from each line
-                data = json.loads(line.strip())
-
-                # Push data into the Redis queue
-                redis_client.rpush(queue_name, json.dumps(data))
-            except json.JSONDecodeError as e:
-                print(f"Error decoding JSON: {e}")
-                continue
-
     print(f"Data from {file_path} injected into Redis queue {queue_name} ({step} lines)")
 
 if __name__ == "__main__":
