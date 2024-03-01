@@ -12,69 +12,77 @@ import { CELL_SIZE } from '@/helpers/consts';
 async function getData(sim_id: string, fromIndex: number) {
     const redisKey = sim_id;
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${redisKey}?fromIndex=${fromIndex}`);
-  
-   
+
+
     if (!res.ok) {
-      // This will activate the closest `error.js` Error Boundary
-      throw new Error('Failed to fetch data')
+        // This will activate the closest `error.js` Error Boundary
+        throw new Error('Failed to fetch data')
     }
-  
+
     const data = await res.json();
     const steps = data['steps'];
     const totalSteps = data['totalSteps'];
 
     return [totalSteps, steps];
-  }
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const RenderLevel: React.FC<{simId: string}> = ({ simId }) => {   
+const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
     const [isPlaying, setIsPlaying] = useState(true);
     const [followAgent, setFollowAgent] = useState<Agent | undefined>(undefined);
-    const [levelState, setLevelState] = useState<LevelState>({stepId: 0, substepId: 0, agents: []});
+    const [levelState, setLevelState] = useState<LevelState>({ stepId: 0, substepId: 0, agents: [] });
+    const [fetchIndex, setFetchIndex] = useState(0);
+    const [totalSteps, setTotalSteps] = useState(0);
+    const [initialFetchDone, setInitialFetchDone] = useState(false);
+    const chunkSize = 500; // Adjust chunk size as needed
+
     const levelRef = useRef<Level>(new Level([], (newState: LevelState) => {
         setLevelState(newState);
     }));
 
-    useEffect(() => {
-        let fetchIndex = 0;
-        let isMounted = true;
-        const level = levelRef.current;
+    const fetchData = async () => {
+        const [totalSteps, data] = await getData(simId, fetchIndex);
+        console.log(chunkSize);
+        setFetchIndex(fetchIndex + chunkSize);
 
-        const fetchData = async () => {
-            if(!level.isPlaying) return;
-
-            const [totalSteps, data] = await getData(simId, fetchIndex);
-
-            if (fetchIndex < totalSteps && isMounted) {
-                levelRef.current.addStepsFromJson(data);
-                fetchIndex = totalSteps;
-            
-                if(level.timeline.dataComplete) {
-                    clearInterval(interval);
-                }
-            }
-        };
-
-        fetchData();
-        const interval = setInterval(fetchData, 12000);
-
-        return () => {
-            isMounted = false;
-            levelRef.current.destroy();
-            clearTimeout(interval);
+        // Update totalSteps once
+        if (!initialFetchDone) {
+            setTotalSteps(totalSteps);
+            setInitialFetchDone(true);
         }
-    }, [simId]);
+
+        levelRef.current.addStepsFromJson(data);
+
+        // if (fetchIndex >= totalSteps) {
+        //     setIsPlaying(false); // or perform any other action when all data is fetched
+        // }
+    };
 
     useEffect(() => {
-        if(levelState.agents.length > 0) {
+        let isMounted = true;
+        if (!initialFetchDone) {
+            fetchData(); // Fetch immediately for the first time
+        } else {
+            const interval = setInterval(fetchData, 20000); // Subsequent fetches at 20-second intervals
+
+            return () => {
+                isMounted = false;
+                clearInterval(interval);
+            };
+        }
+    }, [simId, fetchIndex]);
+
+
+    useEffect(() => {
+        if (levelState.agents.length > 0) {
             setFollowAgent(levelState.agents[0]);
         }
     }, [levelState.agents.length]);
-    
-    if(!levelState) {
+
+    if (!levelState) {
         return (
             <div>Loading...</div>
-        )   
+        )
     }
 
     const renderAgents = () => {
@@ -89,10 +97,10 @@ const RenderLevel: React.FC<{simId: string}> = ({ simId }) => {
             };
 
             return (
-                <div key={index} 
-                    style={style} 
-                    className={styles.placement} 
-                    onClick={() => setFollowAgent(agent) }>
+                <div key={index}
+                    style={style}
+                    className={styles.placement}
+                    onClick={() => setFollowAgent(agent)}>
                     <AgentSprite agentName={agent.agentName} isTalking={agent.isTalking} isThinking={agent.isThinking} />
                 </div>
             );
@@ -100,22 +108,22 @@ const RenderLevel: React.FC<{simId: string}> = ({ simId }) => {
     };
 
     return (
-        
+
         <div className={styles.fullScreenContainer}>
             <div className={styles.gameContainer}>
 
                 <Camera followAgent={followAgent} setFollowAgent={setFollowAgent}>
-                    <img src={process.env.NEXT_PUBLIC_BASE_PATH +"/images/maps/Large.png"} alt="Default Map" />
+                    <img src={process.env.NEXT_PUBLIC_BASE_PATH + "/images/maps/Large.png"} alt="Default Map" />
                     <>
                         {renderAgents()}
                     </>
                 </Camera>
-                <Sidebar agentPlacement={followAgent} 
+                <Sidebar agentPlacement={followAgent}
                     setFollowAgent={setFollowAgent}
-                    isPlaying={isPlaying} 
+                    isPlaying={isPlaying}
                     setIsPlaying={setIsPlaying}
-                    stepId={levelState.stepId} 
-                    substepId={levelState.substepId} 
+                    stepId={levelState.stepId}
+                    substepId={levelState.substepId}
                     level={levelRef.current} />
             </div>
         </div>
