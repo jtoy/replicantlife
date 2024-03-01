@@ -27,7 +27,7 @@ async function getStepsFromRedis(id: string, prevStartIndex: number, chunkSize: 
       return [totalSteps, []];
     }
 
-    var startIndex = 0;
+    let startIndex = 0;
     if (totalSteps - prevStartIndex <= chunkSize) {
       startIndex = -1; // last chunk, we start at index 0
     }

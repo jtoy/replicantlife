@@ -2,6 +2,7 @@
 
 import Level, { LevelState } from '@/classes/Level';
 import styles from './RenderLevel.module.css';
+import React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import Sidebar from './Sidebar';
 import AgentSprite from './AgentSprite';
@@ -32,7 +33,6 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
     const [followAgent, setFollowAgent] = useState<Agent | undefined>(undefined);
     const [levelState, setLevelState] = useState<LevelState>({ stepId: 0, substepId: 0, agents: [] });
     const [fetchIndex, setFetchIndex] = useState(0);
-    const [totalSteps, setTotalSteps] = useState(0);
     const [initialFetchDone, setInitialFetchDone] = useState(false);
     const chunkSize = 500; // Adjust chunk size as needed
 
@@ -42,12 +42,10 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
 
     const fetchData = async () => {
         const [totalSteps, data] = await getData(simId, fetchIndex);
-        console.log(chunkSize);
         setFetchIndex(fetchIndex + chunkSize);
+        console.log(totalSteps);
 
-        // Update totalSteps once
         if (!initialFetchDone) {
-            setTotalSteps(totalSteps);
             setInitialFetchDone(true);
         }
 
@@ -59,14 +57,14 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
     };
 
     useEffect(() => {
-        let isMounted = true;
+        // let isMounted = true;
         if (!initialFetchDone) {
             fetchData(); // Fetch immediately for the first time
         } else {
             const interval = setInterval(fetchData, 20000); // Subsequent fetches at 20-second intervals
 
             return () => {
-                isMounted = false;
+                // isMounted = false;
                 clearInterval(interval);
             };
         }
