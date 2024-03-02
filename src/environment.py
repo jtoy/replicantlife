@@ -223,11 +223,35 @@ class Area:
         return f"{self.name}"
 
 class Object:
+    @classmethod
+    def moveable_objects(cls):
+        return {
+                "Wall": False,
+                "Merchandises": True,
+                "Bed": True,
+                "Cabinet": True,
+                "Couch": True,
+                "TV": True,
+                "Refrigerator": True,
+                "Table": True,
+                "Chair": True,
+                "Musical Instruments": True,
+                "Utensils": True,
+                "Trees": False,
+                "Bench": True,
+                "Fence": False,
+                "Farm Equipments": True,
+                "Bookshelf": True
+                }
+
+
     def __init__(self, object_data={}):
         self.name = object_data.get("name", "Area")
         self.bounds = object_data.get("bounds", [])
         self.valid_coordinates = []
+        self.moveable = Object.moveable_objects().get(self.name,False)
 
+        self.mid = str(uuid.uuid4())
         self.area = object_data.get("area", None)
 
     def get_tree(self):

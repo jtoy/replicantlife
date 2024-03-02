@@ -12,7 +12,6 @@ import json
 import heapq
 import re
 from fuzzywuzzy import fuzz
-#from FineMoveAction import FineMoveAction
 
 
 class Agent:

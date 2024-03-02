@@ -205,7 +205,7 @@ When working on the main engine,  often times we can shut off all llm calls, in 
 
 
 
-THINKING ABOUT:
+# THINKING ABOUT
 * fix time, dont need to pass time everywhere!
 * finalize on logging, data vs flat
 * remove the llm calls in init
@@ -218,10 +218,8 @@ THINKING ABOUT:
 * some memories have timestamps inside of them, no value?
 * logs, should hold it open, and output to a file
 * importance calculated based off recent memories
-* nearby moving vs far away destinations
 * make all cognitive modules flags work on a user basis
 * normalize flag names
-* improve convo when meeting strangers
 
 
 # changes over time
@@ -236,4 +234,5 @@ THINKING ABOUT:
 * things growing/shrinking
 * things getting destroyed
 * discover actions
+* environmental changes
 

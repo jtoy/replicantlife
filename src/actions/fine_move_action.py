@@ -1,6 +1,4 @@
 import re
-import unittest
-from unittest.mock import MagicMock
 
 class FineMoveAction:
     #for fine move, i need to know who is near me, perception needs to be updated to provide that info or passed into here
@@ -15,11 +13,6 @@ class FineMoveAction:
     @classmethod
     def explanation(cls):
         return "george will \"fine_move right\" to walk towards the car"
-
-    @classmethod
-    def llm_param_cleanup(cls):
-        # method to take output from cli and clean it up
-        print("this is a class method in finemoveaction.")
 
     @classmethod
     def act(cls,agent, pre_processed_direction):
