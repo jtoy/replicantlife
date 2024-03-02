@@ -1,4 +1,7 @@
 import re
+import unittest
+from unittest.mock import MagicMock
+
 class FineMoveAction:
     #for fine move, i need to know who is near me, perception needs to be updated to provide that info or passed into here
     @classmethod
@@ -50,3 +53,22 @@ class FineMoveAction:
             new_x, new_y = current_x, current_y
         agent.x = new_x
         agent.y = new_y
+
+class TestFineMoveAction(unittest.TestCase):
+    def setUp(self):
+        self.agent = MagicMock()
+        self.agent.x = 0
+        self.agent.y = 0
+
+    def test_act_up(self):
+        FineMoveAction.act(self.agent, "up with random text")
+        self.assertEqual(self.agent.x, 0)
+        self.assertEqual(self.agent.y, -1)
+
+    def test_act_invalid_direction(self):
+        FineMoveAction.act(self.agent, "invalid-direction")
+        self.assertEqual(self.agent.x, 0)
+        self.assertEqual(self.agent.y, 0)
+
+if __name__ == '__main__':
+    unittest.main()
