@@ -12,7 +12,32 @@ from concurrent.futures import ThreadPoolExecutor
 import random
 import re
 
+from unittest.mock import MagicMock
+from src.actions.fine_move_action import FineMoveAction
+
 class TestMemoryFunctions(unittest.TestCase):
+    def test_fine_move_action_direction(self):
+        agent = MagicMock(x=0, y=0)
+        FineMoveAction.act(agent, "up with random text")
+        self.assertEqual(agent.x, 0)
+        self.assertEqual(agent.y, -1)
+
+    def test_fine_move_action_invalid_direction(self):
+        agent = MagicMock(x=0, y=0)
+        FineMoveAction.act(agent, "invalid-direction")
+        self.assertEqual(agent.x, 0)
+        self.assertEqual(agent.y, 0)
+
+    def test_fine_move_action_moves_away(self):
+        #real agent here, real zombie here. decide 
+        matrix = Matrix({"environment":"configs/small.tmj"})
+        real_agent = Agent({ "name": "John", "actions": ["fine_move"],"x":5,"y":5,"matrix":matrix })
+        matrix.add_agent_to_simulation(real_agent)
+        zombie = Agent({ "name": f"Zombie", "kind": "zombie", "actions": ["kill"],"x":6,"y":5,"matrix":matrix })
+        matrix.add_agent_to_simulation(zombie)
+        matrix.llm_action(real_agent, matrix.unix_time)
+        self.assertEqual(real_agent.x, 4)
+
     def test_memory(self):
         agent_data = {
             "name": "John",

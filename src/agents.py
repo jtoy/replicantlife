@@ -33,7 +33,9 @@ class Agent:
         self.x = agent_data.get("x", None)
         self.y = agent_data.get("y", None)
         self.actions = list(set(agent_data.get("actions", []) + DEFAULT_ACTIONS))
-        self.actions = list(dict.fromkeys(agent_data.get("actions", []) + DEFAULT_ACTIONS))
+        #self.actions = list(dict.fromkeys(agent_data.get("actions", []) + DEFAULT_ACTIONS))
+        #old one
+        self.actions = list(dict.fromkeys(agent_data.get("actions",DEFAULT_ACTIONS )))
 
         self.memory = agent_data.get("memory", [])
         self.short_memory = agent_data.get("short_memory", [])

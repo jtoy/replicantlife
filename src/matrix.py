@@ -543,7 +543,7 @@ class Matrix:
             "agents_available_to_talk": [a.name for a in agents_available_to_talk],
             'objects': [obj.name.lower() for obj in perceived_objects] + [a.name.lower() for a in perceived_agents if a.kind != "human"],
             'examples': example_strings,
-            'directions': perceived_directions,
+            'perceived_directions': perceived_directions,
             'actions': valid_actions,
             'location': current_location.name if current_location is not None else "",
             'area': current_area if current_area is not None else "",
@@ -562,7 +562,7 @@ class Matrix:
             return "stay", ""
 
         decision, parameters = msg.split(" ", 1) + [""] * (1 - msg.count(" "))
-        print(f"decision {decision} params {parameters}")
+        print(f"decision {decision} params {parameters} explanation {explanation}")
 
         if decision == "talk":
             if len(agents_available_to_talk) > 0:

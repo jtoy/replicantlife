@@ -235,4 +235,5 @@ THINKING ABOUT:
 * people move
 * things growing/shrinking
 * things getting destroyed
+* discover actions
 
