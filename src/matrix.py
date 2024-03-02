@@ -76,10 +76,7 @@ class Matrix:
         self.environment = Environment({ "filename": self.environment_file })
         if self.scenario_file is not None:
             self.parse_scenario_file(self.scenario_file)
-        self.environment.overlay_collisions_on_image()
-        #above line reads
-        #then agent initialization
-        # Build Environment
+        #self.environment.overlay_collisions_on_image()
         self.background = None
         print(config)
 
