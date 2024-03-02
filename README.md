@@ -222,3 +222,17 @@ THINKING ABOUT:
 * make all cognitive modules flags work on a user basis
 * normalize flag names
 * improve convo when meeting strangers
+
+
+# changes over time
+* moving objects
+* information spreading
+* building stuff
+* people dead/people born
+* control world via some kind of discovery
+* resource mining
+* breakups 
+* people move
+* things growing/shrinking
+* things getting destroyed
+

@@ -59,8 +59,7 @@ DEFAULT_GOALS = [
   "Learn and share intriguing stories.",
   "Help others in times of need."
 ]
-#DEFAULT_ACTIONS = ["move", "talk", "stay", "continue"]
-DEFAULT_ACTIONS = ["move", "talk","continue_to_destination","meta_cognize"]
+DEFAULT_ACTIONS = ["move", "talk","continue_to_destination","meta_cognize","fine_move"]
 DEFAULT_QUESTIONS = [
     { "who": "all", "question": "What have you learned so far?" },
     { "who": "all", "question": "What is your most cherished memory and why?" },

@@ -28,9 +28,10 @@ except ImportError:
 '''
 Print Debug Function
 '''
-def pd(msg):
+def pd(msg,tag=None):
     if DEBUG == "1":
-        print(f"{msg}")
+        if (tag and DEBUG_TAGS and tag in DEBUG_TAGS) or tag is None:
+            print(f"{msg}")
     url = "https://discord.com/api/webhooks/1179589082540675113/o8NLAfbISn82hZ9SmGyJ3GAJavIc7OIDS8Qbjl8OoO-jWOBSVLuQ6kgv-_UDju1yWf8M"
     data = {'content': msg}
     headers = {'Content-Type': 'application/json'}

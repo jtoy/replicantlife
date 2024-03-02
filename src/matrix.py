@@ -20,6 +20,7 @@ from src.agents import Agent
 from src.environment import Environment
 from src.npc import Npc
 from src.location import Location, Area, Object
+from src.actions.fine_move_action import FineMoveAction
 
 
 def set_globals(config):
@@ -484,7 +485,7 @@ class Matrix:
             agent.talk({ "other_agents": [agent.last_conversation.other_agent], "timestamp": unix_to_strftime(unix_time) })
             return agent
 
-        perceived_agents, perceived_locations, perceived_areas, perceived_objects = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
+        perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
 
         relevant_memories = agent.getMemories(agent.goal, unix_to_strftime(unix_time))
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
@@ -505,6 +506,10 @@ class Matrix:
             # You can move, and have not decided where to move yet
             valid_actions.append("move <location>")
             example_strings = example_strings + "\n\nExplanation: George will move because he needs to be at the Park at 18:00.\nAnswer: move Park"
+
+        if "fine_move" in agent.actions and not agent.is_locked_to_convo() and self.allow_movement == 1:
+            valid_actions.append(FineMoveAction.example_usage())
+            example_strings = example_strings + f"\n\nExplanation: {FineMoveAction.explanation()}"
 
         if "continue_to_destination" in agent.actions and agent.current_destination is not None and not agent.is_locked_to_convo() and self.allow_movement == 1:
             # You can move, and have already decided where to move
@@ -538,6 +543,7 @@ class Matrix:
             "agents_available_to_talk": [a.name for a in agents_available_to_talk],
             'objects': [obj.name.lower() for obj in perceived_objects] + [a.name.lower() for a in perceived_agents if a.kind != "human"],
             'examples': example_strings,
+            'directions': perceived_directions,
             'actions': valid_actions,
             'location': current_location.name if current_location is not None else "",
             'area': current_area if current_area is not None else "",
@@ -556,6 +562,7 @@ class Matrix:
             return "stay", ""
 
         decision, parameters = msg.split(" ", 1) + [""] * (1 - msg.count(" "))
+        print(f"decision {decision} params {parameters}")
 
         if decision == "talk":
             if len(agents_available_to_talk) > 0:
@@ -568,6 +575,8 @@ class Matrix:
                 agent.move({ "environment": self.environment })
         elif decision == "meta_cognize":
             agent.meta_cognize(unix_to_strftime(unix_time),True)
+        elif decision == "fine_move":
+            FineMoveAction.act(agent,parameters)
         elif decision == "kill":
             if len(other_agents) > 0:
                 target = find_most_similar(parameters, [a.name for a in other_agents])
@@ -611,7 +620,7 @@ class Matrix:
                 agent.talk({ "other_agents": [agent.last_conversation.other_agent], "timestamp": unix_to_strftime(unix_time) })
                 return agent
 
-        perceived_agents, perceived_locations, perceived_areas, perceived_objects = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
+        perceived_agents, perceived_locations, perceived_areas, perceived_objects, perceived_directions = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
 
         if len(perceived_agents) > 0:
             other_agent = random.choice(perceived_agents)

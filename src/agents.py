@@ -12,6 +12,7 @@ import json
 import heapq
 import re
 from fuzzywuzzy import fuzz
+#from FineMoveAction import FineMoveAction
 
 
 class Agent:
@@ -455,12 +456,25 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
         self.short_memory.append(content)
 
+    def calculate_perceived_direction(self, dx, dy):
+        if dx == 0 and dy == 0:
+            return "current"
+        elif dy == -1:
+            return "up" if dx == 0 else "up-left" if dx == -1 else "up-right" if dx == 1 else "unknown"
+        elif dy == 1:
+            return "down" if dx == 0 else "down-left" if dx == -1 else "down-right" if dx == 1 else "unknown"
+        elif dy == 0:
+            return "left" if dx == -1 else "right" if dx == 1 else "unknown"
+        else:
+            return "unknown"
+
     def perceive(self, other_agents, environment, timestamp):
+        perceived_objects = []
+        perceived_locations = []
+        perceived_agents = []
+        perceived_areas = []
+        perceived_directions = []
         if (self.matrix is not None and self.matrix.allow_observance_flag == 0) or (self.matrix is None and ALLOW_OBSERVE == 0):
-            perceived_objects = []
-            perceived_locations = []
-            perceived_agents = []
-            perceived_areas = []
 
             return perceived_agents, perceived_locations, perceived_areas, perceived_objects
 
@@ -472,6 +486,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
         # Vector Directions
         directions = [(1, 0), (-1, 0), (0, 1), (0, -1), (0, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)]
+        direction_names = ["right", "left", "down", "up", "current", "down-right", "up-right", "down-left", "up-left"]
+
 
         for direction in directions:
             dx, dy = direction
@@ -510,15 +526,12 @@ Answer the question from the point of view of {self} thinking to themselves, res
                             interaction = f"{timestamp} - {self} saw {a.kind} at {location_name}"
                             self.addMemory("observation", interaction, timestamp, random.randint(6, 9))
 
+                    #if a.name not in self.connections:
+                        #self.connections.append(a.name)
 
-                    print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
+                    direction_vector = (a.x - self.x, a.y - self.y)
+                    perceived_directions.append({"type": "agent", "name": a.name, "at": direction_vector, "direction": self.calculate_perceived_direction(*direction_vector),"string": f"{a.name} is to your {self.calculate_perceived_direction(*direction_vector)}"})
 
-                    if a.name not in self.connections:
-                        self.connections.append(a.name)
-
-        perceived_locations = []
-        perceived_areas = []
-        perceived_objects = []
 
         for coordinate in perceived_coordinates:
             loc = environment.get_location_from_coordinates(coordinate[0], coordinate[1])
@@ -532,18 +545,15 @@ Answer the question from the point of view of {self} thinking to themselves, res
         if self.kind != "zombie":
             for obj in perceived_objects:
                 interaction = f"{timestamp} - {self} saw {obj.name.lower()} at {obj.area.name} of {obj.area.location.name}."
-                if self.matrix is not None:
-                    print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
-                    print_and_log(interaction, f"{self.matrix.id}:agent_conversations")
 
                 self.addMemory("observation", interaction, timestamp, random.randint(0, 2))
+                #direction_vector = (obj.x - self.x, obj.y - self.y)
+                #perceived_directions.append({"type": "object", "name": obj.name, "at": direction_vector, "direction": self.calculate_perceived_direction(*direction_vector)})
+
 
             for loc in perceived_locations:
                 if loc not in self.spatial_memory:
                     interaction = f"{timestamp} - {self} discovered {loc.name}."
-                    if self.matrix is not None:
-                        print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
-                        print_and_log(interaction, f"{self.matrix.id}:agent_conversations")
 
                     self.addMemory("observation", interaction, timestamp, random.randint(2, 5))
                     self.spatial_memory.append(loc)
@@ -552,7 +562,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         if self.matrix:
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
         #missing locations,areas,objects
-        return perceived_agents, perceived_locations, perceived_areas, perceived_objects
+        return perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions
 
     def addMemory(self, kind, content, timestamp=None, score=None,embedding=None):
         memory = None

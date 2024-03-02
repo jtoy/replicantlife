@@ -232,7 +232,7 @@ class TestMemoryFunctions(unittest.TestCase):
     def test_talk_stranger(self):
         agent1_data = {
             "name": "Viktor",
-            "description": "You love physics",
+            "description": "You love physics, you hate talking to people",
             "goal": "Answer questions, think, be rational.",
         }
         agent2_data = {

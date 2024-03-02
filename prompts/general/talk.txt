@@ -1,4 +1,4 @@
-roleplay 
+roleplay as {{agent}}
 {{selfContext}}
 {{relevant_memories}}
 
