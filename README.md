@@ -59,6 +59,7 @@ This will run the simulation without LLM
 You can also choose to add these params to `.env` file.
 
 ### web ui
+
 If you want to visualize simulations, you must have redis running as the engine will send the logs to redis and the web ui reads from redis. You can set REDIS_URL or just use the default redis url.
 start a simulation and get its simulation id.
 cd into web and run `npm i` then `npm run dev` then go to http://localhost:3000/?sim_id=SIMULATION_ID to see it running
@@ -171,13 +172,6 @@ MODEL=off python run_all_sims.py
 
 * `python cognitive_test.py --graph` to generate the graph.
 
-# Run frontend.py
-
-(this is not working right now)
-
-`python frontend.py`
-
-This should start a basic webserver that would allow us to view the game state at `http://localhost:5000`
 
 ## Creating Maps
 
@@ -220,6 +214,7 @@ When working on the main engine,  often times we can shut off all llm calls, in 
 * importance calculated based off recent memories
 * make all cognitive modules flags work on a user basis
 * normalize flag names
+* hybrid fast llm action / continue to destination and only act when needed
 
 
 # changes over time
@@ -235,4 +230,5 @@ When working on the main engine,  often times we can shut off all llm calls, in 
 * things getting destroyed
 * discover actions
 * environmental changes
+
 
