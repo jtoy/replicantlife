@@ -254,6 +254,44 @@ class TestMemoryFunctions(unittest.TestCase):
             print(f"Current Memory: {mem}")
             print(f"Relevance Score: {Memory.calculateRelevanceScore(mem.embedding, context_embedding)}")
         self.assertTrue(len(sorted_memory) > 0)
+
+    def test_information_spreading(self):
+        a1_data = { "name": "Viktor", "goal": "wants to throw a party next week" }
+        a2_data = { "name": "John", "description": "loves art" }
+        a3_data = { "name": "Paul", "description": "loves eating" }
+        agent1 = Agent(a1_data)
+        agent2 = Agent(a2_data)
+        agent3 = Agent(a3_data)
+        unix_time = 1704067200
+        timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent1.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent1} said to {agent2}: {response}"
+            print(msg)
+            response = agent2.talk({ "target": agent1.name, "other_agents": [agent1], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent1}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+        agent2.summarize_conversation(timestamp)
+        print("*"*20)
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent2.talk({ "target": agent3.name, "other_agents": [agent3], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent3}: {response}"
+            print(msg)
+            response = agent3.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent3} said to {agent2}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+        agent3.summarize_conversation(timestamp)
+        print(f"{agent2} memories")
+        for mem in agent2.memory:
+            print(mem)
+        print(f"{agent3} memories")
+        for mem in agent3.memory:
+            print(mem)
+
     def test_talk_stranger(self):
         agent1_data = {
             "name": "Viktor",

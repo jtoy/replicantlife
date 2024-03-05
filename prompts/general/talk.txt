@@ -34,6 +34,10 @@ Before answering, consider "{{agent.meta_questions|random}}"
 
 Provide {{agent}}'s response from the first person point of view. 
 
+{% if topic %}
+Maybe you could discuss the topic of "{{topic}}"
+{% endif %}
+
 
 keep responses to under 3 sentences.
 Craft an informal spoken response.
