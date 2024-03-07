@@ -12,3 +12,4 @@ vllm==0.2.6
 python-Levenshtein
 jsonlines
 nltk
+Pillow

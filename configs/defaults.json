@@ -1,5 +1,5 @@
 {
-  "DEBUG": "1",
+  "DEBUG": "0",
   "LLAMA_URL": "http://localhost:11434/api",
   "POWERINF_URL": "http://localhost:8080",
   "LLAMA_TIMEOUT": 600,

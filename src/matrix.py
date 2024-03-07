@@ -20,6 +20,7 @@ from src.agents import Agent
 from src.environment import Environment
 from src.npc import Npc
 from src.location import Location, Area, Object
+from src.actions.fine_move_action import FineMoveAction
 
 
 def set_globals(config):
@@ -75,9 +76,7 @@ class Matrix:
         self.environment = Environment({ "filename": self.environment_file })
         if self.scenario_file is not None:
             self.parse_scenario_file(self.scenario_file)
-        #above line reads
-        #then agent initialization
-        # Build Environment
+        #self.environment.overlay_collisions_on_image()
         self.background = None
         print(config)
 
@@ -317,7 +316,8 @@ class Matrix:
 
     def send_matrix_to_redis(self):
         if TEST_RUN == 0:
-            redis_connection.set(f"{self.id}:simulations", json.dumps(self.all_env_vars()))
+            #redis_connection.set(f"{self.id}:simulations", json.dumps(self.all_env_vars()))
+            pass
 
     def log_agents_to_redis(self):
         for agent in self.agents:
@@ -327,13 +327,13 @@ class Matrix:
                 "y": agent.y,
                 "status": agent.status
             }
-            redis_connection.rpush(f"{self.id}:agents:{agent.name}", json.dumps(agent_data))
+            #redis_connection.rpush(f"{self.id}:agents:{agent.name}", json.dumps(agent_data))
 
     def run_singlethread(self):
         #self.boot()
         self.status = "running"
         self.sim_start_time = datetime.now()
-        self.send_matrix_to_redis()
+        #self.send_matrix_to_redis()
         for step in range(self.steps):
             self.cur_step = step
             self.current_substep = 0
@@ -344,32 +344,33 @@ class Matrix:
             start_time = datetime.now()
             pd(f"Step {step + 1}:")
 
-            redis_log(self.get_arr_2D(), f"{self.id}:matrix_states")
-            redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
-            print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:agent_conversations")
+            #redis_log(self.get_arr_2D(), f"{self.id}:matrix_states")
+            #redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
+            #print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:agent_conversations")
 
-            self.log_agents_to_redis()
+            #self.log_agents_to_redis()
 
-            for a in self.agents:
-                print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:events:{a.name}")
-                print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:conversations:{a.name}")
+            #for a in self.agents:
+            #    print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:events:{a.name}")
+            #    print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:conversations:{a.name}")
 
-            control_cmd = redis_connection.lpop(f"{self.id}:communications")
-            if control_cmd:
-                control_cmd_str = control_cmd.decode('utf-8')
-                try:
-                    control_cmd_dict = json.loads(control_cmd_str)
+            if redis_connection:
+                control_cmd = redis_connection.lpop(f"{self.id}:communications")
+                if control_cmd:
+                    control_cmd_str = control_cmd.decode('utf-8')
+                    try:
+                        control_cmd_dict = json.loads(control_cmd_str)
 
-                    name = control_cmd_dict.get('name', None)
-                    msg = control_cmd_dict.get('msg', None)
-                    control_type = control_cmd_dict.get('type', None)
+                        name = control_cmd_dict.get('name', None)
+                        msg = control_cmd_dict.get('msg', None)
+                        control_type = control_cmd_dict.get('type', None)
 
-                    if name:
-                        for agent in self.agents:
-                            if name == agent.name:
-                                agent.addMemory(kind=control_type, content=msg, timestamp=unix_to_strftime(self.unix_time), score=10)
-                except json.JSONDecodeError as e:
-                    print(f"Error decoding control_cmd: {e}")
+                        if name:
+                            for agent in self.agents:
+                                if name == agent.name:
+                                    agent.addMemory(kind=control_type, content=msg, timestamp=unix_to_strftime(self.unix_time), score=10)
+                    except json.JSONDecodeError as e:
+                        print(f"Error decoding control_cmd: {e}")
 
             # Submit agent actions concurrently
             for i in range(len(self.agents)):
@@ -401,7 +402,7 @@ class Matrix:
     def run(self):
         self.status = "running"
         self.sim_start_time = datetime.now()
-        self.send_matrix_to_redis()
+        #self.send_matrix_to_redis()
         for step in range(self.steps):
             with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
                 if self.status == "stop":
@@ -411,7 +412,7 @@ class Matrix:
 
                 pd(f"Step {step}:")
 
-                redis_connection.lpush(f"{self.id}:agent_conversations", json.dumps(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}"))
+                #redis_connection.lpush(f"{self.id}:agent_conversations", json.dumps(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}"))
 
                 # Submit agent actions concurrently
                 if LLM_ACTION == 1:
@@ -428,7 +429,7 @@ class Matrix:
                 if PRINT_MAP == 1:
                     self.print_matrix()
 
-                redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
+                #redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
                 self.unix_time = self.unix_time + 10
                 end_time = datetime.now()
                 pd(f"LLm calls for Step {step}: {llm.call_counter - self.llm_calls} calls")
@@ -481,7 +482,7 @@ class Matrix:
             agent.talk({ "other_agents": [agent.last_conversation.other_agent], "timestamp": unix_to_strftime(unix_time) })
             return agent
 
-        perceived_agents, perceived_locations, perceived_areas, perceived_objects = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
+        perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
 
         relevant_memories = agent.getMemories(agent.goal, unix_to_strftime(unix_time))
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
@@ -502,6 +503,10 @@ class Matrix:
             # You can move, and have not decided where to move yet
             valid_actions.append("move <location>")
             example_strings = example_strings + "\n\nExplanation: George will move because he needs to be at the Park at 18:00.\nAnswer: move Park"
+
+        if "fine_move" in agent.actions and not agent.is_locked_to_convo() and self.allow_movement == 1:
+            valid_actions.append(FineMoveAction.example_usage())
+            example_strings = example_strings + f"\n\nExplanation: {FineMoveAction.explanation()}"
 
         if "continue_to_destination" in agent.actions and agent.current_destination is not None and not agent.is_locked_to_convo() and self.allow_movement == 1:
             # You can move, and have already decided where to move
@@ -535,6 +540,7 @@ class Matrix:
             "agents_available_to_talk": [a.name for a in agents_available_to_talk],
             'objects': [obj.name.lower() for obj in perceived_objects] + [a.name.lower() for a in perceived_agents if a.kind != "human"],
             'examples': example_strings,
+            'perceived_directions': perceived_directions,
             'actions': valid_actions,
             'location': current_location.name if current_location is not None else "",
             'area': current_area if current_area is not None else "",
@@ -553,6 +559,7 @@ class Matrix:
             return "stay", ""
 
         decision, parameters = msg.split(" ", 1) + [""] * (1 - msg.count(" "))
+        print(f"decision {decision} params {parameters} explanation {explanation}")
 
         if decision == "talk":
             if len(agents_available_to_talk) > 0:
@@ -565,6 +572,8 @@ class Matrix:
                 agent.move({ "environment": self.environment })
         elif decision == "meta_cognize":
             agent.meta_cognize(unix_to_strftime(unix_time),True)
+        elif decision == "fine_move":
+            FineMoveAction.act(agent,parameters)
         elif decision == "kill":
             if len(other_agents) > 0:
                 target = find_most_similar(parameters, [a.name for a in other_agents])
@@ -608,7 +617,7 @@ class Matrix:
                 agent.talk({ "other_agents": [agent.last_conversation.other_agent], "timestamp": unix_to_strftime(unix_time) })
                 return agent
 
-        perceived_agents, perceived_locations, perceived_areas, perceived_objects = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
+        perceived_agents, perceived_locations, perceived_areas, perceived_objects, perceived_directions = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
 
         if len(perceived_agents) > 0:
             other_agent = random.choice(perceived_agents)
@@ -649,26 +658,7 @@ class Matrix:
             for memory in agent.memory:
                 pd(memory)
 
-    def is_position_valid(self, position):
-        # Check if the position is within the boundaries of the matrix
-        if not (0 <= position[0] <= self.n and 0 <= position[1] <= self.n):
-            return False
 
-        try:
-            if self.collisions[position[0]][position[1]] == 1:
-                return False
-        except Exception as e:
-            return False
-
-        return True
-
-
-    # Add a helper method to generate a random valid position
-    def generate_random_position(self):
-        position = (random.randint(1, self.n - 2), random.randint(1, self.n - 2))
-        while not self.is_position_valid(position):
-            position = (random.randint(1, self.n - 2), random.randint(1, self.n - 2))
-        return position
 
     # Add a helper method to generate a unique name
     def generate_unique_name(self):
@@ -746,6 +736,7 @@ class Matrix:
         return arr_2D
 
     def clear_redis(self):
+        return
         redis_connection.delete(f"{self.id}:matrix_state")
         redis_connection.delete(f"{self.id}:matrix_states")
         redis_connection.delete(f"{self.id}:agent_conversations")

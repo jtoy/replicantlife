@@ -1,0 +1,15 @@
+{
+  "performance": {"numerator":"total_alive","denominator": "total_agents"},
+  "background": "",
+  "agents": [
+  ],
+  "num_zombies": 10,
+  "questions": [
+  ],
+  "steps": 100,
+  "default_goals": [
+  ],
+
+  "default_descriptions": [
+  ]
+}

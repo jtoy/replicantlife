@@ -59,9 +59,12 @@ This will run the simulation without LLM
 You can also choose to add these params to `.env` file.
 
 ### web ui
+
 If you want to visualize simulations, you must have redis running as the engine will send the logs to redis and the web ui reads from redis. You can set REDIS_URL or just use the default redis url.
 start a simulation and get its simulation id.
 cd into web and run `npm i` then `npm run dev` then go to http://localhost:3000/?sim_id=SIMULATION_ID to see it running
+
+To build the web ui for production, you can run `npm run build`
 
 
 ### Changing Environment
@@ -169,13 +172,6 @@ MODEL=off python run_all_sims.py
 
 * `python cognitive_test.py --graph` to generate the graph.
 
-# Run frontend.py
-
-(this is not working right now)
-
-`python frontend.py`
-
-This should start a basic webserver that would allow us to view the game state at `http://localhost:5000`
 
 ## Creating Maps
 
@@ -197,9 +193,13 @@ This should start a basic webserver that would allow us to view the game state a
 
 3. Pass in to `engine.py` with `--environment` flag.
 
+# engine 
+When working on the main engine,  often times we can shut off all llm calls, in that case, you can turn off all llm calls with a command such as:
+`LLM_IMPORTANCE=0 LLM_ACTION=0 python engine.py --scenario configs/empty.json --env configs/largev2.tmj`
 
 
-THINKING ABOUT:
+
+# THINKING ABOUT
 * fix time, dont need to pass time everywhere!
 * finalize on logging, data vs flat
 * remove the llm calls in init
@@ -212,7 +212,23 @@ THINKING ABOUT:
 * some memories have timestamps inside of them, no value?
 * logs, should hold it open, and output to a file
 * importance calculated based off recent memories
-* nearby moving vs far away destinations
 * make all cognitive modules flags work on a user basis
 * normalize flag names
-* see a stranger
+* hybrid fast llm action / continue to destination and only act when needed
+
+
+# changes over time
+* moving objects
+* information spreading
+* building stuff
+* people dead/people born
+* control world via some kind of discovery
+* resource mining
+* breakups 
+* people move
+* things growing/shrinking
+* things getting destroyed
+* discover actions
+* environmental changes
+
+

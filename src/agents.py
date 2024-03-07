@@ -32,7 +32,9 @@ class Agent:
         self.x = agent_data.get("x", None)
         self.y = agent_data.get("y", None)
         self.actions = list(set(agent_data.get("actions", []) + DEFAULT_ACTIONS))
-        self.actions = list(dict.fromkeys(agent_data.get("actions", []) + DEFAULT_ACTIONS))
+        #self.actions = list(dict.fromkeys(agent_data.get("actions", []) + DEFAULT_ACTIONS))
+        #old one
+        self.actions = list(dict.fromkeys(agent_data.get("actions",DEFAULT_ACTIONS )))
 
         self.memory = agent_data.get("memory", [])
         self.short_memory = agent_data.get("short_memory", [])
@@ -204,6 +206,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         return None  # Return None if the location is not found
 
     def move(self, opts={}):
+        start_time = time.time()
         environment = opts.get("environment", None)
         name_target = opts.get("target", None)
         target_coordinate = None
@@ -216,10 +219,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
             if name_target is None and self.current_destination is None:
                 target_coordinate = random.choice(self.current_destination.valid_coordinates)
             elif name_target is not None and len(self.destination_cache) == 0:
-                start_time = time.time()
                 target = find_most_similar(name_target, [location.name for location in self.spatial_memory])
 
-                start_time = time.time()
                 for location in self.spatial_memory:
                     if target == location.name:
                         target_coordinate = random.choice(location.valid_coordinates)
@@ -233,7 +234,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
                 return self
             elif target_coordinate != None:
                 self.destination_cache = find_path((self.x, self.y), target_coordinate, environment.get_valid_coordinates())
-                print(f"Path: {self.destination_cache}")
+                pd(f"Path: {self.destination_cache}")
 
 
             if len(self.destination_cache) != 0:
@@ -247,26 +248,15 @@ Answer the question from the point of view of {self} thinking to themselves, res
                 self.addMemory("observation",f"arrived at {self.current_location_name()}" , self.matrix.unix_time, random.randint(5, 9))
                 self.current_destination = None
 
+        end_time = time.time()
+        pd(f"{self} move time: {end_time-start_time}")
         if self.matrix:
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"move","x":self.x,"y":self.y,"target":name_target})
+        
         return self
 
     def heuristic(self, current, target):
         return abs(current[0] - target[0]) + abs(current[1] - target[1])
-
-    def is_position_valid(self, n, collisions, position):
-        # Check if the position is within the boundaries of the matrix
-        if not (0 <= position[0] < n and 0 <= position[1] < n):
-            return False
-
-        # Check if the position is occupied by a boundary object
-        if position[0] >= len(collisions) or position[1] >= len(collisions[0]):
-            return False
-
-        if collisions[position[0]][position[1]] == 1:
-            return False
-
-        return True
 
     def is_locked_to_convo(self):
         if self.last_conversation is None:
@@ -298,7 +288,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
             print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
 
         self.addMemory("conversation", interaction, timestamp, random.randint(4, 6))
-        self.matrix.add_to_logs({"step_type":"agent_set", "attribute_name": "convo", "attribute_data": {"status": "complete", "from":self.mid, "to":self.last_conversation.other_agent.mid, "convo_id":self.last_conversation.mid}})
+        if self.matrix:
+            self.matrix.add_to_logs({"step_type":"agent_set", "attribute_name": "convo", "attribute_data": {"status": "complete", "from":self.mid, "to":self.last_conversation.other_agent.mid, "convo_id":self.last_conversation.mid}})
         self.last_conversation = None
 
     def talk(self, opts={}):
@@ -364,16 +355,22 @@ Answer the question from the point of view of {self} thinking to themselves, res
             "Transactional: Efficiently exchange information or complete tasks."
             ]
         random.shuffle(all_convo_types)
+        if other_agent.name not in self.connections:
+            other_agent_name = "stranger"
+        else:
+            other_agent_name = other_agent.name
+
         variables = {
             'selfContext': self.getSelfContext(),
             'relevant_memories': relevant_memories_string,
             'agent': self,
+            'topic': opts.get('topic',None),
             'convo_types': all_convo_types[:10],
             'connections': self.connections,
             'meta_questions': self.meta_questions or "",
             'primer': random.randint(1, 1000000),
-            'other_agent': other_agent,
-            "previous_conversations": f"Current Conversation:\n{self.name}\n{previous_conversations}" if previous_conversations else f"Initiate a conversation with {other_agent.name}.",
+            'other_agent': other_agent_name,
+            "previous_conversations": f"Current Conversation:\n{self.name}\n{previous_conversations}" if previous_conversations else f"Initiate a conversation with {other_agent_name}.",
         }
 
         msg = llm.prompt(prompt_name="talk", variables=variables)
@@ -384,6 +381,11 @@ Answer the question from the point of view of {self} thinking to themselves, res
             msg = match.group(1).strip()
         else:
             msg = msg.split(": ", 1)[-1] if ": " in msg else msg
+        if other_agent.name not in self.connections:
+            if other_agent.kind == "human":
+                # TODO add back location, need current location!!
+                self.addMemory("observation", f"{timestamp} - {self.name} met {other_agent.name}", timestamp, random.randint(2, 5))
+                self.connections.append(other_agent.name)
 
         interaction = f"{timestamp} - {self} said to {other_agent}: {msg}"
         if self.matrix is not None:
@@ -457,12 +459,25 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
         self.short_memory.append(content)
 
+    def calculate_perceived_direction(self, dx, dy):
+        if dx == 0 and dy == 0:
+            return "current"
+        elif dy == -1:
+            return "up" if dx == 0 else "up-left" if dx == -1 else "up-right" if dx == 1 else "unknown"
+        elif dy == 1:
+            return "down" if dx == 0 else "down-left" if dx == -1 else "down-right" if dx == 1 else "unknown"
+        elif dy == 0:
+            return "left" if dx == -1 else "right" if dx == 1 else "unknown"
+        else:
+            return "unknown"
+
     def perceive(self, other_agents, environment, timestamp):
+        perceived_objects = []
+        perceived_locations = []
+        perceived_agents = []
+        perceived_areas = []
+        perceived_directions = []
         if (self.matrix is not None and self.matrix.allow_observance_flag == 0) or (self.matrix is None and ALLOW_OBSERVE == 0):
-            perceived_objects = []
-            perceived_locations = []
-            perceived_agents = []
-            perceived_areas = []
 
             return perceived_agents, perceived_locations, perceived_areas, perceived_objects
 
@@ -474,6 +489,8 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
         # Vector Directions
         directions = [(1, 0), (-1, 0), (0, 1), (0, -1), (0, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)]
+        direction_names = ["right", "left", "down", "up", "current", "down-right", "up-right", "down-left", "up-left"]
+
 
         for direction in directions:
             dx, dy = direction
@@ -497,10 +514,10 @@ Answer the question from the point of view of {self} thinking to themselves, res
                     a_area = environment.get_area_from_coordinates(a.x, a.y)
                     a_loc = environment.get_location_from_coordinates(a.x, a.y)
                     location_name = f"{'' if a_area is None else a_area.name} {a_loc.name}"
-                    if a.name not in self.connections:
-                        if a.kind == "human":
-                            self.addMemory("observation", f"{timestamp} - {self.name} met {a.name} at {location_name}", timestamp, random.randint(2, 5))
-                            self.connections.append(a.name)
+                    #if a.name not in self.connections:
+                    #    if a.kind == "human":
+                    #        self.addMemory("observation", f"{timestamp} - {self.name} met {a.name} at {location_name}", timestamp, random.randint(2, 5))
+                    #        self.connections.append(a.name)
 
 
                     if a.status == "dead":
@@ -512,15 +529,12 @@ Answer the question from the point of view of {self} thinking to themselves, res
                             interaction = f"{timestamp} - {self} saw {a.kind} at {location_name}"
                             self.addMemory("observation", interaction, timestamp, random.randint(6, 9))
 
+                    #if a.name not in self.connections:
+                        #self.connections.append(a.name)
 
-                    print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
+                    direction_vector = (a.x - self.x, a.y - self.y)
+                    perceived_directions.append({"type": "agent", "name": a.name, "at": direction_vector, "direction": self.calculate_perceived_direction(*direction_vector),"string": f"{a.name} is to your {self.calculate_perceived_direction(*direction_vector)}"})
 
-                    if a.name not in self.connections:
-                        self.connections.append(a.name)
-
-        perceived_locations = []
-        perceived_areas = []
-        perceived_objects = []
 
         for coordinate in perceived_coordinates:
             loc = environment.get_location_from_coordinates(coordinate[0], coordinate[1])
@@ -534,18 +548,15 @@ Answer the question from the point of view of {self} thinking to themselves, res
         if self.kind != "zombie":
             for obj in perceived_objects:
                 interaction = f"{timestamp} - {self} saw {obj.name.lower()} at {obj.area.name} of {obj.area.location.name}."
-                if self.matrix is not None:
-                    print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
-                    print_and_log(interaction, f"{self.matrix.id}:agent_conversations")
 
                 self.addMemory("observation", interaction, timestamp, random.randint(0, 2))
+                #direction_vector = (obj.x - self.x, obj.y - self.y)
+                #perceived_directions.append({"type": "object", "name": obj.name, "at": direction_vector, "direction": self.calculate_perceived_direction(*direction_vector)})
+
 
             for loc in perceived_locations:
                 if loc not in self.spatial_memory:
                     interaction = f"{timestamp} - {self} discovered {loc.name}."
-                    if self.matrix is not None:
-                        print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
-                        print_and_log(interaction, f"{self.matrix.id}:agent_conversations")
 
                     self.addMemory("observation", interaction, timestamp, random.randint(2, 5))
                     self.spatial_memory.append(loc)
@@ -554,7 +565,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         if self.matrix:
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
         #missing locations,areas,objects
-        return perceived_agents, perceived_locations, perceived_areas, perceived_objects
+        return perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions
 
     def addMemory(self, kind, content, timestamp=None, score=None,embedding=None):
         memory = None

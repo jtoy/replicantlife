@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # DECLARE PARAMS HERE
-DEBUG = os.getenv("DEBUG", default="1")
+DEBUG = os.getenv("DEBUG", default="0")
 LLAMA_URL = os.getenv("LLAMA_URL", default="http://localhost:11434/api")
 POWERINF_URL = os.getenv("POWERINF_URL", default="http://localhost:8080")
 LLAMA_TIMEOUT = int(os.getenv("LLAMA_TIMEOUT", default="600"))
@@ -59,8 +59,7 @@ DEFAULT_GOALS = [
   "Learn and share intriguing stories.",
   "Help others in times of need."
 ]
-#DEFAULT_ACTIONS = ["move", "talk", "stay", "continue"]
-DEFAULT_ACTIONS = ["move", "talk","continue_to_destination","meta_cognize"]
+DEFAULT_ACTIONS = ["move", "talk","continue_to_destination","meta_cognize","fine_move"]
 DEFAULT_QUESTIONS = [
     { "who": "all", "question": "What have you learned so far?" },
     { "who": "all", "question": "What is your most cherished memory and why?" },

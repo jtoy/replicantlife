@@ -12,7 +12,32 @@ from concurrent.futures import ThreadPoolExecutor
 import random
 import re
 
+from unittest.mock import MagicMock
+from src.actions.fine_move_action import FineMoveAction
+
 class TestMemoryFunctions(unittest.TestCase):
+    def test_fine_move_action_direction(self):
+        agent = MagicMock(x=0, y=0)
+        FineMoveAction.act(agent, "up with random text")
+        self.assertEqual(agent.x, 0)
+        self.assertEqual(agent.y, -1)
+
+    def test_fine_move_action_invalid_direction(self):
+        agent = MagicMock(x=0, y=0)
+        FineMoveAction.act(agent, "invalid-direction")
+        self.assertEqual(agent.x, 0)
+        self.assertEqual(agent.y, 0)
+
+    def test_fine_move_action_moves_away(self):
+        #real agent here, real zombie here. decide 
+        matrix = Matrix({"environment":"configs/small.tmj"})
+        real_agent = Agent({ "name": "John", "actions": ["fine_move"],"x":5,"y":5,"matrix":matrix })
+        matrix.add_agent_to_simulation(real_agent)
+        zombie = Agent({ "name": f"Zombie", "kind": "zombie", "actions": ["kill"],"x":6,"y":5,"matrix":matrix })
+        matrix.add_agent_to_simulation(zombie)
+        matrix.llm_action(real_agent, matrix.unix_time)
+        self.assertEqual(real_agent.x, 4)
+
     def test_memory(self):
         agent_data = {
             "name": "John",
@@ -229,6 +254,87 @@ class TestMemoryFunctions(unittest.TestCase):
             print(f"Current Memory: {mem}")
             print(f"Relevance Score: {Memory.calculateRelevanceScore(mem.embedding, context_embedding)}")
         self.assertTrue(len(sorted_memory) > 0)
+
+    def test_information_spreading(self):
+        a1_data = { "name": "Viktor", "goal": "wants to throw a party next week" }
+        a2_data = { "name": "John", "description": "loves art" }
+        a3_data = { "name": "Paul", "description": "loves eating" }
+        agent1 = Agent(a1_data)
+        agent2 = Agent(a2_data)
+        agent3 = Agent(a3_data)
+        unix_time = 1704067200
+        timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent1.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent1} said to {agent2}: {response}"
+            print(msg)
+            response = agent2.talk({ "target": agent1.name, "other_agents": [agent1], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent1}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+        agent2.summarize_conversation(timestamp)
+        print("*"*20)
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent2.talk({ "target": agent3.name, "other_agents": [agent3], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent3}: {response}"
+            print(msg)
+            response = agent3.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent3} said to {agent2}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+        agent3.summarize_conversation(timestamp)
+        print(f"{agent2} memories")
+        for mem in agent2.memory:
+            print(mem)
+        print(f"{agent3} memories")
+        for mem in agent3.memory:
+            print(mem)
+
+    def test_talk_stranger(self):
+        agent1_data = {
+            "name": "Viktor",
+            "description": "You love physics, you hate talking to people",
+            "goal": "Answer questions, think, be rational.",
+        }
+        agent2_data = {
+            "name": "Natasha",
+            "description": "You love art"
+        }
+        agent1 = Agent(agent1_data)
+        agent2 = Agent(agent2_data)
+        unix_time = 1704067200
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent1.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent1} said to {agent2}: {response}"
+            print(msg)
+            response = agent2.talk({ "target": agent1.name, "other_agents": [agent1], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent1}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+        agent1_data = {
+            "name": "John",
+            "description": "outgoing and likes to talk",
+        }
+        agent2_data = {
+            "name": "Alucard",
+            "description": "shy"
+        }
+        agent1 = Agent(agent1_data)
+        agent2 = Agent(agent2_data)
+        unix_time = 1704067200
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent1.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent1} said to {agent2}: {response}"
+            print(msg)
+            response = agent2.talk({ "target": agent1.name, "other_agents": [agent1], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent1}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+
 
     def test_talk(self):
         agent1_data = {
