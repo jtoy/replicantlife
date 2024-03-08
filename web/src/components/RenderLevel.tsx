@@ -92,6 +92,7 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
                 position: 'absolute',
                 top: x,
                 left: y,
+                cursor: 'pointer',
             };
 
             return (

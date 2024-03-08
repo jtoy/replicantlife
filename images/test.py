@@ -1,15 +1,25 @@
+"""
+This module is used to test loading of tilemap.
+"""
+
 import pytmx
 
+
 def load_tilemap(file_path):
+    """
+    This function loads the tilemap file.
+    """
+
     tmx_data = pytmx.TiledMap(file_path)
     return tmx_data
 
-file_path = 'map.tmx'  # Replace with the path to your TMX file
-tilemap_data = load_tilemap(file_path)
+
+FILE_PATH = "map.tmx"  # Replace with the path to your TMX file
+tilemap_data = load_tilemap(FILE_PATH)
 
 # Accessing tilemap properties
-width = tilemap_data.width
-height = tilemap_data.height
+WIDTH = tilemap_data.width
+HEIGHT = tilemap_data.height
 tilesets = tilemap_data.tilesets
 
 # Accessing individual tilesets
@@ -30,4 +40,3 @@ for layer in tilemap_data.layers:
 
         print(f"Layer Name: {layer_name}")
         print(f"Layer Data: {layer_data}")
-

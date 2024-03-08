@@ -1,5 +1,7 @@
 class Object:
-    def __init__(self, name, position, is_boundary=False, description='Object', symbol='x'):
+    def __init__(
+        self, name, position, is_boundary=False, description="Object", symbol="x"
+    ):
         self.name = name
         self.position = position
         self.is_boundary = is_boundary
@@ -17,5 +19,3 @@ class Object:
             return f"Object(name: {self.name}, position: {self.position}, description: {self.description}, is_boundary: {self.is_boundary}, symbol: {self.symbol})"
         else:
             return f"{self.name}"
-
-

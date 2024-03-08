@@ -1,27 +1,42 @@
+"""
+This module defines the Fine Move Action class.
+"""
+
 import re
 
+
+# pylint: disable=missing-class-docstring
 class FineMoveAction:
-    #for fine move, i need to know who is near me, perception needs to be updated to provide that info or passed into here
+    # for fine move, i need to know who is near me,
+    # perception needs to be updated to provide that info or passed into here
+
+    # pylint: disable=missing-function-docstring
     @classmethod
     def description(cls):
         print("to control the direction to move in")
 
+    # pylint: disable=missing-function-docstring
     @classmethod
     def example_usage(cls):
         return "fine_move <up|up-left|up-right|down|down-left|down-right|left|right>"
 
+    # pylint: disable=missing-function-docstring
     @classmethod
     def explanation(cls):
-        return "george will \"fine_move right\" to walk towards the car"
+        return 'george will "fine_move right" to walk towards the car'
 
     @classmethod
-    def act(cls,agent, pre_processed_direction):
+    def act(cls, agent, pre_processed_direction):
+        """
+        This method handles the movement direction of the agent.
+        """
+
         current_x = agent.x
         current_y = agent.y
-        pattern = r'\b(up-left|up-right|down-left|down-right|up|down|left|right)\b'
+        pattern = r"\b(up-left|up-right|down-left|down-right|up|down|left|right)\b"
         match = re.search(pattern, pre_processed_direction)
         if match:
-            direction =  match.group(1)
+            direction = match.group(1)
         else:
             direction = "current"
         if direction == "up":
@@ -46,5 +61,3 @@ class FineMoveAction:
             new_x, new_y = current_x, current_y
         agent.x = new_x
         agent.y = new_y
-
-

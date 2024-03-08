@@ -1,4 +1,6 @@
 import uuid
+
+
 class Conversation:
     def __init__(self, agent, other_agent, messages=None):
         self.agent = agent
@@ -10,4 +12,3 @@ class Conversation:
             self.messages = []
         else:
             self.messages = messages
-

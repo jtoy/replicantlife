@@ -9,12 +9,14 @@ class Environment:
         # Set Defaults temporarily
         self.width = 150
         self.height = 150
-        self.collisions =[]
+        self.collisions = []
         self.locations = []
 
         self.parse_from_file(map_file_path)
 
-    def overlay_collisions_on_image(self, input_image_path="Large.png", output_image_path="output.png"):
+    def overlay_collisions_on_image(
+        self, input_image_path="Large.png", output_image_path="output.png"
+    ):
         tile_size = 32  # Adjust this according to your tile size
         image_width = self.width * tile_size
         image_height = self.height * tile_size
@@ -32,7 +34,9 @@ class Environment:
                 if self.collisions[x][y] == 1:
                     x_pixel = y * tile_size
                     y_pixel = x * tile_size
-                    draw.text((x_pixel, y_pixel), "X", fill=(255, 0, 0, 128))  # Semi-transparent red 'X'
+                    draw.text(
+                        (x_pixel, y_pixel), "X", fill=(255, 0, 0, 128)
+                    )  # Semi-transparent red 'X'
 
         # Combine the original image with the overlay
         combined_image = Image.alpha_composite(original_image.convert("RGBA"), overlay)
@@ -41,7 +45,7 @@ class Environment:
         combined_image.save(output_image_path, "PNG")
 
     def parse_from_file(self, filename):
-        with open(filename, 'r') as file:
+        with open(filename, "r") as file:
             data = json.load(file)
 
         self.width = data.get("width", 150)
@@ -76,11 +80,22 @@ class Environment:
                                 continue
 
                             else:
-                                new_obj = Object({ "name": obj_layer["name"], "bounds": self.process_bounds(obj_layer["data"]) })
+                                new_obj = Object(
+                                    {
+                                        "name": obj_layer["name"],
+                                        "bounds": self.process_bounds(
+                                            obj_layer["data"]
+                                        ),
+                                    }
+                                )
                                 area_objects.append(new_obj)
 
-
-                        new_area = Area({ "name": area_name, "bounds": self.process_bounds(area_bounds) })
+                        new_area = Area(
+                            {
+                                "name": area_name,
+                                "bounds": self.process_bounds(area_bounds),
+                            }
+                        )
                         new_area.objects = area_objects
                         for obj in area_objects:
                             obj.area = new_area
@@ -90,7 +105,12 @@ class Environment:
                     elif area_layer["name"] == "Bounds":
                         location_bounds = area_layer["data"]
 
-                new_loc = Location({ "name": location_name, "bounds": self.process_bounds(location_bounds) })
+                new_loc = Location(
+                    {
+                        "name": location_name,
+                        "bounds": self.process_bounds(location_bounds),
+                    }
+                )
                 new_loc.areas = location_areas
 
                 for area in location_areas:
@@ -176,15 +196,14 @@ class Environment:
         return valid_coordinates
 
     def get_tree(self):
-        return (
-            {
-                "name": self.name,
-                "collisions": self.collisions,
-                "width": self.width,
-                "height": self.height,
-                "locations": [location.get_tree() for location in self.locations]
-            }
-        )
+        return {
+            "name": self.name,
+            "collisions": self.collisions,
+            "width": self.width,
+            "height": self.height,
+            "locations": [location.get_tree() for location in self.locations],
+        }
+
 
 class Location:
     def __init__(self, location_data={}):
@@ -194,14 +213,15 @@ class Location:
         self.areas = []
 
     def get_tree(self):
-        return ({
+        return {
             "name": self.name,
             "bounds": self.bounds,
-            "areas": [area.get_tree() for area in self.areas]
-        })
+            "areas": [area.get_tree() for area in self.areas],
+        }
 
     def __str__(self):
         return f"{self.name}"
+
 
 class Area:
     def __init__(self, area_data={}):
@@ -213,53 +233,49 @@ class Area:
         self.objects = []
 
     def get_tree(self):
-        return ({
+        return {
             "name": self.name,
             "bounds": self.bounds,
-            "objects": [obj.get_tree() for obj in self.objects]
-        })
+            "objects": [obj.get_tree() for obj in self.objects],
+        }
 
     def __str__(self):
         return f"{self.name}"
+
 
 class Object:
     @classmethod
     def moveable_objects(cls):
         return {
-                "Wall": False,
-                "Merchandises": True,
-                "Bed": True,
-                "Cabinet": True,
-                "Couch": True,
-                "TV": True,
-                "Refrigerator": True,
-                "Table": True,
-                "Chair": True,
-                "Musical Instruments": True,
-                "Utensils": True,
-                "Trees": False,
-                "Bench": True,
-                "Fence": False,
-                "Farm Equipments": True,
-                "Bookshelf": True
-                }
-
+            "Wall": False,
+            "Merchandises": True,
+            "Bed": True,
+            "Cabinet": True,
+            "Couch": True,
+            "TV": True,
+            "Refrigerator": True,
+            "Table": True,
+            "Chair": True,
+            "Musical Instruments": True,
+            "Utensils": True,
+            "Trees": False,
+            "Bench": True,
+            "Fence": False,
+            "Farm Equipments": True,
+            "Bookshelf": True,
+        }
 
     def __init__(self, object_data={}):
         self.name = object_data.get("name", "Area")
         self.bounds = object_data.get("bounds", [])
         self.valid_coordinates = []
-        self.moveable = Object.moveable_objects().get(self.name,False)
+        self.moveable = Object.moveable_objects().get(self.name, False)
 
         self.mid = str(uuid.uuid4())
         self.area = object_data.get("area", None)
 
     def get_tree(self):
-        return ({
-            "name": self.name,
-            "bounds": self.bounds
-        })
+        return {"name": self.name, "bounds": self.bounds}
 
     def __str__(self):
         return f"{self.name}"
-
