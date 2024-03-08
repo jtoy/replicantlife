@@ -3,10 +3,11 @@ from itertools import cycle
 
 # List of backend servers to balance requests
 backend_servers = [
-    ('localhost', 8001),
-    ('localhost', 8002),
-    ('localhost', 8003),
+    ("localhost", 8001),
+    ("localhost", 8002),
+    ("localhost", 8003),
 ]
+
 
 class RoundRobinProxyHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -19,11 +20,13 @@ class RoundRobinProxyHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         backend_host, backend_port = self.get_next_backend()
 
-        self.log_message("Proxying request to backend server: %s:%s" % (backend_host, backend_port))
+        self.log_message(
+            "Proxying request to backend server: %s:%s" % (backend_host, backend_port)
+        )
 
-        self.headers['Host'] = '%s:%s' % (backend_host, backend_port)
+        self.headers["Host"] = "%s:%s" % (backend_host, backend_port)
         self.send_response(200)
-        self.send_header('Content-type', 'text/html')
+        self.send_header("Content-type", "text/html")
         self.end_headers()
 
         # Forward the request to the selected backend server
@@ -31,7 +34,7 @@ class RoundRobinProxyHandler(SimpleHTTPRequestHandler):
 
     def proxy_request(self, host, port):
         with self.send_to_backend(host, port) as backend:
-            data = self.rfile.read(int(self.headers.get('Content-Length', 0)))
+            data = self.rfile.read(int(self.headers.get("Content-Length", 0)))
             backend.sendall(data)
 
             response = self.get_response_from_backend(backend)
@@ -51,12 +54,12 @@ class RoundRobinProxyHandler(SimpleHTTPRequestHandler):
             response += data
         return response
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     try:
-        server_address = ('localhost', 8888)
+        server_address = ("localhost", 8888)
         httpd = HTTPServer(server_address, RoundRobinProxyHandler)
-        print('Round-robin proxy server started on {}:{}'.format(*server_address))
+        print("Round-robin proxy server started on {}:{}".format(*server_address))
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print('Proxy server stopped.')
-
+        print("Proxy server stopped.")
