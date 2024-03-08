@@ -12,7 +12,7 @@ class Location:
         for area in self.areas:
             area_tree.append(area.getAreaTree())
 
-        tree = {"name": self.name, "description": self.description, "areas": area_tree }
+        tree = {"name": self.name, "description": self.description, "areas": area_tree}
         return tree
 
     def __str__(self, verbose=False):
@@ -20,6 +20,7 @@ class Location:
             return f"Location(name: {self.name}, description: {self.description})"
         else:
             return f"{self.name}"
+
 
 class Area:
     def __init__(self, name, x, y, description, objects):
@@ -37,7 +38,13 @@ class Area:
         for object in self.objects:
             object_tree.append(object.getObjectTree())
 
-        tree = {"name": self.name, "x": self.x, "y": self.y, "description": self.description, "objects": object_tree }
+        tree = {
+            "name": self.name,
+            "x": self.x,
+            "y": self.y,
+            "description": self.description,
+            "objects": object_tree,
+        }
         return tree
 
     def __str__(self, verbose=False):
@@ -46,8 +53,9 @@ class Area:
         else:
             return f"{self.name}"
 
+
 class Object:
-    def __init__(self, name, x, y, is_boundary=False, description='Object', symbol='x'):
+    def __init__(self, name, x, y, is_boundary=False, description="Object", symbol="x"):
         self.name = name
         self.x = x
         self.y = y
@@ -56,7 +64,14 @@ class Object:
         self.symbol = symbol
 
     def getObjectTree(self):
-        tree = {"name": self.name, "x": self.x, "y": self.y, "is_boundary": False, "description": self.description, "symbol": self.symbol }
+        tree = {
+            "name": self.name,
+            "x": self.x,
+            "y": self.y,
+            "is_boundary": False,
+            "description": self.description,
+            "symbol": self.symbol,
+        }
         return tree
 
     def __str__(self, verbose=False):
@@ -64,4 +79,3 @@ class Object:
             return f"Object(name: {self.name}, position: {self.position}, description: {self.description}, is_boundary: {self.is_boundary}, symbol: {self.symbol})"
         else:
             return f"{self.name}"
-

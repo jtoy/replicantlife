@@ -1,3 +1,7 @@
+"""
+This module handles the evaluation of simulations.
+"""
+
 import os
 import json
 import re
@@ -6,48 +10,94 @@ import requests
 from configs.configs import *
 from utils.utils import *
 
+
 def call_gpt(prompt):
+    """
+    This function uses the gpt service for evaluations.
+    """
+
     data = {
         "model": "gpt-3.5-turbo-16k",
-        "messages": [{"role": "user", "content": prompt}]
+        "messages": [{"role": "user", "content": prompt}],
     }
 
     headers = {
         "Authorization": f"Bearer {OPENAI_KEY}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
 
-    response = requests.post(f"https://api.openai.com/v1/chat/completions", json=data, headers=headers)
+    timeout = 60
+
+    response = requests.post(
+        "https://api.openai.com/v1/chat/completions", json=data, headers=headers, timeout=timeout
+    )
 
     if response.status_code == 200:
-        msg = response.json()['choices'][0]['message']['content']
+        msg = response.json()["choices"][0]["message"]["content"]
     else:
         print(response.json())
         msg = "Error"
 
     return msg
 
-parser = argparse.ArgumentParser(description='Evaluate with GPT')
-parser.add_argument('--report', type=str, help='Report file to evaluate')
+
+parser = argparse.ArgumentParser(description="Evaluate with GPT")
+parser.add_argument("--report", type=str, help="Report file to evaluate")
 args = parser.parse_args()
 
 if os.path.exists(args.report):
-    with open(args.report) as file:
+    with open(args.report, encoding="utf-8") as file:
         input_string = file.read()
 
     env_vars = {
         "total_agents": int(re.search(r"total_agents: (\d+)", input_string).group(1)),
         "total_dead": int(re.search(r"total_dead: (\d+)", input_string).group(1)),
-        "total_alive": int(re.search(r"total_alive: (\d+)", input_string).group(1))
+        "total_alive": int(re.search(r"total_alive: (\d+)", input_string).group(1)),
     }
-    interview_part = re.search(r'Interview Question Results:(.*?)(Conversation Log:|\Z)', input_string, re.DOTALL).group(1).strip()
-    scenario_part = re.search(r'Scenario:(.*?)(Goals Log:|\Z)', input_string, re.DOTALL).group(1).strip()
-    goals_part = re.search(r'Goals Log:(.*?)(Interview Question Results:|\Z)', input_string, re.DOTALL).group(1).strip()
-    conversation_part = re.search(r'Conversations Log:(.*?)(Reflection Log:|\Z)', input_string, re.DOTALL).group(1).strip()
-    reflection_part = re.search(r'Reflection Log:(.*?)(Meta Cognition Log:|\Z)', input_string, re.DOTALL).group(1).strip()
-    metacognition_part = re.search(r'Meta Cognition Log:(.*?)(\Z)', input_string, re.DOTALL).group(1).strip()
+    interview_part = (
+        re.search(
+            r"Interview Question Results:(.*?)(Conversation Log:|\Z)",
+            input_string,
+            re.DOTALL,
+        )
+        .group(1)
+        .strip()
+    )
+    scenario_part = (
+        re.search(r"Scenario:(.*?)(Goals Log:|\Z)", input_string, re.DOTALL)
+        .group(1)
+        .strip()
+    )
+    goals_part = (
+        re.search(
+            r"Goals Log:(.*?)(Interview Question Results:|\Z)", input_string, re.DOTALL
+        )
+        .group(1)
+        .strip()
+    )
+    conversation_part = (
+        re.search(
+            r"Conversations Log:(.*?)(Reflection Log:|\Z)", input_string, re.DOTALL
+        )
+        .group(1)
+        .strip()
+    )
+    reflection_part = (
+        re.search(
+            r"Reflection Log:(.*?)(Meta Cognition Log:|\Z)", input_string, re.DOTALL
+        )
+        .group(1)
+        .strip()
+    )
+    metacognition_part = (
+        re.search(r"Meta Cognition Log:(.*?)(\Z)", input_string, re.DOTALL)
+        .group(1)
+        .strip()
+    )
 
-    conversation_matches = re.compile(r"={42}Conversation logs for (.+?)\n(.*?)(?=\n={42}|$)", re.DOTALL).findall(conversation_part)
+    conversation_matches = re.compile(
+        r"={42}Conversation logs for (.+?)\n(.*?)(?=\n={42}|$)", re.DOTALL
+    ).findall(conversation_part)
     parsed_data = {}
     for name, logs in conversation_matches:
         if name not in parsed_data:
@@ -56,7 +106,9 @@ if os.path.exists(args.report):
         parsed_data[name.strip()] = logs.strip()
     conversation_matches = parsed_data
 
-    reflection_matches = re.compile(r"={42}Reflection logs for (.+?)\n(.*?)(?=\n={42}|$)", re.DOTALL).findall(reflection_part)
+    reflection_matches = re.compile(
+        r"={42}Reflection logs for (.+?)\n(.*?)(?=\n={42}|$)", re.DOTALL
+    ).findall(reflection_part)
     parsed_data = {}
     for name, logs in reflection_matches:
         if name not in parsed_data:
@@ -65,8 +117,9 @@ if os.path.exists(args.report):
         parsed_data[name.strip()] = logs.strip()
     reflection_matches = parsed_data
 
-    #interview_matches = re.compile(r"Question: (.+?)\n(.*?)(?=\nQuestion:|$)", re.DOTALL).findall(interview_part)
-    interview_matches = re.compile(r"Question: (.+?)\n(.*?)(?:\n\[.*?\])?(?=\nQuestion:|$|\n={10,})", re.DOTALL).findall(interview_part)
+    interview_matches = re.compile(
+        r"Question: (.+?)\n(.*?)(?:\n\[.*?\])?(?=\nQuestion:|$|\n={10,})", re.DOTALL
+    ).findall(interview_part)
     parsed_data = {}
     for question, block in interview_matches:
         answer_match = re.match(r"(\w+):(.+)", block)
@@ -89,7 +142,9 @@ if os.path.exists(args.report):
                 if name not in parsed_data:
                     parsed_data[name] = []
 
-                parsed_data[name].append({"Question": question.strip(), "Answer": answer})
+                parsed_data[name].append(
+                    {"Question": question.strip(), "Answer": answer}
+                )
 
     interview_matches = parsed_data
 
@@ -102,7 +157,7 @@ if os.path.exists(args.report):
 
     # Write to re-eval file
     reeval_filename = args.report.replace("report", "reeval")
-    with open(reeval_filename, "w") as file:
+    with open(reeval_filename, "w", encoding="utf-8") as file:
         file.write("\n\nauto evaluations\n")
 
     for i in conversation_matches:
@@ -116,12 +171,19 @@ if os.path.exists(args.report):
             "reflect_part": reflection_matches[i],
             "interview_part": interview_matches[i],
         }
+
+        # pylint: disable=invalid-name
         generated_correctly = False
+        # pylint: enable=invalid-name
+
         while not generated_correctly:
             try:
-                eval = llm.prompt("eval", variables)
+                agent_eval = llm.prompt("eval", variables)
 
-                scores_part = re.compile(r"(Progressive Understanding|Adaptive Communication|Reflective Depth|Knowledge Application|Cognitive Flexibility): (\d+)").findall(eval)
+                scores_part = re.compile(
+                    r"(Progressive Understanding|Adaptive Communication|Reflective Depth|"
+                    r"Knowledge Application|Cognitive Flexibility): (\d+)"
+                ).findall(agent_eval)
 
                 progressive_understanding_scores.append(int(scores_part[0][1]))
                 adaptive_communication_scores.append(int(scores_part[1][1]))
@@ -129,24 +191,29 @@ if os.path.exists(args.report):
                 knowledge_application_scores.append(int(scores_part[3][1]))
                 cognitive_flexibility_scores.append(int(scores_part[4][1]))
 
+                # pylint: disable=invalid-name
                 generated_correctly = True
-                with open(reeval_filename, "a") as file:
-                    file.write(f"==========================================Scores for {i}\n")
-                    file.write(eval)
+                # pylint: enable=invalid-name
+
+                with open(reeval_filename, "a", encoding="utf-8") as file:
+                    file.write(
+                        f"==========================================Scores for {i}\n"
+                    )
+                    file.write(agent_eval)
                     file.write("\n")
 
                 if "xmas_" in args.report:
-                    config_filename = "configs/christmas_party_situation.json"
+                    CONFIG_FILENAME = "configs/christmas_party_situation.json"
                 elif "ss_" in args.report:
-                    config_filename = "configs/secret_santa_situation.json"
+                    CONFIG_FILENAME = "configs/secret_santa_situation.json"
                 elif "z_" in args.report:
-                    config_filename = "configs/zombie_situation.json"
+                    CONFIG_FILENAME = "configs/zombie_situation.json"
                 elif "m_" in args.report:
-                    config_filename = "configs/murder_situation.json"
+                    CONFIG_FILENAME = "configs/murder_situation.json"
                 else:
-                    config_filename = "configs/def.json"
+                    CONFIG_FILENAME = "configs/def.json"
 
-                with open(config_filename, "r") as config_file:
+                with open(CONFIG_FILENAME, "r", encoding="utf-8") as config_file:
                     configs_json = json.load(config_file)
                     questions = configs_json.get("questions", [])
                     performance = configs_json.get("performance", {})
@@ -157,20 +224,37 @@ if os.path.exists(args.report):
                     for q in questions:
                         metric = q.get("metric", None)
                         if metric:
+                            # pylint: disable=invalid-name
                             answer = 0
+                            # pylint: enable=invalid-name
+
                             for interview in interview_matches[i]:
-                                if q['question'] == interview['Question']:
-                                    answer = llm.generate(f"Based on the excerpt:\n{interview['Question']}\n{interview['Answer']}\n\nDid the character achieve the question? 1 for yes, 0 for no.\nFormat your answer like this:\n\nExplanation: <string>\nAnswer: <0 or 1 only>")
-                                    answer = int(re.search(r"Answer: (\d+)", answer).group(1)) * 10
+                                if q["question"] == interview["Question"]:
+                                    answer = llm.generate(
+                                        f"Based on the excerpt:\n"
+                                        f"{interview['Question']}\n{interview['Answer']}\n\n"
+                                        f"Did the character achieve the question? "
+                                        f"1 for yes, 0 for no.\n"
+                                        f"Format your answer like this:\n\nExplanation: <string>\n"
+                                        f"Answer: <0 or 1 only>"
+                                    )
+                                    answer = (
+                                        int(
+                                            re.search(r"Answer: (\d+)", answer).group(1)
+                                        )
+                                        * 10
+                                    )
 
                         else:
-                            answer = (env_vars.get(numerator_key, 0) / env_vars.get(denominator_key, 1)) * 10
+                            answer = (
+                                env_vars.get(numerator_key, 0)
+                                / env_vars.get(denominator_key, 1)
+                            ) * 10
 
                     performance_scores.append(answer)
 
-            except Exception as e:
+            except Exception as e: # pylint: disable=broad-except
                 print(f"Wrong evaluation format response error: {e}, retrying...")
-
 
     adaptive_communication_scores = [i for i in adaptive_communication_scores if i != 0]
 
@@ -180,7 +264,7 @@ if os.path.exists(args.report):
     ka = sum(knowledge_application_scores) / len(knowledge_application_scores)
     cf = sum(cognitive_flexibility_scores) / len(cognitive_flexibility_scores)
     ps = sum(performance_scores) / len(performance_scores)
-    with open(reeval_filename, "a") as file:
+    with open(reeval_filename, "a", encoding="utf-8") as file:
         file.write(f"\n\n++++ Performance Score: {ps}\n")
     score_data = {
         "file": args.report,
@@ -190,9 +274,8 @@ if os.path.exists(args.report):
         "knowledge_application": ka,
         "cognitive_flexibility": cf,
         "performance": ps,
-        "overall": pu + ac + rd + ka + cf + ps
+        "overall": pu + ac + rd + ka + cf + ps,
     }
     print(score_data)
 else:
     print("report file {args.report} does not exist")
-

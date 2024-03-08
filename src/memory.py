@@ -6,8 +6,18 @@ import numpy as np
 from utils.utils import *
 from sklearn.metrics.pairwise import cosine_similarity
 
+
 class Memory:
-    def __init__(self, kind, content, created_at, last_accessed_at, score=None,embedding=None, memories=[]):
+    def __init__(
+        self,
+        kind,
+        content,
+        created_at,
+        last_accessed_at,
+        score=None,
+        embedding=None,
+        memories=[],
+    ):
         self.id = str(uuid.uuid4())
         self.kind = kind
         self.content = content
@@ -18,8 +28,8 @@ class Memory:
             print(type(self.last_accessed_at))
         else:
             self.last_accessed_at = last_accessed_at
-        #print(f"WTF {content} {type(created_at)} {type(last_accessed_at)}   ")
-        #print(f"{type(LLM_IMPORTANCE)} {LLM_IMPORTANCE}")
+        # print(f"WTF {content} {type(created_at)} {type(last_accessed_at)}   ")
+        # print(f"{type(LLM_IMPORTANCE)} {LLM_IMPORTANCE}")
         if LLM_IMPORTANCE == 0:
             self.importance = score
         else:
@@ -32,10 +42,11 @@ class Memory:
             self.embedding = embedding
         else:
             self.embedding = llm.embeddings(content)
-        #self.simulation_id = simulation_id
+        # self.simulation_id = simulation_id
 
-        #session.add(self)
-        #session.commit()
+        # session.add(self)
+        # session.commit()
+
     def to_dict(self):
         return vars(self)
 
@@ -54,8 +65,8 @@ class Memory:
         else:
             return self.content
 
-    def calculateImportanceScore(content,previous_memories=[]):
-        prompt = f'''
+    def calculateImportanceScore(content, previous_memories=[]):
+        prompt = f"""
 On the scale of 0 to 9, where 0 is purely mundane (e.g., brushing teeth, saw a bed) and 9 is extremely poignant (e.g., a break up, witnessed murder), rate the likely poignancy of the following  memory.
 
 First give an explanation for your score.
@@ -73,7 +84,7 @@ People see doors everyday, this is mundane
 0
 
 
-        '''
+        """
         same_memory = None
         for mem in previous_memories:
             if mem.content == content:
@@ -83,9 +94,9 @@ People see doors everyday, this is mundane
             result = "{same_memory.importance}"
         else:
             result = llm.generate(prompt, "5")
-        #cleaned_result = float(re.search(r'\d+', result).group() if re.search(r'\d+', result) else '5')
+        # cleaned_result = float(re.search(r'\d+', result).group() if re.search(r'\d+', result) else '5')
         try:
-            cleaned_result = int(re.findall(r'\b\d+\b', result)[-1])
+            cleaned_result = int(re.findall(r"\b\d+\b", result)[-1])
         except IndexError:
             cleaned_result = 5
         if cleaned_result > 9:
@@ -114,9 +125,11 @@ People see doors everyday, this is mundane
 
     def calculateRecencyScore(last_accessed_at, time, decay=0.99):
         try:
-            #print(f"laa {last_accessed_at} {type(last_accessed_at)}")
-            #print(f"time {time} {type(time)}")
-            last_accessed_at = int(datetime.strptime(last_accessed_at, "%Y-%m-%d %H:%M:%S").timestamp())
+            # print(f"laa {last_accessed_at} {type(last_accessed_at)}")
+            # print(f"time {time} {type(time)}")
+            last_accessed_at = int(
+                datetime.strptime(last_accessed_at, "%Y-%m-%d %H:%M:%S").timestamp()
+            )
             time = int(datetime.strptime(time, "%Y-%m-%d %H:%M:%S").timestamp())
             return float(decay ** int(time - last_accessed_at))
         except OverflowError:

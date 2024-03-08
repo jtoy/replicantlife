@@ -1,8 +1,13 @@
+"""
+This module contains default params.
+"""
+
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# pylint: disable=invalid-envvar-default
 # DECLARE PARAMS HERE
 DEBUG = os.getenv("DEBUG", default="0")
 LLAMA_URL = os.getenv("LLAMA_URL", default="http://localhost:11434/api")
@@ -40,7 +45,34 @@ ALLOW_OBSERVANCE = int(os.getenv("ALLOW_OBSERVANCE", default="1"))
 
 
 # DEV DEFAULTS
-DEFAULT_NAMES = ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Henry', 'Ivy', 'Jack', 'Katie', 'Leo', 'Mia', 'Nathan', 'Olivia', 'Peter', 'Quinn', 'Rachel', 'Sam', 'Tom', 'Ursula', 'Victor', 'Wendy', 'Xander', 'Yvonne', 'Zach']
+DEFAULT_NAMES = [
+    "Alice",
+    "Bob",
+    "Charlie",
+    "David",
+    "Eva",
+    "Frank",
+    "Grace",
+    "Henry",
+    "Ivy",
+    "Jack",
+    "Katie",
+    "Leo",
+    "Mia",
+    "Nathan",
+    "Olivia",
+    "Peter",
+    "Quinn",
+    "Rachel",
+    "Sam",
+    "Tom",
+    "Ursula",
+    "Victor",
+    "Wendy",
+    "Xander",
+    "Yvonne",
+    "Zach",
+]
 DEFAULT_DESCRIPTIONS = [
     "Energetic and outgoing, the life of any friendship circle.",
     "Reserved and contemplative, occasionally distant or aloof.",
@@ -51,18 +83,27 @@ DEFAULT_DESCRIPTIONS = [
     "Kind-hearted and considerate, ensuring everyone feels the warmth of friendship.",
     "Quirky and fun-loving, bringing a touch of humor.",
     "Thoughtful and reflective, prone to overthinking small moments.",
-    "Friendly and approachable, making everyone feel welcome."
+    "Friendly and approachable, making everyone feel welcome.",
 ]
 DEFAULT_GOALS = [
-  "Learn and spread hot gossips.",
-  "Build meaningful connections with others.",
-  "Learn and share intriguing stories.",
-  "Help others in times of need."
+    "Learn and spread hot gossips.",
+    "Build meaningful connections with others.",
+    "Learn and share intriguing stories.",
+    "Help others in times of need.",
 ]
-DEFAULT_ACTIONS = ["move", "talk","continue_to_destination","meta_cognize","fine_move"]
+DEFAULT_ACTIONS = [
+    "move",
+    "talk",
+    "continue_to_destination",
+    "meta_cognize",
+    "fine_move",
+]
 DEFAULT_QUESTIONS = [
-    { "who": "all", "question": "What have you learned so far?" },
-    { "who": "all", "question": "What is your most cherished memory and why?" },
-    { "who": "all", "question": "What are the locations that you know based on your memories?" }
+    {"who": "all", "question": "What have you learned so far?"},
+    {"who": "all", "question": "What is your most cherished memory and why?"},
+    {
+        "who": "all",
+        "question": "What are the locations that you know based on your memories?",
+    },
 ]
 DEFAULT_TIME = 1704067200
