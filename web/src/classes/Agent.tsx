@@ -46,7 +46,9 @@ export class Agent {
     }
 
     agentSet(agentSetStep: AgentSetStep) {
-        this.status = "dead";
+        if (agentSetStep.agentStatus === "dead") {
+            this.status = "dead";
+        }
         this.steps.push(agentSetStep);
     }
 }
