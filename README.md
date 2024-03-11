@@ -200,6 +200,7 @@ When working on the main engine,  often times we can shut off all llm calls, in 
 
 
 # THINKING ABOUT
+* move all flags to be under matrix instead of global
 * fix time, dont need to pass time everywhere!
 * finalize on logging, data vs flat
 * remove the llm calls in init

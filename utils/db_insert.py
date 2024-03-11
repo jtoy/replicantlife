@@ -50,6 +50,7 @@ def process_and_insert_data(cursor, jsonl_file_path,rows_to_process):
                 except Exception as e:
                     conn.rollback()
                     print(f"Error: {e}")
+    print(i)
 
 jsonl_file_path = sys.argv[1]  # Assumes the first command-line argument is the JSONL file path
 rows_to_process = int(sys.argv[2]) if len(sys.argv) > 2 else None  # Assumes the second argument is the number of rows to process
