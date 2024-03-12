@@ -10,6 +10,12 @@
     top: -12px;
 }
 
+.deadIcon {
+    position: absolute;
+    right: 8px;
+    top: -12px;
+}
+
 .agent {
     position: relative;
 }

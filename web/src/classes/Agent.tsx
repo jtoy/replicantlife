@@ -1,6 +1,7 @@
 import { Step } from "@/steps/Step";
 import { TalkStep } from "@/steps/TalkStep";
 import { ThoughtStep } from "@/steps/ThoughtStep";
+import { AgentSetStep } from "@/steps/AgentSetStep";
 
 export interface GridPosition {
     x: number;
@@ -14,13 +15,15 @@ export class Agent {
     agentId: string;
     isTalking: boolean;
     isThinking: boolean;
+    status: string
 
-    constructor(position: GridPosition, agentName: string, agentId: string) {
+    constructor(position: GridPosition, agentName: string, agentId: string, status: string) {
         this.position = position;
         this.agentName = agentName;
         this.agentId = agentId;
         this.isTalking = false;
         this.isThinking = false;
+        this.status = status;
         this.steps = [];
     }
 
@@ -39,7 +42,13 @@ export class Agent {
 
         setTimeout(() => {
             this.isThinking = false;
-        }, 1500);        
+        }, 1500);
     }
 
+    agentSet(agentSetStep: AgentSetStep) {
+        if (agentSetStep.agentStatus === "dead") {
+            this.status = "dead";
+        }
+        this.steps.push(agentSetStep);
+    }
 }

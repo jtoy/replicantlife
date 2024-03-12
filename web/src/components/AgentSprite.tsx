@@ -1,9 +1,9 @@
 import React from "react";
 import styles from './Agent.module.css';
 
-const AgentSprite: React.FC<{ agentName: string, isTalking: boolean, isThinking: boolean }> = ({ agentName, isTalking, isThinking }) => {
+const AgentSprite: React.FC<{ agentName: string, isTalking: boolean, isThinking: boolean, status: string }> = ({ agentName, isTalking, isThinking, status }) => {
     let agentImage = `${process.env.NEXT_PUBLIC_BASE_PATH}/images/characters/${agentName}.png`;
-
+    console.log("AgentSpriteeee status = ", status);
     // Check if agentName matches "Zombie" using regex
     if (/Zombie/.test(agentName)) {
         agentImage = `${process.env.NEXT_PUBLIC_BASE_PATH}/images/characters/Zombie_1.png`;
@@ -11,26 +11,35 @@ const AgentSprite: React.FC<{ agentName: string, isTalking: boolean, isThinking:
     return (
         <div className={styles.agent}>
             <div>
-                <img 
-                    src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/icons/ChatCircleDots-R.png`} 
-                    alt="Talking" 
+                <img
+                    src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/icons/ChatCircleDots-R.png`}
+                    alt="Talking"
                     className={`${styles.leftChatIcon} ${isTalking ? '' : styles.hidden}`}
                     width={32}
                     height={32}
                 />
                 {isThinking && (
-                    <img 
-                        src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/icons/lightbulb.gif` }
-                        alt="Thinking" 
+                    <img
+                        src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/icons/lightbulb.gif`}
+                        alt="Thinking"
                         className={styles.thoughtBubbleIcon}
+                        width={16}
+                        height={16}
+                    />
+                )}
+                {status == "dead" && (
+                    <img
+                        src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/icons/dead.png`}
+                        alt="Dead"
+                        className={styles.deadIcon}
                         width={16}
                         height={16}
                     />
                 )}
             </div>
             <img
-                src={agentImage} 
-                alt={agentName} 
+                src={agentImage}
+                alt={agentName}
                 width={32}
                 height={32}
             />

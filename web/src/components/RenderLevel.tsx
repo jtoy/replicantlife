@@ -100,7 +100,7 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
                     style={style}
                     className={styles.placement}
                     onClick={() => setFollowAgent(agent)}>
-                    <AgentSprite agentName={agent.agentName} isTalking={agent.isTalking} isThinking={agent.isThinking} />
+                    <AgentSprite agentName={agent.agentName} isTalking={agent.isTalking} isThinking={agent.isThinking} status={agent.status} />
                 </div>
             );
         });
