@@ -139,7 +139,7 @@ const Sidebar: React.FC<SidebarProps> = (
                         Show Thoughts
                     </label>
                 </div>
-                <button onClick={() => setFollowAgent(undefined)} className={styles.closeButton}>
+                <button onClick={() => setFollowAgent(undefined)}>
                     Close
                 </button>
             </div>}
