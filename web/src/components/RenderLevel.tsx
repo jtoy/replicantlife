@@ -34,7 +34,7 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
     const [levelState, setLevelState] = useState<LevelState>({ stepId: 0, substepId: 0, agents: [] });
     const [fetchIndex, setFetchIndex] = useState(0);
     const [initialFetchDone, setInitialFetchDone] = useState(false);
-    const chunkSize = 500; // Adjust chunk size as needed
+    const chunkSize = 1000; // Adjust chunk size as needed
 
     const levelRef = useRef<Level>(new Level([], (newState: LevelState) => {
         setLevelState(newState);
@@ -61,7 +61,7 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
         if (!initialFetchDone) {
             fetchData(); // Fetch immediately for the first time
         } else {
-            const interval = setInterval(fetchData, 20000); // Subsequent fetches at 20-second intervals
+            const interval = setInterval(fetchData, 10000); // Subsequent fetches at 20-second intervals
 
             return () => {
                 // isMounted = false;
