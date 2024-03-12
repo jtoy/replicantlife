@@ -92,7 +92,7 @@ export async function GET(
   }
 
   const fromIndex = Number(request.nextUrl.searchParams.get('fromIndex')) || 0;
-  const chunkSize = 500; // Adjust chunk size as needed
+  const chunkSize = 1000; // Adjust chunk size as needed
 
   const [totalSteps, allSteps] = await getStepsFromRedis(id, fromIndex, chunkSize);
 
