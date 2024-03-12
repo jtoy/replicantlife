@@ -191,7 +191,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
             print(f"{self} killed {other_agent}")
             other_agent.status = "dead"
             if self.matrix:
-                self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_set", "attribute_name": "status", "status":"dead"})
+                self.matrix.add_to_logs({"agent_id":other_agent.mid,"step_type":"agent_set", "attribute_name": "status", "status":"dead"})
             self.addMemory("interaction",f"{self} successfully killed {other_agent}",timestamp, 9)
             other_agent.addMemory("interaction",f"{self} killed you",timestamp, 9)
         else:
