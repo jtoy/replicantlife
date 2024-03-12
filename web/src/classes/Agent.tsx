@@ -16,14 +16,18 @@ export class Agent {
     isTalking: boolean;
     isThinking: boolean;
     status: string
+    description: string;
+    goal: string;
 
-    constructor(position: GridPosition, agentName: string, agentId: string, status: string) {
+    constructor(position: GridPosition, agentName: string, agentId: string, status: string, description: string, goal: string) {
         this.position = position;
         this.agentName = agentName;
         this.agentId = agentId;
         this.isTalking = false;
         this.isThinking = false;
         this.status = status;
+        this.description = description;
+        this.goal = goal;
         this.steps = [];
     }
 

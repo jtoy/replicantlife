@@ -5,7 +5,7 @@
     top: 0;
     z-index: 3;
     max-height: 100vh;
-    width: 300px;
+    width: 350px;
     overflow: scroll;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .gameControls:hover {
-    background-color: rgba(255, 255, 255, 1); 
+    background-color: rgba(255, 255, 255, 1);
 }
 
 
@@ -30,8 +30,7 @@
     margin: 5px;
 }
 
-.agentModule {
-    display: flex;
+.agentInfoContainer {
     border: 3px dashed #00bcd4;
     background-color: sandybrown;
     margin-top: 15px;
@@ -42,14 +41,38 @@
     overflow: hidden;
 }
 
+.agentModule {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
 .agentName {
     font-size: x-large;
-    padding-left: 10px;
+    padding-left: 8px;
 }
 
 .thoughtSelector {
-    margin-left: auto; 
-    display: flex; 
-    align-items: center; 
+    padding-left: 10px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.closeButton {
+    margin-left: auto;
+    display: flex;
     justify-content: flex-end;
+    color: black;
+    font-size: medium;
+    font-weight: bold;
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 4px 8px;
+    text-align: center;
+}
+
+.agentInfo {
+    text-align: justify;
 }
