@@ -62,7 +62,7 @@ class Agent:
 
         self.matrix = agent_data.get('matrix')
         if self.matrix:
-            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind})
+            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind,"description":self.description,"status":self.status})
 
     def update_goals(self):
         # this assumes 8+ importance is always worth changing /reevaluating goals

@@ -130,19 +130,27 @@ const Sidebar: React.FC<SidebarProps> = (
         // JSX for the Sidebar component goes here
         <div className={styles.sidebar}>
             {renderControls()}
-            {agentPlacement && <div className={styles.agentModule}>
-                <AgentSprite agentName={agentPlacement.agentName} isTalking={false} isThinking={false} status={agentPlacement.status} />
-                <div className={styles.agentName}>{agentPlacement.agentName}</div>
-                <div className={styles.thoughtSelector}>
-                    <label>
-                        <input type="checkbox" checked={showThoughts} onChange={() => setShowThoughts(!showThoughts)} />
-                        Show Thoughts
-                    </label>
+            {agentPlacement && <div className={styles.agentInfoContainer}>
+                <div className={styles.agentModule}>
+                    <AgentSprite agentName={agentPlacement.agentName} isTalking={false} isThinking={false} status={agentPlacement.status} />
+                    <div className={styles.agentName}>{agentPlacement.agentName}</div>
+                    <div className={styles.thoughtSelector}>
+                        <label>
+                            <input type="checkbox" checked={showThoughts} onChange={() => setShowThoughts(!showThoughts)} />
+                            Show Thoughts
+                        </label>
+                    </div>
+                    <button onClick={() => setFollowAgent(undefined)} className={styles.closeButton}>
+                        Close
+                    </button>
                 </div>
-                <button onClick={() => setFollowAgent(undefined)}>
-                    Close
-                </button>
-            </div>}
+                <hr />
+                <div>
+                    <p className={styles.agentInfo}><strong>Description:</strong> {agentPlacement.description}</p>
+                    <p className={styles.agentInfo}><strong>Goal:</strong> {agentPlacement.goal}</p>
+                </div>
+            </div>
+            }
             <>
                 {renderTimeline()}
             </>
