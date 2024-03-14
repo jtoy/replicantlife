@@ -38,6 +38,9 @@ class TestMemoryFunctions(unittest.TestCase):
         matrix.llm_action(real_agent, matrix.unix_time)
         self.assertEqual(real_agent.x, 4)
 
+    def test_matrix_run(self):
+        matrix = Matrix({"environment":"configs/small.tmj"})
+
     def test_memory(self):
         agent_data = {
             "name": "John",
