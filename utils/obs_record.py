@@ -11,10 +11,10 @@ load_dotenv()
 
 # OBS Studio Websocket Settings
 obs_settings = {
-    "obs_host": os.environ.get("OBS_HOST"),
-    "obs_port": int(os.environ.get("OBS_PORT")),
+    "obs_host": os.environ.get("OBS_HOST","127.0.0.1"),
+    "obs_port": int(os.environ.get("OBS_PORT",4455)),
     "obs_password": os.environ.get("OBS_PASSWORD"),
-    "record_path": os.environ.get("RECORD_PATH"),
+    "record_path": os.environ.get("RECORD_PATH","movies"),
 }
 
 # This is NOT working yet
@@ -29,6 +29,8 @@ def start_recording_if_playing():
 # Set up Chrome options to start in full-screen mode
 chrome_options = Options()
 chrome_options.add_argument('--kiosk')
+chrome_options.add_experimental_option("excludeSwitches", ['enable-automation']);
+
 
 # Create a WebDriver instance (make sure you have the ChromeDriver executable in your PATH)
 driver = webdriver.Chrome(options=chrome_options)

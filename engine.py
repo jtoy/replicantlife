@@ -46,9 +46,6 @@ def main():
     if args.id:
         config['id'] = args.id
     matrix = Matrix(config)
-
-    # matrix.send_matrix_to_redis()
-
     pd(f"model:#{MODEL}")
     pd("Initial Agents Positions:")
     #redis_connection.set(f"{matrix.id}:matrix_state", json.dumps(matrix.get_arr_2D()))

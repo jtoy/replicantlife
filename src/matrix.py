@@ -344,16 +344,6 @@ class Matrix:
             start_time = datetime.now()
             pd(f"Step {step + 1}:")
 
-            #redis_log(self.get_arr_2D(), f"{self.id}:matrix_states")
-            #redis_connection.set(f"{self.id}:matrix_state", json.dumps(self.get_arr_2D()))
-            #print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:agent_conversations")
-
-            #self.log_agents_to_redis()
-
-            #for a in self.agents:
-            #    print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:events:{a.name}")
-            #    print_and_log(f"Step: {step + 1} | {unix_to_strftime(self.unix_time)}", f"{self.id}:conversations:{a.name}")
-
             if redis_connection:
                 control_cmd = redis_connection.lpop(f"{self.id}:communications")
                 if control_cmd:
