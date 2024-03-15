@@ -39,10 +39,12 @@ class TestMemoryFunctions(unittest.TestCase):
         self.assertEqual(real_agent.x, 4)
 
     def test_matrix_runs_step(self):
-        matrix = Matrix({"environment":"configs/small.tmj"})
+        matrix = Matrix({"scenario":"configs/empty.json","environment":"configs/largev2.tmj"})
         #run for one step
         matrix.steps = 1
+        matrix.boot()
         matrix.run_singlethread()
+        self.assertTrue(len(matrix.agents) > 0)
         self.assertEqual(matrix.status,"complete")
 
     def test_memory(self):
