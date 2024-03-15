@@ -441,6 +441,14 @@ class Matrix:
         if agent.status == "dead":
             return agent
 
+        perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
+        perceived_data = (perceived_agents, perceived_locations, perceived_areas, perceived_objects, perceived_directions)
+
+        if agent.current_destination is not None and agent.perceived_data_is_same(perceived_data):
+            print("SKIPPED llm_action!")
+            agent.move({ "environment": self.environment })
+            return agent
+
         # It is 12:00, time to make plans
         if unix_time % 86400 == 0 and self.allow_plan_flag == 1:
             agent.make_plans(unix_to_strftime(unix_time))
@@ -472,7 +480,6 @@ class Matrix:
             agent.talk({ "other_agents": [agent.last_conversation.other_agent], "timestamp": unix_to_strftime(unix_time) })
             return agent
 
-        perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
 
         relevant_memories = agent.getMemories(agent.goal, unix_to_strftime(unix_time))
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""

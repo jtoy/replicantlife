@@ -35,6 +35,8 @@ class Agent:
         #self.actions = list(dict.fromkeys(agent_data.get("actions", []) + DEFAULT_ACTIONS))
         #old one
         self.actions = list(dict.fromkeys(agent_data.get("actions",DEFAULT_ACTIONS )))
+        self.last_perceived_data = None
+        self.perceived_data_history = {}
 
         self.memory = agent_data.get("memory", [])
         self.short_memory = agent_data.get("short_memory", [])
@@ -64,6 +66,17 @@ class Agent:
         if self.matrix:
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind})
 
+    def perceived_data_is_same(self,current_perceived_data):
+        last_step = self.matrix.cur_step - 1
+        if last_step not in self.perceived_data_history:
+            return False
+        return self.perceived_data_history[last_step] == current_perceived_data
+
+    def cleanup_old_perceived_data(self, current_step):
+        keys_to_delete = [step for step in self.perceived_data_history if step < current_step - 2]
+        for key in keys_to_delete:
+            del self.perceived_data_history[key]
+
     def update_goals(self):
         # this assumes 8+ importance is always worth changing /reevaluating goals
         # do i need to update my goals. if so, give me new goals
@@ -83,6 +96,7 @@ Express your goal using only the action or outcome. Avoid adding phrases like 'm
         msg = llm.generate(prompt)
         self.addMemory("observation",f"I updated my goal to be \"{msg}\"", unix_to_strftime(self.matrix.unix_time), random.randint(5, 8))
         self.goal = msg
+
 
     def decide(self):
         self.matrix.llm_action(self,self.matrix.unix_time)
@@ -564,7 +578,12 @@ Answer the question from the point of view of {self} thinking to themselves, res
         perceived_agent_ids = [agent.mid for agent in perceived_agents]
         if self.matrix:
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
-        #missing locations,areas,objects
+
+        perceived_data = (perceived_agents, perceived_locations, perceived_areas, perceived_objects, perceived_directions)
+        #self.last_perceived_data = perceived_data
+        self.perceived_data_history[self.matrix.cur_step] = perceived_data
+        self.cleanup_old_perceived_data(self.matrix.cur_step)
+
         return perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions
 
     def addMemory(self, kind, content, timestamp=None, score=None,embedding=None):

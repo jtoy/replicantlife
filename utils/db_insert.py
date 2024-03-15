@@ -29,8 +29,11 @@ ssh_settings = {
 }
 redis_url = os.environ.get("REDIS_URL")
 minimal = True #TODO move this to a flag
+override_sim_id = None
+printed = False
 
 def process_and_insert_data(cursor,redis_client, jsonl_file_path,rows_to_process):
+    global printed,minimal
     with jsonlines.open(jsonl_file_path, "r") as jsonl_file:
         for i, row in enumerate(jsonl_file):
             if rows_to_process is None or i < rows_to_process:
@@ -39,8 +42,11 @@ def process_and_insert_data(cursor,redis_client, jsonl_file_path,rows_to_process
                 substep = obj.get("substep")
                 step_type = obj.get("step_type")
                 sim_id = obj.get("sim_id")
-                if minimal and step_type not in ['talk', 'agent_set', 'move', 'matrix_set', 'agent_init']:
-                    next
+                if printed == False:
+                    print(f"SIM ID: {sim_id}")
+                    printed = True
+                #if minimal and step_type not in ['talk', 'agent_set', 'move', 'matrix_set', 'agent_init']:
+                #    next
                 data = {k: v for k, v in obj.items() if k not in ["step", "substep", "step_type","sim_id","embedding"]}
 
                 try:
