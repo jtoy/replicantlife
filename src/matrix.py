@@ -442,9 +442,8 @@ class Matrix:
             return agent
 
         perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
-        perceived_data = (perceived_agents, perceived_locations, perceived_areas, perceived_objects, perceived_directions)
 
-        if agent.current_destination is not None and agent.perceived_data_is_same(perceived_data):
+        if agent.current_destination is not None and agent.perceived_data_is_same():
             print("SKIPPED llm_action!")
             agent.move({ "environment": self.environment })
             return agent

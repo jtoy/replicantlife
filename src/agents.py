@@ -66,10 +66,12 @@ class Agent:
         if self.matrix:
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind})
 
-    def perceived_data_is_same(self,current_perceived_data):
+    def perceived_data_is_same(self):
         last_step = self.matrix.cur_step - 1
         if last_step not in self.perceived_data_history:
             return False
+        perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions = self.perceive([a for a in self.matrix.agents if a != self], self.matrix.environment, unix_to_strftime(self.matrix.unix_time))
+        current_perceived_data = (perceived_agents, perceived_locations, perceived_areas, perceived_objects, perceived_directions)
         return self.perceived_data_history[last_step] == current_perceived_data
 
     def cleanup_old_perceived_data(self, current_step):
