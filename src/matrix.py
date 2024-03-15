@@ -215,8 +215,12 @@ class Matrix:
         self.allow_movement = data.get("allow_movement", ALLOW_MOVEMENT)
         self.background = data.get("background", "")
         self.performance_evals = data.get("performance", {})
-        self.performance_metrics[self.performance_evals["numerator"]] = 0
-        self.performance_metrics["denominator"] = self.performance_evals["denominator"]
+        if not self.performance_evals:
+            self.performance_metrics["total_alive"] = 0
+            self.performance_metrics["denominator"] = "total_agents"
+        else:
+            self.performance_metrics[self.performance_evals["numerator"]] = 0
+            self.performance_metrics["denominator"] = self.performance_evals["denominator"]
 
         if self.steps <= 0:
             self.steps = data.get("steps", 100)

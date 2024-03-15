@@ -9,6 +9,7 @@ import os
 import difflib
 import random
 import json
+import uuid
 from datetime import datetime
 import nltk
 import redis
@@ -298,10 +299,10 @@ REDIS
 """
 # TODO get rid of globals
 if "REDIS_URL" in globals():
-    REDIS_CONNECTION = redis.Redis.from_url(REDIS_URL)
+    redis_connection = redis.Redis.from_url(REDIS_URL)
 else:
     print("REDIS_URL environment variable is not set.")
-    REDIS_CONNECTION = None
+    redis_connection = None
 
 
 def print_and_log(content, key):
@@ -312,7 +313,7 @@ def print_and_log(content, key):
 
 def redis_log(content, key):
     if LOG_TO_REDIS == 1:
-        REDIS_CONNECTION.rpush(key, json.dumps(content))
+        redis_connection.rpush(key, json.dumps(content))
 
 
 def find_most_similar(inp, arr):

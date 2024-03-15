@@ -69,6 +69,22 @@ class TestMemoryFunctions(unittest.TestCase):
         matrix.add_agent_to_simulation(zombie)
         matrix.llm_action(real_agent, matrix.unix_time)
         self.assertEqual(real_agent.x, 4)
+    
+    def test_matrix_runs_step(self):
+        """
+        This function tests if matrix runs a step successfully.
+        (If yes, the pylint-fix branch can be merged).
+        """
+
+        matrix = Matrix(
+            {"scenario":"configs/empty.json","environment":"configs/largev2.tmj"}
+        )
+        #run for one step
+        matrix.steps = 1
+        matrix.boot()
+        matrix.run_singlethread()
+        self.assertTrue(len(matrix.agents) > 0)
+        self.assertEqual(matrix.status,"complete")
 
     def test_memory(self):
         """
