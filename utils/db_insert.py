@@ -28,6 +28,7 @@ ssh_settings = {
     "ssh_private_key": os.environ.get("SSH_PRIVATE_KEY")
 }
 redis_url = os.environ.get("REDIS_URL")
+minimal = True #TODO move this to a flag
 
 def process_and_insert_data(cursor,redis_client, jsonl_file_path,rows_to_process):
     with jsonlines.open(jsonl_file_path, "r") as jsonl_file:
@@ -38,6 +39,8 @@ def process_and_insert_data(cursor,redis_client, jsonl_file_path,rows_to_process
                 substep = obj.get("substep")
                 step_type = obj.get("step_type")
                 sim_id = obj.get("sim_id")
+                if minimal and step_type not in ['talk', 'agent_set', 'move', 'matrix_set', 'agent_init']:
+                    next
                 data = {k: v for k, v in obj.items() if k not in ["step", "substep", "step_type","sim_id","embedding"]}
 
                 try:

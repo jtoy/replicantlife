@@ -38,8 +38,10 @@ class TestMemoryFunctions(unittest.TestCase):
         matrix.llm_action(real_agent, matrix.unix_time)
         self.assertEqual(real_agent.x, 4)
 
-    def test_matrix_run(self):
+    def test_matrix_runs_step(self):
         matrix = Matrix({"environment":"configs/small.tmj"})
+        #run for one step
+        self.assertEqual(matrix.status,"complete")
 
     def test_memory(self):
         agent_data = {
