@@ -591,8 +591,9 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
         perceived_data = (perceived_agents, perceived_locations, perceived_areas, perceived_objects, perceived_directions)
         #self.last_perceived_data = perceived_data
-        self.perceived_data_history[self.matrix.cur_step] = perceived_data
-        self.cleanup_old_perceived_data(self.matrix.cur_step)
+        if self.matrix:
+            self.perceived_data_history[self.matrix.cur_step] = perceived_data
+            self.cleanup_old_perceived_data(self.matrix.cur_step)
 
         return perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions
 

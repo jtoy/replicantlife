@@ -581,7 +581,7 @@ Answer: move Park
         agent.destination_cache = [(36, 88), (36, 89), (36, 90)]
         zombie.destination_cache = [(36, 93), (36, 93), (36, 93)]
 
-        agent.addMemory("reflect", f"{matrix.unix_to_strftime(matrix.unix_time)} - {agent} wants to check if the Park is a safe place to go to or no.", matrix.unix_to_strftime(matrix.unix_time), 9)
+        agent.addMemory("reflect", f"{unix_to_strftime(matrix.unix_time)} - {agent} wants to check if the Park is a safe place to go to or no.", unix_to_strftime(matrix.unix_time), 9)
 
         matrix.agents.append(agent)
         matrix.agents.append(zombie)
