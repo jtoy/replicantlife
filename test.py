@@ -41,6 +41,8 @@ class TestMemoryFunctions(unittest.TestCase):
     def test_matrix_runs_step(self):
         matrix = Matrix({"environment":"configs/small.tmj"})
         #run for one step
+        matrix.steps = 1
+        matrix.run_singlethread()
         self.assertEqual(matrix.status,"complete")
 
     def test_memory(self):
