@@ -39,8 +39,12 @@ class TestMemoryFunctions(unittest.TestCase):
         self.assertEqual(real_agent.x, 4)
 
     def test_matrix_runs_step(self):
-        matrix = Matrix({"environment":"configs/small.tmj"})
+        matrix = Matrix({"scenario":"configs/empty.json","environment":"configs/largev2.tmj"})
         #run for one step
+        matrix.steps=1
+        matrix.boot()
+        matrix.run_singlethread()
+        self.assertTrue(len(matrix.agents) > 0)
         self.assertEqual(matrix.status,"complete")
 
     def test_memory(self):
@@ -90,7 +94,7 @@ class TestMemoryFunctions(unittest.TestCase):
             print(f"Error {e}")
 
         timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
-        agent1.evaluate_progress(timestamp)
+        agent1.evaluate_progress({'timestamp':timestamp})
 
     def test_askmetaquestions(self):
         agent1_data = {
