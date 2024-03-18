@@ -300,10 +300,11 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
         msg = llm.prompt(prompt_name="summarize_conversation", variables=variables)
         interaction = f"{timestamp} - {self} summarized their conversation with {self.last_conversation.other_agent.name}: {msg}"
+        interaction = f"my conversation with {self.last_conversation.other_agent.name}: {msg}"
         if self.matrix is not None:
             print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
 
-        self.addMemory("conversation", interaction, timestamp, random.randint(4, 6))
+        self.addMemory("summary", interaction, timestamp, random.randint(4, 6))
         if self.matrix:
             self.matrix.add_to_logs({"step_type":"agent_set", "attribute_name": "convo", "attribute_data": {"status": "complete", "from":self.mid, "to":self.last_conversation.other_agent.mid, "convo_id":self.last_conversation.mid}})
         self.last_conversation = None
@@ -595,7 +596,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
 
         if kind == "observation":
-            if (self.matrix is not None and self.matrix.allow_observance_flag == 1):
+            if (self.matrix and self.matrix.allow_observance_flag == 1) or (self.matrix is None):
                 memory = Memory(kind, content, timestamp, timestamp, score,embedding)
                 self.memory.append(memory)
         else:

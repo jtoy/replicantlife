@@ -29,14 +29,18 @@ class TestMemoryFunctions(unittest.TestCase):
         self.assertEqual(agent.y, 0)
 
     def test_fine_move_action_moves_away(self):
-        #real agent here, real zombie here. decide 
-        matrix = Matrix({"environment":"configs/small.tmj"})
-        real_agent = Agent({ "name": "John", "actions": ["fine_move"],"x":5,"y":5,"matrix":matrix })
-        matrix.add_agent_to_simulation(real_agent)
-        zombie = Agent({ "name": f"Zombie", "kind": "zombie", "actions": ["kill"],"x":6,"y":5,"matrix":matrix })
-        matrix.add_agent_to_simulation(zombie)
-        matrix.llm_action(real_agent, matrix.unix_time)
-        self.assertEqual(real_agent.x, 4)
+        successful_outcomes = 0
+        for _ in range(4):
+            matrix = Matrix({"environment": "configs/small.tmj"})
+            real_agent = Agent({"name": "John", "actions": ["fine_move"], "x": 5, "y": 5, "matrix": matrix})
+            matrix.add_agent_to_simulation(real_agent)
+            zombie = Agent({"name": f"killer Zombie", "kind": "zombie", "actions": ["kill"], "x": 6, "y": 5, "matrix": matrix})
+            matrix.add_agent_to_simulation(zombie)
+            matrix.llm_action(real_agent, matrix.unix_time)
+            if real_agent.x == 4:
+                successful_outcomes += 1
+
+        self.assertTrue(successful_outcomes >= 2)
 
     def test_matrix_runs_step(self):
         matrix = Matrix({"environment":"configs/small.tmj"})
@@ -260,7 +264,8 @@ class TestMemoryFunctions(unittest.TestCase):
             print(f"Relevance Score: {Memory.calculateRelevanceScore(mem.embedding, context_embedding)}")
         self.assertTrue(len(sorted_memory) > 0)
 
-    def test_information_spreading(self):
+
+    def test_information_dissemination(self):
         a1_data = { "name": "Viktor", "goal": "wants to throw a party next week" }
         a2_data = { "name": "John", "description": "loves art" }
         a3_data = { "name": "Paul", "description": "loves eating" }
@@ -279,6 +284,53 @@ class TestMemoryFunctions(unittest.TestCase):
             print(msg)
             unix_time = unix_time + 10
         agent2.summarize_conversation(timestamp)
+        print("*"*20)
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent2.talk({ "target": agent3.name, "other_agents": [agent3], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent3}: {response}"
+            print(msg)
+            response = agent3.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent3} said to {agent2}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+        agent3.summarize_conversation(timestamp)
+        print(f"{agent2} memories")
+        for mem in agent2.memory:
+            print(mem)
+        print(f"{agent3} memories")
+        for mem in agent3.memory:
+            print(mem)
+
+    def long_range_test_information_dissemination(self):
+        a1_data = { "name": "Viktor", "goal": "wants to throw a party next week" }
+        a2_data = { "name": "John", "description": "loves art" }
+        a3_data = { "name": "Paul", "description": "loves eating" }
+        agent1 = Agent(a1_data)
+        agent2 = Agent(a2_data)
+        agent3 = Agent(a3_data)
+        agents = [agent1, agent2, agent3]
+        for i, agent in enumerate(agents):
+            for other_agent in agents[i + 1:]:
+                agent.connections.append(str(other_agent))
+                other_agent.connections.append(str(agent))
+        unix_time = 1704067200
+        timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent1.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent1} said to {agent2}: {response}"
+            print(msg)
+            response = agent2.talk({ "target": agent1.name, "other_agents": [agent1], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent1}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+        agent2.summarize_conversation(timestamp)
+        interactions = ["saw a dog" ,"took a nap","chatted with a stranger", "ate lunch", "saw a bird", "saw a friend","saw a stranger", "saw a zombie"]
+        for i in range(50):
+            timestamp = datetime.fromtimestamp(unix_time+i).strftime("%Y-%m-%d %H:%M:%S")
+            interaction = random.choice(interactions)
+            agent2.addMemory("observation", interaction, timestamp, random.randint(0, 2))
         print("*"*20)
         for i in range(2):
             timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")

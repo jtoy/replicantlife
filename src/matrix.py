@@ -100,7 +100,7 @@ class Matrix:
 
         # Add Zombies
         for i in range(self.num_zombies):
-            zombie = Agent({ "name": f"Zombie_{i}", "kind": "zombie", "actions": ["kill"],"matrix":self })
+            zombie = Agent({ "name": f"killer Zombie {i}", "kind": "zombie", "actions": ["kill"],"matrix":self })
             self.add_agent_to_simulation(zombie)
 
     @classmethod
