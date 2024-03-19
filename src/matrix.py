@@ -177,6 +177,7 @@ class Matrix:
         self.performance_evals = data.get("performance", {})
         self.performance_metrics[self.performance_evals["numerator"]] = 0
         self.performance_metrics["denominator"] = self.performance_evals["denominator"]
+        self.action_blacklist = data.get("action_blacklist",[])
 
         if self.steps <= 0:
             self.steps = data.get("steps", 100)

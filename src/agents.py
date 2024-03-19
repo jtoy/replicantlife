@@ -32,9 +32,6 @@ class Agent:
         self.x = agent_data.get("x", None)
         self.y = agent_data.get("y", None)
         self.actions = list(set(agent_data.get("actions", []) + DEFAULT_ACTIONS))
-        #self.actions = list(dict.fromkeys(agent_data.get("actions", []) + DEFAULT_ACTIONS))
-        #old one
-        self.actions = list(dict.fromkeys(agent_data.get("actions",DEFAULT_ACTIONS )))
         self.last_perceived_data = None
         self.perceived_data_history = {}
 
@@ -64,6 +61,8 @@ class Agent:
 
         self.matrix = agent_data.get('matrix')
         if self.matrix:
+            if self.matrix.action_blacklist:
+                self.actions = [action for action in self.actions if action not in blacklist]
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind})
 
     def perceived_data_is_same(self):
