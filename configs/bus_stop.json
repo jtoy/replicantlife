@@ -11,8 +11,8 @@
                 "Lily",
                 "James"
             ],
-            "x": 10,
-            "y": 25,
+            "x": 25,
+            "y": 10,
             "actions_blacklist": [
                 "move"
             ]
@@ -27,8 +27,8 @@
                 "Lily",
                 "Natasha"
             ],
-            "x": 15,
-            "y": 25,
+            "x": 25,
+            "y": 15,
             "actions_blacklist": [
                 "move"
             ]
@@ -43,8 +43,8 @@
                 "James",
                 "Paul"
             ],
-            "x": 20,
-            "y": 25,
+            "x": 25,
+            "y": 20,
             "actions_blacklist": [
                 "move"
             ]
@@ -75,8 +75,8 @@
                 "Sherlock",
                 "Paul"
             ],
-            "x": 30,
-            "y": 25,
+            "x": 25,
+            "y": 30,
             "actions_blacklist": [
                 "move"
             ]
@@ -91,8 +91,8 @@
                 "James",
                 "Lily"
             ],
-            "x": 35,
-            "y": 25,
+            "x": 25,
+            "y": 35,
             "actions_blacklist": [
                 "move"
             ]

@@ -84,6 +84,30 @@ const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string |
     }
 
     const renderAgents = () => {
+        if (map == "stage") {
+            console.log("STEPID", levelState.stepId);
+            console.log("AGENT LENGTH", levelState.agents.length);
+            return levelState.agents.map((agent, index) => {
+                const x = agent.position.x;
+                const y = agent.position.y;
+
+                const style: React.CSSProperties = {
+                    position: 'relative',
+                    cursor: 'pointer',
+                    top: x,
+                    left: y,
+                };
+
+                return (
+                    <div key={index}
+                        style={style}
+                        className={styles.placement}>
+                        <AgentSprite agentName={agent.agentName} isTalking={agent.isTalking} isThinking={agent.isThinking} status={agent.status} map={map} />
+                    </div>
+                );
+            });
+
+        }
         return levelState.agents.map((agent, index) => {
             const x = agent.position.x * CELL_SIZE;
             const y = agent.position.y * CELL_SIZE;
@@ -115,31 +139,9 @@ const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string |
                     className={styles.stageImg}
                 />
                 <div className={styles.agentContainer}>
-                    {/* Hardcoded agents for now */}
-                    <div className={styles.agentItem}>
-                        <AgentSprite agentName="Natasha" isTalking={false} isThinking={false} status="active" map={map} />
-                    </div>
-                    <div className={styles.agentItem}>
-                        <AgentSprite agentName="James" isTalking={false} isThinking={false} status="active" map={map} />
-                    </div>
-                    <div className={styles.agentItem}>
-                        <AgentSprite agentName="Viktor" isTalking={false} isThinking={false} status="active" map={map} />
-                    </div>
-                    <div className={styles.agentItem}>
-                        <AgentSprite agentName="Lily" isTalking={false} isThinking={false} status="active" map={map} />
-                    </div>
-                    <div className={styles.agentItem}>
-                        <AgentSprite agentName="Sherlock" isTalking={false} isThinking={false} status="active" map={map} />
-                    </div>
-                    <div className={styles.agentItem}>
-                        <AgentSprite agentName="Paul" isTalking={false} isThinking={false} status="active" map={map} />
-                    </div>
-                    <div className={styles.agentItem}>
-                        <AgentSprite agentName="Zombie_0" isTalking={false} isThinking={false} status="active" map={map} />
-                    </div>
-                    <div className={styles.agentItem}>
-                        <AgentSprite agentName="Zombie_1" isTalking={false} isThinking={false} status="active" map={map} />
-                    </div>
+                    <>
+                        {renderAgents()}
+                    </>
                 </div>
             </div>
         );
