@@ -1,9 +1,15 @@
 import React from "react";
 import styles from './Agent.module.css';
 
-const AgentSprite: React.FC<{ agentName: string, isTalking: boolean, isThinking: boolean, status: string }> = ({ agentName, isTalking, isThinking, status }) => {
+const AgentSprite: React.FC<{ agentName: string, isTalking: boolean, isThinking: boolean, status: string, map: string }> = ({ agentName, isTalking, isThinking, status, map }) => {
     let agentImage = `${process.env.NEXT_PUBLIC_BASE_PATH}/images/characters/${agentName}.png`;
     console.log("AgentSpriteeee status = ", status);
+
+    let size = { width: 32, height: 32 };
+    if (map == "stage") {
+        size = { width: 150, height: 150 }; // Set a different size for agents if map is "stage"
+    }
+
     // Check if agentName matches "Zombie" using regex
     if (/Zombie/.test(agentName)) {
         agentImage = `${process.env.NEXT_PUBLIC_BASE_PATH}/images/characters/Zombie_1.png`;
@@ -40,8 +46,8 @@ const AgentSprite: React.FC<{ agentName: string, isTalking: boolean, isThinking:
             <img
                 src={agentImage}
                 alt={agentName}
-                width={32}
-                height={32}
+                width={size.width}
+                height={size.height}
             />
         </div>
     );

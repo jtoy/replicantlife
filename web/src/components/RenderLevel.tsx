@@ -28,7 +28,7 @@ async function getData(sim_id: string, fromIndex: number) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
+const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string | null }> = ({ simId, map, img }) => {
     const [isPlaying, setIsPlaying] = useState(true);
     const [followAgent, setFollowAgent] = useState<Agent | undefined>(undefined);
     const [levelState, setLevelState] = useState<LevelState>({ stepId: 0, substepId: 0, agents: [] });
@@ -100,11 +100,50 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
                     style={style}
                     className={styles.placement}
                     onClick={() => setFollowAgent(agent)}>
-                    <AgentSprite agentName={agent.agentName} isTalking={agent.isTalking} isThinking={agent.isThinking} status={agent.status} />
+                    <AgentSprite agentName={agent.agentName} isTalking={agent.isTalking} isThinking={agent.isThinking} status={agent.status} map=""/>
                 </div>
             );
         });
     };
+
+    if (map == "stage") {
+        return (
+            <div className={styles.fullScreenContainer}>
+                <img
+                    src={img ? (process.env.NEXT_PUBLIC_CONTENT_DIRECTORY + "/images/maps/" + img) : (process.env.NEXT_PUBLIC_BASE_PATH + "/images/maps/Large.png")}
+                    alt="Stage Map"
+                    className={styles.stageImg}
+                />
+                <div className={styles.agentContainer}>
+                    {/* Hardcoded agents for now */}
+                    <div className={styles.agentItem}>
+                        <AgentSprite agentName="Natasha" isTalking={false} isThinking={false} status="active" map={map} />
+                    </div>
+                    <div className={styles.agentItem}>
+                        <AgentSprite agentName="James" isTalking={false} isThinking={false} status="active" map={map} />
+                    </div>
+                    <div className={styles.agentItem}>
+                        <AgentSprite agentName="Viktor" isTalking={false} isThinking={false} status="active" map={map} />
+                    </div>
+                    <div className={styles.agentItem}>
+                        <AgentSprite agentName="Lily" isTalking={false} isThinking={false} status="active" map={map} />
+                    </div>
+                    <div className={styles.agentItem}>
+                        <AgentSprite agentName="Sherlock" isTalking={false} isThinking={false} status="active" map={map} />
+                    </div>
+                    <div className={styles.agentItem}>
+                        <AgentSprite agentName="Paul" isTalking={false} isThinking={false} status="active" map={map} />
+                    </div>
+                    <div className={styles.agentItem}>
+                        <AgentSprite agentName="Zombie_0" isTalking={false} isThinking={false} status="active" map={map} />
+                    </div>
+                    <div className={styles.agentItem}>
+                        <AgentSprite agentName="Zombie_1" isTalking={false} isThinking={false} status="active" map={map} />
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
 
@@ -112,7 +151,10 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
             <div className={styles.gameContainer}>
 
                 <Camera followAgent={followAgent} setFollowAgent={setFollowAgent}>
-                    <img src={process.env.NEXT_PUBLIC_BASE_PATH + "/images/maps/Large.png"} alt="Default Map" />
+                    <img
+                        src={img ? (process.env.NEXT_PUBLIC_CONTENT_DIRECTORY + "/images/maps/" + img) : (process.env.NEXT_PUBLIC_BASE_PATH + "/images/maps/Large.png")}
+                        alt="Default Map"
+                    />
                     <>
                         {renderAgents()}
                     </>
