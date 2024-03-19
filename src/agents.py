@@ -113,7 +113,11 @@ Express your goal using only the action or outcome. Avoid adding phrases like 'm
         self.meta_questions.extend(x[1] for x in m if x[1] not in self.meta_questions)
 
     def evaluate_progress(self,opts={}):
-        relevant_memories = self.getMemories(self.goal, unix_to_strftime(self.matrix.unix_time))
+        if self.matrix:
+            relevant_memories = self.getMemories(self.goal, unix_to_strftime(self.matrix.unix_time))
+        else:
+            relevant_memories = self.getMemories(self.goal, opts.get("timestamp", ""))
+
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
         primer = opts.get("random_prime",False)
         variables = {
@@ -130,7 +134,11 @@ Express your goal using only the action or outcome. Avoid adding phrases like 'm
         score = int(match.group(1)) if match else None
 
         if score and explanation:
-            self.addMemory("meta", explanation, unix_to_strftime(self.matrix.unix_time) , 10)
+            if self.matrix:
+                self.addMemory("meta", explanation, unix_to_strftime(self.matrix.unix_time) , 10)
+            else:
+                self.addMemory("meta", explanation, opts.get("timestamp", "") , 10)
+
             if score and int(score) < 3:
                 #self.meta_cognize(unix_to_strftime(self.matrix.unix_time), True)
                 pass
@@ -494,7 +502,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         perceived_agents = []
         perceived_areas = []
         perceived_directions = []
-        if (self.matrix is not None and self.matrix.allow_observance_flag == 0) or (self.matrix is None and ALLOW_OBSERVE == 0):
+        if (self.matrix is not None and self.matrix.allow_observance_flag == 0) or (self.matrix is None and ALLOW_OBSERVANCE == 0):
 
             return perceived_agents, perceived_locations, perceived_areas, perceived_objects
 
@@ -584,8 +592,9 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
         perceived_data = (perceived_agents, perceived_locations, perceived_areas, perceived_objects, perceived_directions)
         #self.last_perceived_data = perceived_data
-        self.perceived_data_history[self.matrix.cur_step] = perceived_data
-        self.cleanup_old_perceived_data(self.matrix.cur_step)
+        if self.matrix:
+            self.perceived_data_history[self.matrix.cur_step] = perceived_data
+            self.cleanup_old_perceived_data(self.matrix.cur_step)
 
         return perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions
 
