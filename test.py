@@ -43,8 +43,12 @@ class TestMemoryFunctions(unittest.TestCase):
         self.assertTrue(successful_outcomes >= 2)
 
     def test_matrix_runs_step(self):
-        matrix = Matrix({"environment":"configs/small.tmj"})
+        matrix = Matrix({"scenario":"configs/empty.json","environment":"configs/largev2.tmj"})
         #run for one step
+        matrix.steps=1
+        matrix.boot()
+        matrix.run_singlethread()
+        self.assertTrue(len(matrix.agents) > 0)
         self.assertEqual(matrix.status,"complete")
 
     def test_memory(self):
@@ -94,7 +98,7 @@ class TestMemoryFunctions(unittest.TestCase):
             print(f"Error {e}")
 
         timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
-        agent1.evaluate_progress(timestamp)
+        agent1.evaluate_progress({'timestamp':timestamp})
 
     def test_askmetaquestions(self):
         agent1_data = {
@@ -629,7 +633,7 @@ Answer: move Park
         agent.destination_cache = [(36, 88), (36, 89), (36, 90)]
         zombie.destination_cache = [(36, 93), (36, 93), (36, 93)]
 
-        agent.addMemory("reflect", f"{matrix.unix_to_strftime(matrix.unix_time)} - {agent} wants to check if the Park is a safe place to go to or no.", matrix.unix_to_strftime(matrix.unix_time), 9)
+        agent.addMemory("reflect", f"{unix_to_strftime(matrix.unix_time)} - {agent} wants to check if the Park is a safe place to go to or no.", unix_to_strftime(matrix.unix_time), 9)
 
         matrix.agents.append(agent)
         matrix.agents.append(zombie)
