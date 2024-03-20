@@ -16,6 +16,8 @@ interface SidebarProps {
     stepId: number;
     substepId: number;
     level: Level;
+    toggleAudio: () => void;
+    audioPlaying: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = (
@@ -26,7 +28,9 @@ const Sidebar: React.FC<SidebarProps> = (
         setIsPlaying,
         stepId, 
         substepId, 
-        level 
+        level,
+        toggleAudio,
+        audioPlaying
     }) => {
     
     const [showThoughts, setShowThoughts] = useState(true);
@@ -120,6 +124,7 @@ const Sidebar: React.FC<SidebarProps> = (
                     <button onClick={handlePlay} disabled={isPlaying}>Play</button>
                     <button onClick={handleStep} disabled={isPlaying}>Step</button>
                     <button onClick={handleGoto} disabled={isPlaying}>Goto</button>
+                    <button onClick={toggleAudio}>{audioPlaying ? 'Stop Audio' : 'Play Audio'}</button>
                 </div>
 
             </div>
