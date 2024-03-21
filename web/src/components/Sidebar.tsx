@@ -16,8 +16,7 @@ interface SidebarProps {
     stepId: number;
     substepId: number;
     level: Level;
-    toggleAudio: () => void;
-    audioPlaying: boolean;
+    simId: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = (
@@ -29,12 +28,12 @@ const Sidebar: React.FC<SidebarProps> = (
         stepId, 
         substepId, 
         level,
-        toggleAudio,
-        audioPlaying
+        simId
     }) => {
     
     const [showThoughts, setShowThoughts] = useState(true);
-    
+    const [isPlayAudio, setIsPlayAudio] = useState(true);
+    const browserLanguage = navigator.language;
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -51,6 +50,57 @@ const Sidebar: React.FC<SidebarProps> = (
             }
         };
     }, [isPlaying]);
+
+    const fetchAudioData = async (sim_id: string, substep_id: number, agent_name: string, lang: string) => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_ASSET_DOMAIN}/audio?mid=${sim_id}&substep=${substep_id}&agent=${agent_name}&lang=${lang}`, { mode: 'cors' });
+            console.log("LAAAAAANG", lang);
+            if (!res.ok) {
+                throw new Error('Failed to fetch data');
+            }
+
+            const audioBlob = await res.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const newAudio = new Audio(audioUrl);
+            playAudio(newAudio);
+        } catch (error) {
+            console.error('Error fetching audio:', error);
+        }
+    };
+
+    const playAudio = (audio: HTMLAudioElement) => {
+        if (audio) {
+            audio.play();
+        }
+    };
+
+    const stopAudio = (audio: HTMLAudioElement) => {
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    };
+
+    useEffect(() => {
+        if (agentPlacement) {
+            const steps = agentPlacement.steps.toReversed();
+            console.log({ "STEPSSSS": steps });
+            steps.forEach(step => {
+                if (showThoughts && isPlayAudio) {
+                    if (step instanceof TalkStep) {
+                        const talkStep = step as TalkStep;
+                        fetchAudioData(simId, talkStep.substepId, talkStep.fromAgentName, browserLanguage);
+                        return;
+                    }
+                    if (step instanceof ThoughtStep) {
+                        const thoughtStep = step as ThoughtStep;
+                        fetchAudioData(simId, thoughtStep.substepId, thoughtStep.agentId, browserLanguage);
+                        return;
+                    }
+                }
+            });
+        }
+    }, [agentPlacement, showThoughts, isPlayAudio]);
 
     const handleRewind = (): void => {
         setIsPlaying(false);
@@ -114,8 +164,14 @@ const Sidebar: React.FC<SidebarProps> = (
     const renderControls = () => {
         return(
             <div className={styles.gameControls}>
-                <div>
+                <div className={styles.stepAndAudio}>
                     Step: {stepId}
+                    {process.env.NEXT_PUBLIC_ALLOW_AUDIO === "true" && <div>
+                        <label>
+                            <input type="checkbox" checked={isPlayAudio} onChange={() => setIsPlayAudio(!isPlayAudio)} />
+                            Play Audio
+                        </label>
+                    </div>}
                 </div>
                 <span style={{ display: 'none' }}>{substepId}</span>
                 <div className={styles.buttons}>
@@ -124,7 +180,6 @@ const Sidebar: React.FC<SidebarProps> = (
                     <button onClick={handlePlay} disabled={isPlaying}>Play</button>
                     <button onClick={handleStep} disabled={isPlaying}>Step</button>
                     <button onClick={handleGoto} disabled={isPlaying}>Goto</button>
-                    <button onClick={toggleAudio}>{audioPlaying ? 'Stop Audio' : 'Play Audio'}</button>
                 </div>
 
             </div>

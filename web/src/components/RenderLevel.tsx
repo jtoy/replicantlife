@@ -36,8 +36,6 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
     const [initialFetchDone, setInitialFetchDone] = useState(false);
     const chunkSize = 1000; // Adjust chunk size as needed
 
-    const [audio] = useState(new Audio('/audio/sample.mp3'));
-    const [audioPlaying, setAudioPlaying] = useState(false);
 
     const levelRef = useRef<Level>(new Level([], (newState: LevelState) => {
         setLevelState(newState);
@@ -86,15 +84,6 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
         )
     }
 
-    const toggleAudio = () => {
-        if (audioPlaying) {
-            audio.pause(); // Pause audio if it's playing
-        } else {
-            audio.play(); // Play audio if it's paused
-        }
-        setAudioPlaying(!audioPlaying); // Toggle audio playing state
-    };
-
     const renderAgents = () => {
         return levelState.agents.map((agent, index) => {
             const x = agent.position.x * CELL_SIZE;
@@ -136,8 +125,7 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
                     stepId={levelState.stepId}
                     substepId={levelState.substepId}
                     level={levelRef.current}
-                    toggleAudio={toggleAudio}
-                    audioPlaying={audioPlaying} />
+                    simId={simId} />
             </div>
         </div>
     );
