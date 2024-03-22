@@ -42,6 +42,11 @@ printed = False
 inserted = 0
 
 def process_and_insert_data(cursor,redis_client, args):
+    if redis_client:
+        data_fields = ["sim_id","embedding"]
+    else:
+        data_fields = ["step", "substep", "step_type","sim_id","embedding"]
+
     global printed,inserted
     with jsonlines.open(args.jsonl_file_path, "r") as jsonl_file:
         for i, row in enumerate(jsonl_file):
@@ -60,7 +65,7 @@ def process_and_insert_data(cursor,redis_client, args):
                     printed = True
                 if not args.full and step_type not in ['talk', 'agent_set', 'move', 'matrix_set', 'agent_init']:
                     continue
-                data = {k: v for k, v in obj.items() if k not in ["step", "substep", "step_type","sim_id","embedding"]}
+                data = {k: v for k, v in obj.items() if k not in data_fields}
 
                 try:
                     if cursor:
