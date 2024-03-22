@@ -100,7 +100,7 @@ class Matrix:
 
         # Add Zombies
         for i in range(self.num_zombies):
-            zombie = Agent({ "name": f"Zombie_{i}", "kind": "zombie", "actions": ["kill"],"matrix":self })
+            zombie = Agent({ "name": f"killer Zombie {i}", "kind": "zombie", "actions": ["kill"],"matrix":self })
             self.add_agent_to_simulation(zombie)
 
     @classmethod
@@ -181,6 +181,8 @@ class Matrix:
         else:
             self.performance_metrics[self.performance_evals["numerator"]] = 0
             self.performance_metrics["denominator"] = self.performance_evals["denominator"]
+
+        self.action_blacklist = data.get("action_blacklist",[])
 
         if self.steps <= 0:
             self.steps = data.get("steps", 100)
@@ -445,6 +447,13 @@ class Matrix:
         if agent.status == "dead":
             return agent
 
+        perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
+
+        if agent.current_destination is not None and agent.perceived_data_is_same():
+            print("SKIPPED llm_action!")
+            agent.move({ "environment": self.environment })
+            return agent
+
         # It is 12:00, time to make plans
         if unix_time % 86400 == 0 and self.allow_plan_flag == 1:
             agent.make_plans(unix_to_strftime(unix_time))
@@ -476,7 +485,6 @@ class Matrix:
             agent.talk({ "other_agents": [agent.last_conversation.other_agent], "timestamp": unix_to_strftime(unix_time) })
             return agent
 
-        perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions = agent.perceive([a for a in self.agents if a != agent], self.environment, unix_to_strftime(self.unix_time))
 
         relevant_memories = agent.getMemories(agent.goal, unix_to_strftime(unix_time))
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""

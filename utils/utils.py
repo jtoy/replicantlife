@@ -180,7 +180,9 @@ class Llm:
             pd(f"current url {current_url}")
         pd(f"INPUT:\n {prompt}")
         pd(f"OUTPUT:\n {msg}")
-        pd(f"runtime: {end_time - start_time}")
+        print(f"LLM CALL: {prompt[:30]}")
+        print(f"runtime: {end_time - start_time}")
+
         return msg
 
     def embeddings(self, prompt, fallback=[0.5, 0.5, 0.5]):
