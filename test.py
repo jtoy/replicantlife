@@ -45,7 +45,7 @@ class TestMemoryFunctions(unittest.TestCase):
     def test_matrix_runs_step(self):
         matrix = Matrix({"scenario":"configs/empty.json","environment":"configs/largev2.tmj"})
         #run for one step
-        matrix.steps=1
+        matrix.steps = 1
         matrix.boot()
         matrix.run_singlethread()
         self.assertTrue(len(matrix.agents) > 0)
