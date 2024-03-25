@@ -16,6 +16,11 @@ from unittest.mock import MagicMock
 from src.actions.fine_move_action import FineMoveAction
 
 class TestMemoryFunctions(unittest.TestCase):
+    def test_web(self):
+        #run_simulation("steps":1)
+        #start_npm_run_dev
+        #assert_check_for_event
+        pass
     def test_fine_move_action_direction(self):
         agent = MagicMock(x=0, y=0)
         FineMoveAction.act(agent, "up with random text")
