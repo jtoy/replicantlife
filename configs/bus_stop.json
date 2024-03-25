@@ -1,0 +1,114 @@
+{
+    "background": "Six agents gather outside at a bus stop to chat with each other. They talk about their interests and anything they come up with.",
+    "agents": [
+        {
+            "name": "Natasha",
+            "description": "Natasha is friendly, outgoing, and effortlessly strikes up conversations. She likes to talk.",
+            "goal": "Natasha wants to talk about her recent experience with love. She wants to ask the opinions of other agents regarding the relationship. She is also concerned of the other agents and asks them if they are doing good. She talks about anything with the other agents..",
+            "connections": [
+                "Sherlock",
+                "Viktor",
+                "Lily",
+                "James"
+            ],
+            "x": 25,
+            "y": 10,
+            "actions_blacklist": [
+                "move"
+            ]
+        },
+        {
+            "name": "James",
+            "description": "James is shy, reserved, and observes from the sidelines.",
+            "goal": "James joins the conversation and shares his special skills and hidden talent in singing. He talks about his favorite songs and music genre. He also asks the other agents about their taste in music. He talks about anything with the other agents.",
+            "connections": [
+                "Sherlock",
+                "Viktor",
+                "Lily",
+                "Natasha"
+            ],
+            "x": 25,
+            "y": 15,
+            "actions_blacklist": [
+                "move"
+            ]
+        },
+        {
+            "name": "Sherlock",
+            "description": "Sherlock is funny, lighthearted, and turns moments into laughter. He is quick-witted and charming.",
+            "goal": "Sherlock tells a joke everytime he gets the chance to. He loves making everyone happy by being silly. He also shares some of his embarassing moments and also asks the other agents about their funny moments. He talks about anything with the other agents.",
+            "connections": [
+                "Natasha",
+                "Viktor",
+                "James",
+                "Paul"
+            ],
+            "x": 25,
+            "y": 20,
+            "actions_blacklist": [
+                "move"
+            ]
+        },
+        {
+            "name": "Viktor",
+            "description": "Viktor likes to take photographs and capture moments. He likes to share his collection of memories from pictures. He likes engaging in a conversation.",
+            "goal": "Viktor tells the other agents about his love of photography and capturing random sweet moments. He also willingly participates in every conversation with the other agents. He talks about anything with the other agents.",
+            "connections": [
+                "James",
+                "Natasha",
+                "Sherlock",
+                "Paul"
+            ],
+            "x": 25,
+            "y": 25,
+            "actions_blacklist": [
+                "move"
+            ]
+        },
+        {
+            "name": "Lily",
+            "description": "Lily likes to cook and eat delicious foods. She likes sweets the most. She is friendly and talkative.",
+            "goal": "Lily talks about her interest in cooking and eating sweet foods. She shares some of her favorite recipes and experience cooking them. She also asks the other agents about their favorite foods. She talks about anything with the other agents.",
+            "connections": [
+                "Natasha",
+                "Viktor",
+                "Sherlock",
+                "Paul"
+            ],
+            "x": 25,
+            "y": 30,
+            "actions_blacklist": [
+                "move"
+            ]
+        },
+        {
+            "name": "Paul",
+            "description": "Paul likes to read books especially poems. He is great at words and He is also quick witted.",
+            "goal": "Paul wants to tell the other agents about his favorite books and poems. He shares his some of the lines of poem he likes. He also tells a silly joke when he has a chance. He talks about anything with the other agents.",
+            "connections": [
+                "Natasha",
+                "Viktor",
+                "James",
+                "Lily"
+            ],
+            "x": 25,
+            "y": 35,
+            "actions_blacklist": [
+                "move"
+            ]
+        }
+    ],
+    "steps": 50,
+    "allow_movement": 0,
+    "perception_range": 50,
+    "questions": [
+        {
+            "who": "all",
+            "question": "Highlight the topic or new information that you obtained from talking with the other agents."
+        },
+        {
+            "who": "all",
+            "question": "Discuss the exchange of conversations. Who did you enjoy the most talking to?"
+        }
+    ]
+}

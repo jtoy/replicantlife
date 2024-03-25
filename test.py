@@ -50,11 +50,21 @@ class TestMemoryFunctions(unittest.TestCase):
     def test_matrix_runs_step(self):
         matrix = Matrix({"scenario":"configs/empty.json","environment":"configs/largev2.tmj"})
         #run for one step
-        matrix.steps=1
+        matrix.steps = 1
         matrix.boot()
         matrix.run_singlethread()
         self.assertTrue(len(matrix.agents) > 0)
         self.assertEqual(matrix.status,"complete")
+
+    def test_perception_range(self):
+        matrix1 = Matrix({"scenario":"configs/bus_stop.json","environment":"configs/largev2.tmj"})
+        matrix1.boot()
+        self.assertEqual(matrix1.perception_range, 50) # perception_range = 50 in bus_stop.json
+
+        matrix2 = Matrix({"scenario":"configs/empty.json","environment":"configs/largev2.tmj"})
+        matrix2.perception_range = 155
+        matrix2.boot()
+        self.assertEqual(matrix2.perception_range, 155)
 
     def test_memory(self):
         agent_data = {
