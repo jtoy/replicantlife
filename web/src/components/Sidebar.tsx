@@ -103,10 +103,6 @@ const Sidebar: React.FC<SidebarProps> = (
         if (isPlaying && agentPlacement && !audioPlaying && audioQueue.length > 0) {
             playAudio(audioQueue[0]);
         }
-
-        if (!agentPlacement) {
-            setAudioQueue([]);
-        }
     }, [agentPlacement, isPlaying, audioQueue, audioPlaying]);
 
     useEffect(() => {
@@ -128,6 +124,11 @@ const Sidebar: React.FC<SidebarProps> = (
                 }
             });
         }
+
+        if (!agentPlacement || !isPlayAudio) {
+            setAudioQueue([]);
+        }
+
     }, [agentPlacement, showThoughts, isPlayAudio, stepId, substepId]);
 
     const handleRewind = (): void => {
