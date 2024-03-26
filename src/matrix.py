@@ -75,7 +75,7 @@ class Matrix:
         self.agent_locks = { agent: threading.Lock() for agent in self.agents }
         self.environment = Environment({ "filename": self.environment_file })
         if self.scenario_file is not None:
-            self.parse_scenario_file(self.scenario_file)
+            self.parse_scenario(self.scenario_file)
         #self.environment.overlay_collisions_on_image()
         self.background = None
         print(config)
@@ -165,9 +165,13 @@ class Matrix:
 
 
 
-    def parse_scenario_file(self, filename):
-        with open(filename, 'r') as file:
-            data = json.load(file)
+    def parse_scenario(self, config):
+        if isinstance(config, str):
+            with open(config, 'r') as file:
+                data = json.load(file)
+                self.data = data
+        else:
+            data = config
             self.data = data
 
         # Build Scenario

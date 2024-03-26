@@ -48,10 +48,7 @@ def main():
     matrix = Matrix(config)
     pd(f"model:#{MODEL}")
     pd("Initial Agents Positions:")
-    #redis_connection.set(f"{matrix.id}:matrix_state", json.dumps(matrix.get_arr_2D()))
 
-    # Clear convos
-    #matrix.clear_redis()
 
     # Run
     start_time = datetime.now()
@@ -64,7 +61,6 @@ def main():
 
     # Log Runtime
     matrix.simulation_runtime = end_time - start_time
-    matrix.send_matrix_to_redis()
 
     # Save the environment state to a file for inspection
     if matrix.id is not None and matrix.id != '' and RUN_REPORTS != 0:

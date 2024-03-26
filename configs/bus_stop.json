@@ -1,5 +1,6 @@
 {
-    "background": "Six agents gather outside at a bus stop to chat with each other. They talk about their interests and anything they come up with.",
+  "background": "Six agents gather outside at a bus stop to chat with each other. They talk about their interests and anything they come up with.",
+  "actions_blacklist": [ "move" ],
     "agents": [
         {
             "name": "Natasha",
@@ -12,10 +13,7 @@
                 "James"
             ],
             "x": 25,
-            "y": 10,
-            "actions_blacklist": [
-                "move"
-            ]
+            "y": 10
         },
         {
             "name": "James",
@@ -28,10 +26,7 @@
                 "Natasha"
             ],
             "x": 25,
-            "y": 15,
-            "actions_blacklist": [
-                "move"
-            ]
+            "y": 15
         },
         {
             "name": "Sherlock",
@@ -44,10 +39,7 @@
                 "Paul"
             ],
             "x": 25,
-            "y": 20,
-            "actions_blacklist": [
-                "move"
-            ]
+            "y": 20
         },
         {
             "name": "Viktor",
@@ -60,10 +52,7 @@
                 "Paul"
             ],
             "x": 25,
-            "y": 25,
-            "actions_blacklist": [
-                "move"
-            ]
+            "y": 25
         },
         {
             "name": "Lily",
@@ -76,10 +65,7 @@
                 "Paul"
             ],
             "x": 25,
-            "y": 30,
-            "actions_blacklist": [
-                "move"
-            ]
+            "y": 30
         },
         {
             "name": "Paul",
@@ -92,23 +78,10 @@
                 "Lily"
             ],
             "x": 25,
-            "y": 35,
-            "actions_blacklist": [
-                "move"
-            ]
+            "y": 35
         }
     ],
     "steps": 50,
     "allow_movement": 0,
-    "perception_range": 50,
-    "questions": [
-        {
-            "who": "all",
-            "question": "Highlight the topic or new information that you obtained from talking with the other agents."
-        },
-        {
-            "who": "all",
-            "question": "Discuss the exchange of conversations. Who did you enjoy the most talking to?"
-        }
-    ]
+    "perception_range": 50
 }
