@@ -31,9 +31,12 @@ const Sidebar: React.FC<SidebarProps> = (
         simId
     }) => {
     
-    const [showThoughts, setShowThoughts] = useState(true);
-    const [isPlayAudio, setIsPlayAudio] = useState(true);
-    const browserLanguage = navigator.language;
+        const [showThoughts, setShowThoughts] = useState(true);
+        const [isPlayAudio, setIsPlayAudio] = useState(true);
+        const [audioQueue, setAudioQueue] = useState<Promise<string>[]>([]);
+        const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
+        const browserLanguage = navigator.language;
+        const minimal_audio_delay = 500; // delay in between playing audio clips
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -51,27 +54,39 @@ const Sidebar: React.FC<SidebarProps> = (
         };
     }, [isPlaying]);
 
-    const fetchAudioData = async (sim_id: string, substep_id: number, agent_name: string, lang: string) => {
+    const fetchAudioData = async (sim_id: string, step_id: number, substep_id: number, agent_name: string, lang: string): Promise<string> => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_ASSET_DOMAIN}/audio?mid=${sim_id}&substep=${substep_id}&agent=${agent_name}&lang=${lang}`, { mode: 'cors' });
-            console.log("LAAAAAANG", lang);
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_ASSET_DOMAIN}/audio?mid=${sim_id}&step=${step_id}&substep=${substep_id}&agent=${agent_name}&lang=${lang}`,
+                { mode: 'cors' }
+            );
             if (!res.ok) {
                 throw new Error('Failed to fetch data');
             }
 
             const audioBlob = await res.blob();
             const audioUrl = URL.createObjectURL(audioBlob);
-            const newAudio = new Audio(audioUrl);
-            playAudio(newAudio);
+            return audioUrl;
         } catch (error) {
             console.error('Error fetching audio:', error);
+            return "";
         }
     };
 
-    const playAudio = (audio: HTMLAudioElement) => {
-        if (audio) {
-            audio.play();
-        }
+    const addToAudioQueue = (audioClipUrl: Promise<string>) => {
+        setAudioQueue((oldQueue) => [...oldQueue, audioClipUrl]);
+    };
+
+    const playAudio = async (audioClipUrl: Promise<string>) => {
+        console.log("BEFORE LENGTH", audioQueue.length)
+        setAudioPlaying(true);
+        const audio = new Audio(await audioClipUrl);
+        audio.onended = () => {
+            setAudioQueue((oldQueue) => oldQueue.slice(1));
+            console.log("AFTER LENGTH", audioQueue.length)
+            setAudioPlaying(false);
+        };
+        audio.play();
     };
 
     const stopAudio = (audio: HTMLAudioElement) => {
@@ -82,25 +97,35 @@ const Sidebar: React.FC<SidebarProps> = (
     };
 
     useEffect(() => {
-        if (agentPlacement) {
-            const steps = agentPlacement.steps.toReversed();
-            console.log({ "STEPSSSS": steps });
+        if (isPlaying && agentPlacement && !audioPlaying && audioQueue.length > 0) {
+            playAudio(audioQueue[0]);
+        }
+
+        if (!agentPlacement) {
+            setAudioQueue([]);
+        }
+    }, [agentPlacement, isPlaying, audioQueue, audioPlaying]);
+
+    useEffect(() => {
+        if (agentPlacement && isPlayAudio) {
+            const steps = agentPlacement.steps.filter(
+                step => step.stepId >= stepId
+            );
             steps.forEach(step => {
-                if (showThoughts && isPlayAudio) {
-                    if (step instanceof TalkStep) {
-                        const talkStep = step as TalkStep;
-                        fetchAudioData(simId, talkStep.substepId, talkStep.fromAgentName, browserLanguage);
-                        return;
-                    }
-                    if (step instanceof ThoughtStep) {
-                        const thoughtStep = step as ThoughtStep;
-                        fetchAudioData(simId, thoughtStep.substepId, thoughtStep.agentId, browserLanguage);
-                        return;
-                    }
+                if (step instanceof TalkStep) {
+                    const talkStep = step as TalkStep;
+                    addToAudioQueue(fetchAudioData(simId, talkStep.stepId, talkStep.substepId, talkStep.fromAgentName, browserLanguage));
+
+                    return;
+                }
+                if (showThoughts && step instanceof ThoughtStep) {
+                    const thoughtStep = step as ThoughtStep;
+                    addToAudioQueue(fetchAudioData(simId, thoughtStep.stepId, thoughtStep.substepId, thoughtStep.agentId, browserLanguage));
+                    return;
                 }
             });
         }
-    }, [agentPlacement, showThoughts, isPlayAudio]);
+    }, [agentPlacement, showThoughts, isPlayAudio, stepId, substepId]);
 
     const handleRewind = (): void => {
         setIsPlaying(false);
