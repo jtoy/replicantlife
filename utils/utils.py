@@ -3,6 +3,7 @@ from configs.configs import *
 import requests
 import time
 import os
+import re
 import redis
 import difflib
 import random
@@ -15,6 +16,7 @@ from sqlalchemy import create_engine, Column, Float, DateTime, Integer, String, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, column_property
 import requests
+from groq import Groq
 
 import nltk
 nltk.download('brown')
@@ -140,6 +142,13 @@ class Llm:
           except Exception as e:
               print(e)
               msg = fallback
+        elif re.findall(r'groq',self.model):
+            #groq,groq_model = self.model.split("_")
+            client = Groq( api_key=os.environ.get("GROQ_API_KEY"),)
+            chat_completion = client.chat.completions.create(
+                    messages=[ { "role": "user", "content": prompt, } ],
+                    model="mixtral-8x7b-32768",)
+            msg = chat_completion.choices[0].message.content
         else:
           data = {
               "model": self.model,
