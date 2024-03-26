@@ -3,9 +3,11 @@ import sys
 import time
 from dotenv import load_dotenv
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from obswebsocket import obsws, requests
-
 
 load_dotenv()
 
@@ -17,20 +19,10 @@ obs_settings = {
     "record_path": os.environ.get("RECORD_PATH","movies"),
 }
 
-# This is NOT working yet
-# Start recording based on a javacript event.
-def start_recording_if_playing():
-    is_playing = driver.execute_script("return isPlaying;")
-    if is_playing:
-        start_recording = requests.StartRecord()
-        ws.call(start_recording)
-        print("Recording started")
-
 # Set up Chrome options to start in full-screen mode
 chrome_options = Options()
 chrome_options.add_argument('--kiosk')
-chrome_options.add_experimental_option("excludeSwitches", ['enable-automation']);
-
+chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
 
 # Create a WebDriver instance (make sure you have the ChromeDriver executable in your PATH)
 driver = webdriver.Chrome(options=chrome_options)
@@ -54,22 +46,30 @@ ws.call(set_recording_path)
 current_recording_status = ws.call(requests.GetRecordStatus())
 print("Current recording status:", current_recording_status)
 
-# Start recording in OBS Studio
-start_recording = requests.StartRecord()
-ws.call(start_recording)
+try:
+    # Wait for simulation to start
+    WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.ID, "simulationStarted"))
+    )
 
-# The function is NOT working yet.
-# start_recording_if_playing()
+    # Start recording in OBS Studio
+    start_recording = requests.StartRecord()
+    ws.call(start_recording)
+    print("Recording started")
 
-# Continue recording for 20s (adjust as needed)
-time.sleep(20)
+    # Wait for simulation to complete
+    WebDriverWait(driver, 600).until(
+        EC.presence_of_element_located((By.ID, "simulationComplete"))
+    )
 
-# Stop recording in OBS Studio
-stop_recording = requests.StopRecord()
-ws.call(stop_recording)
+finally:
+    # Stop recording in OBS Studio
+    stop_recording = requests.StopRecord()
+    ws.call(stop_recording)
+    print("Recording stopped")
 
-# Close the browser when done
-driver.quit()
+    # Close the browser when done
+    driver.quit()
 
-# Disconnect from OBS Studio
-ws.disconnect()
+    # Disconnect from OBS Studio
+    ws.disconnect()

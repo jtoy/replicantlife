@@ -19,6 +19,7 @@ export default class Level {
     timeline: Timeline;
     subStepId: number = 1;
     debug: boolean = false;
+    simulationStarted: boolean = false;
     simulationComplete: boolean = false;
     isPlaying: boolean = true;
 

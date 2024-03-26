@@ -53,7 +53,7 @@ async function getStepsFromRedis(id: string, prevStartIndex: number, chunkSize: 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function uiSteps(step: any) {
   let keep = false;
-  const keepTypes = ['talk', 'agent_set', 'move', 'matrix_set', 'agent_init'];
+  const keepTypes = ['talk', 'agent_set', 'move', 'matrix_set', 'agent_init', 'matrix_init'];
 
   if (keepTypes.includes(step.step_type)) {
     keep = true;
