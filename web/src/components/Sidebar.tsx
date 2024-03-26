@@ -36,6 +36,8 @@ const Sidebar: React.FC<SidebarProps> = (
         const [audioQueue, setAudioQueue] = useState<Promise<string>[]>([]);
         const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
         const browserLanguage = navigator.language;
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const minimal_audio_delay = 500; // delay in between playing audio clips
 
     useEffect(() => {
@@ -89,6 +91,7 @@ const Sidebar: React.FC<SidebarProps> = (
         audio.play();
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const stopAudio = (audio: HTMLAudioElement) => {
         if (audio) {
             audio.pause();
