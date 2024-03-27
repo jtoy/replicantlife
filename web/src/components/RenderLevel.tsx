@@ -34,6 +34,7 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
     const [levelState, setLevelState] = useState<LevelState>({ stepId: 0, substepId: 0, agents: [] });
     const [fetchIndex, setFetchIndex] = useState(0);
     const [initialFetchDone, setInitialFetchDone] = useState(false);
+    const [continueFetching, setContinueFetching] = useState(true);
     const chunkSize = 1000; // Adjust chunk size as needed
 
     const levelRef = useRef<Level>(new Level([], (newState: LevelState) => {
@@ -41,6 +42,8 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
     }));
 
     const fetchData = async () => {
+        if (!continueFetching) return;
+
         const [totalSteps, data] = await getData(simId, fetchIndex);
         setFetchIndex(fetchIndex + chunkSize);
         console.log(totalSteps);
@@ -51,9 +54,9 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
 
         levelRef.current.addStepsFromJson(data);
 
-        // if (fetchIndex >= totalSteps) {
-        //     setIsPlaying(false); // or perform any other action when all data is fetched
-        // }
+        if (fetchIndex >= totalSteps) {
+            setContinueFetching(false); // or perform any other action when all data is fetched
+        }
     };
 
     useEffect(() => {
@@ -68,7 +71,7 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
                 clearInterval(interval);
             };
         }
-    }, [simId, fetchIndex]);
+    }, [simId, fetchIndex, continueFetching]);
 
 
     useEffect(() => {
