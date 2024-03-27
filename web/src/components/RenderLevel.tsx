@@ -143,6 +143,16 @@ const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string |
                         {renderAgents()}
                     </>
                 </div>
+                <Sidebar agentPlacement={followAgent}
+                    setFollowAgent={setFollowAgent}
+                    isPlaying={isPlaying}
+                    setIsPlaying={setIsPlaying}
+                    stepId={levelState.stepId}
+                    substepId={levelState.substepId}
+                    level={levelRef.current}
+                    simId={simId}
+                    toggleAudio={toggleAudio}
+                    audioPlayings={audioPlaying} />
             </div>
         );
     }
