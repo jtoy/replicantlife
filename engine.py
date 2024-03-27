@@ -47,7 +47,6 @@ def main():
         config['id'] = args.id
     matrix = Matrix(config)
     pd(f"model:#{MODEL}")
-    pd("Initial Agents Positions:")
 
 
     # Run
@@ -84,7 +83,6 @@ def signal_handler(signum, frame):
         pd("stopping matrix, please wait for current step to finish")
         pd("*"*50)
         matrix.status = "stop"
-        matrix.send_matrix_to_redis()
     last_interrupt_time = current_time
 
 ctrl_c_count = 0
