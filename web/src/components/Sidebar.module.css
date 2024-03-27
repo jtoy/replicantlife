@@ -53,3 +53,9 @@
     align-items: center; 
     justify-content: flex-end;
 }
+
+.stepAndAudio {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}

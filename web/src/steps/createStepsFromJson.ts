@@ -5,6 +5,7 @@ import { StepJSON, Step } from "./Step";
 import { AgentSetJSON, AgentSetStep } from "./AgentSetStep";
 import { MatrixSetJSON, MatrixSetStep } from "./MatrixSetStep";
 import { ThoughtJSON, ThoughtStep } from "./ThoughtStep";
+import { MatrixInitJSON, MatrixInitStep } from "./MatrixInitStep";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function createStepsFromJson(stepsData: StepJSON[]): Step[] {
@@ -12,6 +13,9 @@ export function createStepsFromJson(stepsData: StepJSON[]): Step[] {
 
     for (const stepData of stepsData) {
         switch (stepData.step_type) {
+            case 'matrix_init':
+                steps.push(MatrixInitStep.fromJSON(stepData as MatrixInitJSON));
+                break;
             case 'agent_init':
                 steps.push(NewAgentStep.fromJSON(stepData as NewAgentJSON));
                 break;
