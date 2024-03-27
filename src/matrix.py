@@ -71,7 +71,7 @@ class Matrix(Data,Reporting):
         self.perception_range = PERCEPTION_RANGE
         self.allow_movement = ALLOW_MOVEMENT
         self.model = MODEL
-        self.redis_connection = None
+        self.redis_connection = self.setup_redis()
 
         self.replay = None
         self.cursor = self.setup_database()

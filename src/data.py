@@ -9,6 +9,11 @@ import redis
 load_dotenv()
 
 class Data:
+    def setup_redis(self):
+        if os.environ.get("REDIS_URL"):
+            return redis.Redis.from_url(os.environ.get("REDIS_URL"))
+        else:
+            return None
     def setup_database(self):
         db_settings = {
             "database_host": os.environ.get("DB_HOST"),
@@ -27,6 +32,7 @@ class Data:
             "ssh_private_key": os.environ.get("SSH_PRIVATE_KEY")
         }
         cursor = None
+        conn = None
         if ssh_host:
             with SSHTunnelForwarder(
                 (ssh_settings["ssh_host"], ssh_settings["ssh_port"]),
@@ -43,7 +49,7 @@ class Data:
                     database=db_settings["database_name"],
                 )
                 cursor = conn.cursor()
-        else:
+        elif db_settings["database_host"]:
             conn = psycopg2.connect(
                 user=db_settings["database_username"],
                 password=db_settings["database_password"],
@@ -89,6 +95,6 @@ class Data:
             self.cursor.execute(
             "INSERT INTO timelines (sim_id, step, substep, step_type, data) VALUES (%s, %s, %s, %s, %s)",
             (self.id, self.cur_step, self.current_substep, obj["step_type"], json.dumps(obj)),)
-            print("insert")
+            #print("insert")
 
         self.current_substep += 1
