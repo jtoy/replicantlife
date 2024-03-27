@@ -131,7 +131,7 @@ const Sidebar: React.FC<SidebarProps> = (
         <div className={styles.sidebar}>
             {renderControls()}
             {agentPlacement && <div className={styles.agentModule}>
-                <AgentSprite agentName={agentPlacement.agentName} isTalking={false} isThinking={false} status={agentPlacement.status} />
+                <AgentSprite agentName={agentPlacement.agentName} isTalking={false} isThinking={false} status={agentPlacement.status} map=""/>
                 <div className={styles.agentName}>{agentPlacement.agentName}</div>
                 <div className={styles.thoughtSelector}>
                     <label>

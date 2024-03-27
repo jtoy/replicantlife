@@ -28,7 +28,7 @@ async function getData(sim_id: string, fromIndex: number) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
+const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string | null }> = ({ simId, map, img }) => {
     const [isPlaying, setIsPlaying] = useState(true);
     const [followAgent, setFollowAgent] = useState<Agent | undefined>(undefined);
     const [levelState, setLevelState] = useState<LevelState>({ stepId: 0, substepId: 0, agents: [] });
@@ -84,6 +84,30 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
     }
 
     const renderAgents = () => {
+        if (map == "stage") {
+            console.log("STEPID", levelState.stepId);
+            console.log("AGENT LENGTH", levelState.agents.length);
+            return levelState.agents.map((agent, index) => {
+                const x = agent.position.x;
+                const y = agent.position.y;
+
+                const style: React.CSSProperties = {
+                    position: 'relative',
+                    cursor: 'pointer',
+                    top: x,
+                    left: y,
+                };
+
+                return (
+                    <div key={index}
+                        style={style}
+                        className={styles.placement}>
+                        <AgentSprite agentName={agent.agentName} isTalking={agent.isTalking} isThinking={agent.isThinking} status={agent.status} map={map} />
+                    </div>
+                );
+            });
+
+        }
         return levelState.agents.map((agent, index) => {
             const x = agent.position.x * CELL_SIZE;
             const y = agent.position.y * CELL_SIZE;
@@ -100,11 +124,28 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
                     style={style}
                     className={styles.placement}
                     onClick={() => setFollowAgent(agent)}>
-                    <AgentSprite agentName={agent.agentName} isTalking={agent.isTalking} isThinking={agent.isThinking} status={agent.status} />
+                    <AgentSprite agentName={agent.agentName} isTalking={agent.isTalking} isThinking={agent.isThinking} status={agent.status} map=""/>
                 </div>
             );
         });
     };
+
+    if (map == "stage") {
+        return (
+            <div className={styles.fullScreenContainer}>
+                <img
+                    src={img ? (process.env.NEXT_PUBLIC_CONTENT_DIRECTORY + "/images/maps/" + img) : (process.env.NEXT_PUBLIC_BASE_PATH + "/images/maps/Large.png")}
+                    alt="Stage Map"
+                    className={styles.stageImg}
+                />
+                <div className={styles.agentContainer}>
+                    <>
+                        {renderAgents()}
+                    </>
+                </div>
+            </div>
+        );
+    }
 
     return (
 
@@ -112,7 +153,10 @@ const RenderLevel: React.FC<{ simId: string }> = ({ simId }) => {
             <div className={styles.gameContainer}>
 
                 <Camera followAgent={followAgent} setFollowAgent={setFollowAgent}>
-                    <img src={process.env.NEXT_PUBLIC_BASE_PATH + "/images/maps/Large.png"} alt="Default Map" />
+                    <img
+                        src={img ? (process.env.NEXT_PUBLIC_CONTENT_DIRECTORY + "/images/maps/" + img) : (process.env.NEXT_PUBLIC_BASE_PATH + "/images/maps/Large.png")}
+                        alt="Default Map"
+                    />
                     <>
                         {renderAgents()}
                     </>
