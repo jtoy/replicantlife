@@ -36,6 +36,7 @@ const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string |
     const [initialFetchDone, setInitialFetchDone] = useState(false);
     const chunkSize = 1000; // Adjust chunk size as needed
 
+
     const levelRef = useRef<Level>(new Level([], (newState: LevelState) => {
         setLevelState(newState);
     }));
@@ -177,7 +178,8 @@ const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string |
                     setIsPlaying={setIsPlaying}
                     stepId={levelState.stepId}
                     substepId={levelState.substepId}
-                    level={levelRef.current} />
+                    level={levelRef.current}
+                    simId={simId} />
             </div>
         </div>
     );

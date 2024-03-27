@@ -16,6 +16,7 @@ interface SidebarProps {
     stepId: number;
     substepId: number;
     level: Level;
+    simId: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = (
@@ -26,11 +27,18 @@ const Sidebar: React.FC<SidebarProps> = (
         setIsPlaying,
         stepId, 
         substepId, 
-        level 
+        level,
+        simId
     }) => {
     
-    const [showThoughts, setShowThoughts] = useState(true);
-    
+        const [showThoughts, setShowThoughts] = useState(true);
+        const [isPlayAudio, setIsPlayAudio] = useState(true);
+        const [audioQueue, setAudioQueue] = useState<Promise<string>[]>([]);
+        const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
+        const browserLanguage = navigator.language;
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const minimal_audio_delay = 500; // delay in between playing audio clips
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -47,6 +55,81 @@ const Sidebar: React.FC<SidebarProps> = (
             }
         };
     }, [isPlaying]);
+
+    const fetchAudioData = async (sim_id: string, step_id: number, substep_id: number, agent_name: string, lang: string): Promise<string> => {
+        try {
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_ASSET_DOMAIN}/audio?mid=${sim_id}&step=${step_id}&substep=${substep_id}&agent=${agent_name}&lang=${lang}`,
+                { mode: 'cors' }
+            );
+            if (!res.ok) {
+                throw new Error('Failed to fetch data');
+            }
+
+            const audioBlob = await res.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            return audioUrl;
+        } catch (error) {
+            console.error('Error fetching audio:', error);
+            return "";
+        }
+    };
+
+    const addToAudioQueue = (audioClipUrl: Promise<string>) => {
+        setAudioQueue((oldQueue) => [...oldQueue, audioClipUrl]);
+    };
+
+    const playAudio = async (audioClipUrl: Promise<string>) => {
+        console.log("BEFORE LENGTH", audioQueue.length)
+        setAudioPlaying(true);
+        const audio = new Audio(await audioClipUrl);
+        audio.onended = () => {
+            setAudioQueue((oldQueue) => oldQueue.slice(1));
+            console.log("AFTER LENGTH", audioQueue.length)
+            setAudioPlaying(false);
+        };
+        audio.play();
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const stopAudio = (audio: HTMLAudioElement) => {
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    };
+
+    useEffect(() => {
+        if (isPlaying && agentPlacement && !audioPlaying && audioQueue.length > 0) {
+            playAudio(audioQueue[0]);
+        }
+    }, [agentPlacement, isPlaying, audioQueue, audioPlaying]);
+
+    useEffect(() => {
+        if (agentPlacement && isPlayAudio) {
+            const steps = agentPlacement.steps.filter(
+                step => step.stepId >= stepId
+            );
+            steps.forEach(step => {
+                if (step instanceof TalkStep) {
+                    const talkStep = step as TalkStep;
+                    addToAudioQueue(fetchAudioData(simId, talkStep.stepId, talkStep.substepId, talkStep.fromAgentName, browserLanguage));
+
+                    return;
+                }
+                if (showThoughts && step instanceof ThoughtStep) {
+                    const thoughtStep = step as ThoughtStep;
+                    addToAudioQueue(fetchAudioData(simId, thoughtStep.stepId, thoughtStep.substepId, thoughtStep.agentId, browserLanguage));
+                    return;
+                }
+            });
+        }
+
+        if (!agentPlacement || !isPlayAudio) {
+            setAudioQueue([]);
+        }
+
+    }, [agentPlacement, showThoughts, isPlayAudio, stepId, substepId]);
 
     const handleRewind = (): void => {
         setIsPlaying(false);
@@ -110,8 +193,14 @@ const Sidebar: React.FC<SidebarProps> = (
     const renderControls = () => {
         return(
             <div className={styles.gameControls}>
-                <div>
+                <div className={styles.stepAndAudio}>
                     Step: {stepId}
+                    {process.env.NEXT_PUBLIC_ALLOW_AUDIO === "true" && <div>
+                        <label>
+                            <input type="checkbox" checked={isPlayAudio} onChange={() => setIsPlayAudio(!isPlayAudio)} />
+                            Play Audio
+                        </label>
+                    </div>}
                 </div>
                 <span style={{ display: 'none' }}>{substepId}</span>
                 <div className={styles.buttons}>
