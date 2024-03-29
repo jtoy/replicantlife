@@ -63,7 +63,13 @@ class Agent:
         if self.matrix:
             if self.matrix.action_blacklist:
                 self.actions = [action for action in self.actions if action not in blacklist]
-            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind})
+            if self.matrix and self.matrix.environment:
+                valid_coordinates = self.matrix.environment.get_valid_coordinates()
+                if (self.x, self.y) not in valid_coordinates:
+                    new_position = random.choice(valid_coordinates)
+                    self.x = new_position[0]
+                    self.y = new_position[1]
+            self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind,"description":self.description,"status":self.status})
 
     def perceived_data_is_same(self):
         last_step = self.matrix.cur_step - 1
