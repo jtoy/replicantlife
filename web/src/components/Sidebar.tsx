@@ -15,6 +15,7 @@ interface SidebarProps {
     setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
     stepId: number;
     substepId: number;
+    hidePanel: boolean;
     level: Level;
     simId: string;
 }
@@ -28,7 +29,8 @@ const Sidebar: React.FC<SidebarProps> = (
         stepId, 
         substepId, 
         level,
-        simId
+        simId,
+        hidePanel
     }) => {
     
         const [showThoughts, setShowThoughts] = useState(true);
@@ -39,6 +41,10 @@ const Sidebar: React.FC<SidebarProps> = (
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const minimal_audio_delay = 500; // delay in between playing audio clips
+        //hidePanel = false;
+        //WTF pass this
+
+
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -169,6 +175,9 @@ const Sidebar: React.FC<SidebarProps> = (
     
     const renderTimeline = () => {
         if(!agentPlacement) return null;
+        if (hidePanel) {
+          return null;
+        }
 
         const steps = agentPlacement.steps.toReversed();
 
@@ -191,6 +200,9 @@ const Sidebar: React.FC<SidebarProps> = (
     };
 
     const renderControls = () => {
+        if (hidePanel) {
+          return null;
+        }
         return(
             <div className={styles.gameControls}>
                 <div className={styles.stepAndAudio}>
@@ -214,6 +226,9 @@ const Sidebar: React.FC<SidebarProps> = (
             </div>
         )
     };
+    if (hidePanel) {
+      return null;
+    }
 
     return (
         // JSX for the Sidebar component goes here
