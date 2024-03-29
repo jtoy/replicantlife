@@ -28,7 +28,8 @@ async function getData(sim_id: string, fromIndex: number) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string | null }> = ({ simId, map, img }) => {
+const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string | null, hidePanel: boolean }> = ({ simId, map, img, hidePanel }) => {
+
     const [isPlaying, setIsPlaying] = useState(true);
     const [followAgent, setFollowAgent] = useState<Agent | undefined>(undefined);
     const [levelState, setLevelState] = useState<LevelState>({ stepId: 0, substepId: 0, agents: [] });
@@ -151,9 +152,9 @@ const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string |
                     stepId={levelState.stepId}
                     substepId={levelState.substepId}
                     level={levelRef.current}
+                    hidePanel={hidePanel}
                     simId={simId}
-                    toggleAudio={toggleAudio}
-                    audioPlayings={audioPlaying} />
+                    />
             </div>
         );
     }
@@ -179,6 +180,7 @@ const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string |
                     stepId={levelState.stepId}
                     substepId={levelState.substepId}
                     level={levelRef.current}
+                    hidePanel={hidePanel}
                     simId={simId} />
             </div>
         </div>
