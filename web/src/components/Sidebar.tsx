@@ -56,10 +56,10 @@ const Sidebar: React.FC<SidebarProps> = (
         };
     }, [isPlaying]);
 
-    const fetchAudioData = async (sim_id: string, step_id: number, substep_id: number, agent_name: string, lang: string): Promise<string> => {
+    const fetchAudioData = async (sim_id: string, step_id: number, substep_id: number, agent_name: string, lang: string, content: string): Promise<string> => {
         try {
             const res = await fetch(
-                `${process.env.NEXT_PUBLIC_ASSET_DOMAIN}/audio?mid=${sim_id}&step=${step_id}&substep=${substep_id}&agent=${agent_name}&lang=${lang}`,
+                `${process.env.NEXT_PUBLIC_ASSET_DOMAIN}/audio?mid=${sim_id}&step=${step_id}&substep=${substep_id}&agent=${agent_name}&lang=${lang}&c=${btoa(content)}`,
                 { mode: 'cors' }
             );
             if (!res.ok) {
@@ -113,13 +113,13 @@ const Sidebar: React.FC<SidebarProps> = (
             steps.forEach(step => {
                 if (step instanceof TalkStep) {
                     const talkStep = step as TalkStep;
-                    addToAudioQueue(fetchAudioData(simId, talkStep.stepId, talkStep.substepId, talkStep.fromAgentName, browserLanguage));
+                    addToAudioQueue(fetchAudioData(simId, talkStep.stepId, talkStep.substepId, talkStep.fromAgentName, browserLanguage,talkStep.message));
 
                     return;
                 }
                 if (showThoughts && step instanceof ThoughtStep) {
                     const thoughtStep = step as ThoughtStep;
-                    addToAudioQueue(fetchAudioData(simId, thoughtStep.stepId, thoughtStep.substepId, thoughtStep.agentId, browserLanguage));
+                    addToAudioQueue(fetchAudioData(simId, thoughtStep.stepId, thoughtStep.substepId, thoughtStep.agentId, browserLanguage,talkStep.content));
                     return;
                 }
             });
