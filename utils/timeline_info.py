@@ -14,6 +14,10 @@ scenario = ""
 world = ""
 last_death_at_step = 0
 last_death_at_row = 0
+if "--convo" in sys.argv:
+    convos = True
+else
+    convos = False
 with jsonlines.open(path, "r") as jsonl_file:
     for i, row in enumerate(jsonl_file):
         obj = json.loads(row)
@@ -21,6 +25,8 @@ with jsonlines.open(path, "r") as jsonl_file:
         step_type = obj.get("step_type")
         step_types[step_type] = step_types.get(step_type, 0) + 1
         sim_id = obj.get("sim_id")
+        if convos and step_type == "talk":
+            print(obj)
         if step_type == "agent_init":
             agents[obj["agent_id"]] = {}
             agents[obj["agent_id"]]["name"] = obj["name"]
@@ -35,6 +41,8 @@ with jsonlines.open(path, "r") as jsonl_file:
             sim_id = obj["sim_id"]
             scenario = obj["data"]["scenario"]
             world = obj["data"]["environment"]
+
+
 
         total_steps +=1
 human_agents = dict(filter(lambda item: item[1]["kind"] == "human", agents.items()))

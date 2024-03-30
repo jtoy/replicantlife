@@ -63,23 +63,30 @@ const Sidebar: React.FC<SidebarProps> = (
     }, [isPlaying]);
 
     const fetchAudioData = async (sim_id: string, step_id: number, substep_id: number, agent_name: string, lang: string, content: string): Promise<string> => {
-        try {
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_ASSET_DOMAIN}/audio?mid=${sim_id}&step=${step_id}&substep=${substep_id}&agent=${agent_name}&lang=${lang}&c=${btoa(content)}`,
-                { mode: 'cors' }
-            );
-            if (!res.ok) {
-                throw new Error('Failed to fetch data');
-            }
-
-            const audioBlob = await res.blob();
-            const audioUrl = URL.createObjectURL(audioBlob);
-            return audioUrl;
-        } catch (error) {
-            console.error('Error fetching audio:', error);
-            return "";
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_ASSET_DOMAIN}/audio?mid=${sim_id}&step=${step_id}&substep=${substep_id}&agent=${agent_name}&lang=${lang}&c=${btoa(content)}`,
+            { mode: 'cors' }
+        );
+        if (!res.ok) {
+            throw new Error('Failed to fetch data');
         }
-    };
+
+        const audioBlob = await res.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        // Preload the audio file
+        const audio = new Audio(audioUrl);
+        audio.preload = 'auto';
+        audio.load();
+
+        return audioUrl;
+    } catch (error) {
+        console.error('Error fetching audio:', error);
+        return "";
+    }
+};
+
 
     const addToAudioQueue = (audioClipUrl: Promise<string>) => {
         setAudioQueue((oldQueue) => [...oldQueue, audioClipUrl]);
