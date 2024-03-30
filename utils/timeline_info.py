@@ -16,7 +16,7 @@ last_death_at_step = 0
 last_death_at_row = 0
 if "--convo" in sys.argv:
     convos = True
-else
+else:
     convos = False
 with jsonlines.open(path, "r") as jsonl_file:
     for i, row in enumerate(jsonl_file):
@@ -26,7 +26,10 @@ with jsonlines.open(path, "r") as jsonl_file:
         step_types[step_type] = step_types.get(step_type, 0) + 1
         sim_id = obj.get("sim_id")
         if convos and step_type == "talk":
-            print(obj)
+            a = agents[obj["agent_id"]]['name']
+            b = agents[obj["to_id"]]['name']
+            m = obj["content"]
+            print(f"{a} said to {b}: {m}")
         if step_type == "agent_init":
             agents[obj["agent_id"]] = {}
             agents[obj["agent_id"]]["name"] = obj["name"]
@@ -45,19 +48,20 @@ with jsonlines.open(path, "r") as jsonl_file:
 
 
         total_steps +=1
-human_agents = dict(filter(lambda item: item[1]["kind"] == "human", agents.items()))
-print(f"matrix info sim_id: {sim_id}")
-print(f"matrix info scenario: {scenario}")
-print(f"matrix info world: {world}")
-print(f"total individual steps {total_steps}")
-print(f"simulation steps {max_step}")
-print(f"step types {step_types}")
-print(f"average substeps per step {total_steps/max_step}")
-print(f"human agent count: {len(human_agents)}")
-print(f"deaths: {deaths}")
-print(f"last_death_at_step {last_death_at_step}")
-print(f"last_death_at_row {last_death_at_row}")
-#print(f"human agents {human_agents}")
-print(f"total agent count: {len(agents)}")
-#print(f"agent actions {agent_actions}")
-print(f"completed: {completed}")
+if not convos:
+    human_agents = dict(filter(lambda item: item[1]["kind"] == "human", agents.items()))
+    print(f"matrix info sim_id: {sim_id}")
+    print(f"matrix info scenario: {scenario}")
+    print(f"matrix info world: {world}")
+    print(f"total individual steps {total_steps}")
+    print(f"simulation steps {max_step}")
+    print(f"step types {step_types}")
+    print(f"average substeps per step {total_steps/max_step}")
+    print(f"human agent count: {len(human_agents)}")
+    print(f"deaths: {deaths}")
+    print(f"last_death_at_step {last_death_at_step}")
+    print(f"last_death_at_row {last_death_at_row}")
+    #print(f"human agents {human_agents}")
+    print(f"total agent count: {len(agents)}")
+    #print(f"agent actions {agent_actions}")
+    print(f"completed: {completed}")
