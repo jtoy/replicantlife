@@ -7,7 +7,7 @@ from engine import Matrix
 
 load_dotenv()
 
-REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379')
+REDIS_URL = os.getenv('REDIS_QUEUE_URL', 'redis://localhost:6379')
 QUEUE_NAME = os.getenv('QUEUE_NAME', 'simulation_jobs')
 DISCORD_URL = os.getenv('DISCORD_URL')
 
