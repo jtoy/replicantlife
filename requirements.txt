@@ -13,3 +13,6 @@ python-Levenshtein
 jsonlines
 nltk
 Pillow
+groq
+sshtunnel
+psycopg2

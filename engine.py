@@ -46,15 +46,8 @@ def main():
     if args.id:
         config['id'] = args.id
     matrix = Matrix(config)
-
-    # matrix.send_matrix_to_redis()
-
     pd(f"model:#{MODEL}")
-    pd("Initial Agents Positions:")
-    #redis_connection.set(f"{matrix.id}:matrix_state", json.dumps(matrix.get_arr_2D()))
 
-    # Clear convos
-    #matrix.clear_redis()
 
     # Run
     start_time = datetime.now()
@@ -67,7 +60,6 @@ def main():
 
     # Log Runtime
     matrix.simulation_runtime = end_time - start_time
-    matrix.send_matrix_to_redis()
 
     # Save the environment state to a file for inspection
     if matrix.id is not None and matrix.id != '' and RUN_REPORTS != 0:
@@ -91,7 +83,6 @@ def signal_handler(signum, frame):
         pd("stopping matrix, please wait for current step to finish")
         pd("*"*50)
         matrix.status = "stop"
-        matrix.send_matrix_to_redis()
     last_interrupt_time = current_time
 
 ctrl_c_count = 0

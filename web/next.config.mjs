@@ -9,12 +9,14 @@ if (process.env.NODE_ENV === 'production') {
         assetPrefix: '/replay',
         env: {
             NEXT_PUBLIC_BASE_PATH: '/replay',
+            NEXT_PUBLIC_CONTENT_DIRECTORY: ''
         },   
     };
 } else {
     nextConfig = {
         env: {
-            NEXT_PUBLIC_BASE_PATH: ''
+            NEXT_PUBLIC_BASE_PATH: '',
+            NEXT_PUBLIC_CONTENT_DIRECTORY: ''
         }
     };
 }

@@ -32,9 +32,8 @@ class Agent:
         self.x = agent_data.get("x", None)
         self.y = agent_data.get("y", None)
         self.actions = list(set(agent_data.get("actions", []) + DEFAULT_ACTIONS))
-        #self.actions = list(dict.fromkeys(agent_data.get("actions", []) + DEFAULT_ACTIONS))
-        #old one
-        self.actions = list(dict.fromkeys(agent_data.get("actions",DEFAULT_ACTIONS )))
+        self.last_perceived_data = None
+        self.perceived_data_history = {}
 
         self.memory = agent_data.get("memory", [])
         self.short_memory = agent_data.get("short_memory", [])
@@ -62,7 +61,28 @@ class Agent:
 
         self.matrix = agent_data.get('matrix')
         if self.matrix:
+            if self.matrix.action_blacklist:
+                self.actions = [action for action in self.actions if action not in blacklist]
+            if self.matrix and self.matrix.environment:
+                valid_coordinates = self.matrix.environment.get_valid_coordinates()
+                if (self.x, self.y) not in valid_coordinates:
+                    new_position = random.choice(valid_coordinates)
+                    self.x = new_position[0]
+                    self.y = new_position[1]
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"agent_init","x":self.x,"y":self.y,"name":self.name,"goal":self.goal,"kind":self.kind,"description":self.description,"status":self.status})
+
+    def perceived_data_is_same(self):
+        last_step = self.matrix.cur_step - 1
+        if last_step not in self.perceived_data_history:
+            return False
+        perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions = self.perceive([a for a in self.matrix.agents if a != self], self.matrix.environment, unix_to_strftime(self.matrix.unix_time))
+        current_perceived_data = (perceived_agents, perceived_locations, perceived_areas, perceived_objects, perceived_directions)
+        return self.perceived_data_history[last_step] == current_perceived_data
+
+    def cleanup_old_perceived_data(self, current_step):
+        keys_to_delete = [step for step in self.perceived_data_history if step < current_step - 2]
+        for key in keys_to_delete:
+            del self.perceived_data_history[key]
 
     def update_goals(self):
         # this assumes 8+ importance is always worth changing /reevaluating goals
@@ -84,6 +104,7 @@ Express your goal using only the action or outcome. Avoid adding phrases like 'm
         self.addMemory("observation",f"I updated my goal to be \"{msg}\"", unix_to_strftime(self.matrix.unix_time), random.randint(5, 8))
         self.goal = msg
 
+
     def decide(self):
         self.matrix.llm_action(self,self.matrix.unix_time)
 
@@ -97,7 +118,11 @@ Express your goal using only the action or outcome. Avoid adding phrases like 'm
         self.meta_questions.extend(x[1] for x in m if x[1] not in self.meta_questions)
 
     def evaluate_progress(self,opts={}):
-        relevant_memories = self.getMemories(self.goal, unix_to_strftime(self.matrix.unix_time))
+        if self.matrix:
+            relevant_memories = self.getMemories(self.goal, unix_to_strftime(self.matrix.unix_time))
+        else:
+            relevant_memories = self.getMemories(self.goal, opts.get("timestamp", ""))
+
         relevant_memories_string = "\n".join(f"Memory {i + 1}:\n{memory}" for i, memory in enumerate(relevant_memories)) if relevant_memories else ""
         primer = opts.get("random_prime",False)
         variables = {
@@ -114,7 +139,11 @@ Express your goal using only the action or outcome. Avoid adding phrases like 'm
         score = int(match.group(1)) if match else None
 
         if score and explanation:
-            self.addMemory("meta", explanation, unix_to_strftime(self.matrix.unix_time) , 10)
+            if self.matrix:
+                self.addMemory("meta", explanation, unix_to_strftime(self.matrix.unix_time) , 10)
+            else:
+                self.addMemory("meta", explanation, opts.get("timestamp", "") , 10)
+
             if score and int(score) < 3:
                 #self.meta_cognize(unix_to_strftime(self.matrix.unix_time), True)
                 pass
@@ -284,10 +313,11 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
         msg = llm.prompt(prompt_name="summarize_conversation", variables=variables)
         interaction = f"{timestamp} - {self} summarized their conversation with {self.last_conversation.other_agent.name}: {msg}"
+        interaction = f"my conversation with {self.last_conversation.other_agent.name}: {msg}"
         if self.matrix is not None:
             print_and_log(interaction, f"{self.matrix.id}:events:{self.name}")
 
-        self.addMemory("conversation", interaction, timestamp, random.randint(4, 6))
+        self.addMemory("summary", interaction, timestamp, random.randint(4, 6))
         if self.matrix:
             self.matrix.add_to_logs({"step_type":"agent_set", "attribute_name": "convo", "attribute_data": {"status": "complete", "from":self.mid, "to":self.last_conversation.other_agent.mid, "convo_id":self.last_conversation.mid}})
         self.last_conversation = None
@@ -477,7 +507,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
         perceived_agents = []
         perceived_areas = []
         perceived_directions = []
-        if (self.matrix is not None and self.matrix.allow_observance_flag == 0) or (self.matrix is None and ALLOW_OBSERVE == 0):
+        if (self.matrix is not None and self.matrix.allow_observance_flag == 0) or (self.matrix is None and ALLOW_OBSERVANCE == 0):
 
             return perceived_agents, perceived_locations, perceived_areas, perceived_objects
 
@@ -564,7 +594,13 @@ Answer the question from the point of view of {self} thinking to themselves, res
         perceived_agent_ids = [agent.mid for agent in perceived_agents]
         if self.matrix:
             self.matrix.add_to_logs({"agent_id":self.mid,"step_type":"perceived","perceived_agents":perceived_agent_ids,"perceived_locations":[],"perceived_areas":[],"perceived_objects":[]})
-        #missing locations,areas,objects
+
+        perceived_data = (perceived_agents, perceived_locations, perceived_areas, perceived_objects, perceived_directions)
+        #self.last_perceived_data = perceived_data
+        if self.matrix:
+            self.perceived_data_history[self.matrix.cur_step] = perceived_data
+            self.cleanup_old_perceived_data(self.matrix.cur_step)
+
         return perceived_agents, perceived_locations, perceived_areas, perceived_objects,perceived_directions
 
     def addMemory(self, kind, content, timestamp=None, score=None,embedding=None):
@@ -574,7 +610,7 @@ Answer the question from the point of view of {self} thinking to themselves, res
 
 
         if kind == "observation":
-            if (self.matrix is not None and self.matrix.allow_observance_flag == 1):
+            if (self.matrix and self.matrix.allow_observance_flag == 1) or (self.matrix is None):
                 memory = Memory(kind, content, timestamp, timestamp, score,embedding)
                 self.memory.append(memory)
         else:

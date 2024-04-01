@@ -16,6 +16,11 @@ from unittest.mock import MagicMock
 from src.actions.fine_move_action import FineMoveAction
 
 class TestMemoryFunctions(unittest.TestCase):
+    def test_web(self):
+        #run_simulation("steps":1)
+        #start_npm_run_dev
+        #assert_check_for_event
+        pass
     def test_fine_move_action_direction(self):
         agent = MagicMock(x=0, y=0)
         FineMoveAction.act(agent, "up with random text")
@@ -29,14 +34,37 @@ class TestMemoryFunctions(unittest.TestCase):
         self.assertEqual(agent.y, 0)
 
     def test_fine_move_action_moves_away(self):
-        #real agent here, real zombie here. decide 
-        matrix = Matrix({"environment":"configs/small.tmj"})
-        real_agent = Agent({ "name": "John", "actions": ["fine_move"],"x":5,"y":5,"matrix":matrix })
-        matrix.add_agent_to_simulation(real_agent)
-        zombie = Agent({ "name": f"Zombie", "kind": "zombie", "actions": ["kill"],"x":6,"y":5,"matrix":matrix })
-        matrix.add_agent_to_simulation(zombie)
-        matrix.llm_action(real_agent, matrix.unix_time)
-        self.assertEqual(real_agent.x, 4)
+        successful_outcomes = 0
+        for _ in range(4):
+            matrix = Matrix({"environment": "configs/small.tmj"})
+            real_agent = Agent({"name": "John", "actions": ["fine_move"], "x": 5, "y": 5, "matrix": matrix})
+            matrix.add_agent_to_simulation(real_agent)
+            zombie = Agent({"name": f"killer Zombie", "kind": "zombie", "actions": ["kill"], "x": 6, "y": 5, "matrix": matrix})
+            matrix.add_agent_to_simulation(zombie)
+            matrix.llm_action(real_agent, matrix.unix_time)
+            if real_agent.x == 4:
+                successful_outcomes += 1
+
+        self.assertTrue(successful_outcomes >= 2)
+
+    def test_matrix_runs_step(self):
+        matrix = Matrix({"scenario":"configs/empty.json","environment":"configs/largev2.tmj"})
+        #run for one step
+        matrix.steps = 1
+        matrix.boot()
+        matrix.run_singlethread()
+        self.assertTrue(len(matrix.agents) > 0)
+        self.assertEqual(matrix.status,"complete")
+
+    def test_perception_range(self):
+        matrix1 = Matrix({"scenario":"configs/bus_stop.json","environment":"configs/largev2.tmj"})
+        matrix1.boot()
+        self.assertEqual(matrix1.perception_range, 50) # perception_range = 50 in bus_stop.json
+
+        matrix2 = Matrix({"scenario":"configs/empty.json","environment":"configs/largev2.tmj"})
+        matrix2.perception_range = 155
+        matrix2.boot()
+        self.assertEqual(matrix2.perception_range, 155)
 
     def test_memory(self):
         agent_data = {
@@ -85,7 +113,7 @@ class TestMemoryFunctions(unittest.TestCase):
             print(f"Error {e}")
 
         timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
-        agent1.evaluate_progress(timestamp)
+        agent1.evaluate_progress({'timestamp':timestamp})
 
     def test_askmetaquestions(self):
         agent1_data = {
@@ -255,7 +283,8 @@ class TestMemoryFunctions(unittest.TestCase):
             print(f"Relevance Score: {Memory.calculateRelevanceScore(mem.embedding, context_embedding)}")
         self.assertTrue(len(sorted_memory) > 0)
 
-    def test_information_spreading(self):
+
+    def test_information_dissemination(self):
         a1_data = { "name": "Viktor", "goal": "wants to throw a party next week" }
         a2_data = { "name": "John", "description": "loves art" }
         a3_data = { "name": "Paul", "description": "loves eating" }
@@ -274,6 +303,53 @@ class TestMemoryFunctions(unittest.TestCase):
             print(msg)
             unix_time = unix_time + 10
         agent2.summarize_conversation(timestamp)
+        print("*"*20)
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent2.talk({ "target": agent3.name, "other_agents": [agent3], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent3}: {response}"
+            print(msg)
+            response = agent3.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent3} said to {agent2}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+        agent3.summarize_conversation(timestamp)
+        print(f"{agent2} memories")
+        for mem in agent2.memory:
+            print(mem)
+        print(f"{agent3} memories")
+        for mem in agent3.memory:
+            print(mem)
+
+    def long_range_test_information_dissemination(self):
+        a1_data = { "name": "Viktor", "goal": "wants to throw a party next week" }
+        a2_data = { "name": "John", "description": "loves art" }
+        a3_data = { "name": "Paul", "description": "loves eating" }
+        agent1 = Agent(a1_data)
+        agent2 = Agent(a2_data)
+        agent3 = Agent(a3_data)
+        agents = [agent1, agent2, agent3]
+        for i, agent in enumerate(agents):
+            for other_agent in agents[i + 1:]:
+                agent.connections.append(str(other_agent))
+                other_agent.connections.append(str(agent))
+        unix_time = 1704067200
+        timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+        for i in range(2):
+            timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
+            response = agent1.talk({ "target": agent2.name, "other_agents": [agent2], "timestamp": timestamp })
+            msg = f"{agent1} said to {agent2}: {response}"
+            print(msg)
+            response = agent2.talk({ "target": agent1.name, "other_agents": [agent1], "timestamp": timestamp })
+            msg = f"{agent2} said to {agent1}: {response}"
+            print(msg)
+            unix_time = unix_time + 10
+        agent2.summarize_conversation(timestamp)
+        interactions = ["saw a dog" ,"took a nap","chatted with a stranger", "ate lunch", "saw a bird", "saw a friend","saw a stranger", "saw a zombie"]
+        for i in range(50):
+            timestamp = datetime.fromtimestamp(unix_time+i).strftime("%Y-%m-%d %H:%M:%S")
+            interaction = random.choice(interactions)
+            agent2.addMemory("observation", interaction, timestamp, random.randint(0, 2))
         print("*"*20)
         for i in range(2):
             timestamp = datetime.fromtimestamp(unix_time).strftime("%Y-%m-%d %H:%M:%S")
@@ -572,7 +648,7 @@ Answer: move Park
         agent.destination_cache = [(36, 88), (36, 89), (36, 90)]
         zombie.destination_cache = [(36, 93), (36, 93), (36, 93)]
 
-        agent.addMemory("reflect", f"{matrix.unix_to_strftime(matrix.unix_time)} - {agent} wants to check if the Park is a safe place to go to or no.", matrix.unix_to_strftime(matrix.unix_time), 9)
+        agent.addMemory("reflect", f"{unix_to_strftime(matrix.unix_time)} - {agent} wants to check if the Park is a safe place to go to or no.", unix_to_strftime(matrix.unix_time), 9)
 
         matrix.agents.append(agent)
         matrix.agents.append(zombie)

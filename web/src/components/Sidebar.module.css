@@ -76,3 +76,9 @@
 .agentInfo {
     text-align: justify;
 }
+
+.stepAndAudio {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}

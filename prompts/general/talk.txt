@@ -1,18 +1,14 @@
-roleplay as {{agent}}
+roleplay as {{agent}} talking to {% if other_agent == "stranger" %} a stranger you know nothing about. {% else %} {{other_agent}} {% endif %}
+
+
 {{selfContext}}
+{{agent}}'s previous memories:
 {{relevant_memories}}
 
 
-{% if other_agent == "stranger" %}
-This is your first time talking to this stranger.
-
-{% else %}
-
-{% if primer %}
+{% if other_agent != "stranger" and primer %}
 prime your thoughts but dont mention: "{{primer}}". 
-{% endif %}
 
-{{selfContext}}
 Below is the current chat history between {{agent}} and {{other_agent}}.
 
 {{previous_conversations}}
@@ -41,5 +37,6 @@ Maybe you could discuss the topic of "{{topic}}"
 
 keep responses to under 3 sentences.
 Craft an informal spoken response.
+Do not discuss topics for things that you don't perceive or are not in your recent memories.
 Only write the response from {{agent}} and nothing else.
 

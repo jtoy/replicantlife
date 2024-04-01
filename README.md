@@ -216,10 +216,18 @@ When working on the main engine,  often times we can shut off all llm calls, in 
 * make all cognitive modules flags work on a user basis
 * normalize flag names
 * hybrid fast llm action / continue to destination and only act when needed
+* maybe make it gym compatible
 
 
 # changes over time
+
 * moving objects
+* tool usage
+  weapons
+  move refrigerator
+  door open/close/lock
+
+* scribblenauts style object interactions
 * information spreading
 * building stuff
 * people dead/people born
@@ -231,5 +239,3 @@ When working on the main engine,  often times we can shut off all llm calls, in 
 * things getting destroyed
 * discover actions
 * environmental changes
-
-

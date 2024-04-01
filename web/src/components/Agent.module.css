@@ -16,10 +16,28 @@
     top: -12px;
 }
 
+.stageLeftChatIcon {
+    position: absolute;
+    left: -40px;
+    top: -60px;
+}
+
+.stageThoughtBubbleIcon {
+    position: absolute;
+    right: 40px;
+    top: -80px;
+}
+
+.stageDeadIcon {
+    position: absolute;
+    right: 40px;
+    top: -80px;
+}
+
 .agent {
     position: relative;
 }
-  
+
 .hidden {
     visibility: hidden;
 }
