@@ -74,7 +74,12 @@ class Matrix(Data,Reporting):
         self.redis_connection = self.setup_redis()
 
         self.replay = None
-        self.cursor = self.setup_database()
+        self.setup_database()
+        #self.dbconn = self.setup_database()
+        #if self.dbconn:
+        #    self.dbcursor = self.dbconn.cursor()
+        #else:
+        #    self.dbcursor = None
         self.add_to_logs({"step_type":"matrix_init","data":config})
         self.agent_locks = { agent: threading.Lock() for agent in self.agents }
         self.environment = Environment({ "filename": self.environment_file })
