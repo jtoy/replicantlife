@@ -3,7 +3,6 @@
   "LLAMA_URL": "http://localhost:11434/api",
   "POWERINF_URL": "http://localhost:8080",
   "LLAMA_TIMEOUT": 600,
-  "REDIS_URL": "redis://localhost:6379",
   "OPENAI_KEY": null,
   "MODEL": "mistral",
   "MATRIX_SIZE": 15,
