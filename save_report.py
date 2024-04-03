@@ -123,26 +123,28 @@ def save_report(matrix_instance, filename=None):
                         except Exception as e:
                             print(f"Wrong evaluation format response error: {e}, retrying...")
                         # Performance Calculation
-            numerator = matrix_instance.performance_evals["numerator"]
-            denominator = matrix_instance.performance_evals["denominator"]
-            all_env_vars = matrix_instance.all_env_vars()
+            numerator = matrix_instance.performance_evals.get("numerator")
+            denominator = matrix_instance.performance_evals.get("denominator")
+            if numerator and denominator:
 
-            if numerator not in all_env_vars:
-                numerator_value = matrix_instance.performance_metrics[numerator]
-            else:
-                numerator_value = all_env_vars[numerator]
+                all_env_vars = matrix_instance.all_env_vars()
 
-            if denominator not in all_env_vars:
-                denominator_value = matrix_instance.performance_metrics[denominator]
-            else:
-                denominator_value = all_env_vars[denominator]
+                if numerator not in all_env_vars:
+                    numerator_value = matrix_instance.performance_metrics[numerator]
+                else:
+                    numerator_value = all_env_vars[numerator]
 
-            if denominator_value < 0:
-                performance_score = 0
-            else:
-                performance_score = (numerator_value / denominator_value) * 10
+                if denominator not in all_env_vars:
+                    denominator_value = matrix_instance.performance_metrics[denominator]
+                else:
+                    denominator_value = all_env_vars[denominator]
 
-            file.write(f"\n\n++++ Performance Score: {performance_score}")
+                if denominator_value < 0:
+                    performance_score = 0
+                else:
+                    performance_score = (numerator_value / denominator_value) * 10
+
+                file.write(f"\n\n++++ Performance Score: {performance_score}")
 
     except Exception as e:
         print(f"Error: {e}")
