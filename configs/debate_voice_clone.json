@@ -1,0 +1,35 @@
+{
+  "background": "Six agents gather outside at a bus stop to chat with each other. They talk about their interests and anything they come up with.",
+  "actions_blacklist": [ "move" ],
+    "agents": [
+        {
+            "name": "Natasha",
+            "description": "Natasha thinks AI is evil",
+            "goal": "",
+            "connections": [
+                "Sherlock",
+                "Viktor",
+                "Lily",
+                "James"
+            ],
+            "x": 25,
+            "y": 10
+        },
+        {
+            "name": "James",
+            "description": "James thinks AI is a futurist and thinks AI will save our world",
+            "goal": "",
+            "connections": [
+                "Sherlock",
+                "Viktor",
+                "Lily",
+                "Natasha"
+            ],
+            "x": 25,
+            "y": 15
+        }
+    ],
+    "steps": 10,
+    "allow_movement": 0,
+    "perception_range": 50
+}

@@ -83,6 +83,7 @@ class Matrix(Data,Reporting):
         #self.environment.overlay_collisions_on_image()
         self.background = None
         print(config)
+        print(f"steps {self.steps}")
 
     def boot(self):
         # Add Agents
@@ -251,8 +252,8 @@ class Matrix(Data,Reporting):
             start_time = datetime.now()
             pd(f"Step {step + 1}:")
 
-            if redis_connection:
-                control_cmd = redis_connection.lpop(f"{self.id}:communications")
+            if self.redis_connection:
+                control_cmd = self.redis_connection.lpop(f"{self.id}:communications")
                 if control_cmd:
                     control_cmd_str = control_cmd.decode('utf-8')
                     try:
