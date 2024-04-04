@@ -40,7 +40,7 @@ def process_simulation(data):
     try:
         #config = load_config()
         config = data
-        config['scenario'] = data
+        config['scenario'] = data.copy()
         config['environment'] = "configs/largev2.tmj"
         notify_discord(f"starting simulation: #{config}")
         matrix = Matrix(config)
