@@ -4,6 +4,7 @@ import time
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -31,7 +32,12 @@ url_path = sys.argv[1] if len(sys.argv) > 1 else "https://replicantlife.com/"
 driver.get(url_path) # Open a website
 
 # Allow some time for the page to load
-time.sleep(3)
+time.sleep(2)
+
+# Pretend to interact with the app to enable audio autoplay
+actions = ActionChains(driver)
+actions.move_by_offset(100, 100)
+actions.click().perform()
 
 # Connect to OBS Studio via WebSocket
 ws = obsws(obs_settings["obs_host"], obs_settings["obs_port"], obs_settings["obs_password"])
