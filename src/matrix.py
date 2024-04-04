@@ -40,6 +40,8 @@ class Matrix(Data,Reporting):
         self.allow_observance_flag = ALLOW_OBSERVANCE
 
         self.id = config.get("id", str(uuid.uuid4()))
+        if config.get("mid"): #rails sets id, this will all be cleaned up
+            self.id = config.get("mid")
         if self.id == None:
             self.id = str(uuid.uuid4())
         print(f"matrix id is {self.id}")
