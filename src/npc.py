@@ -10,8 +10,6 @@ import re
 
 
 class Npc(Agent):
-    simulation_id = 42
-
     def __init__(self, agent_data):
         self.id = str(uuid.uuid4())
         self.name = agent_data.get('name', "")

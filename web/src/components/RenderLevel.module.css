@@ -50,3 +50,29 @@
 .sidebarVisible {
     width: 200px; /*calc(var(--game-viewport-width) * 0.30);*/
 }
+
+.stageImg {
+    width: 100vw;
+    height: 100vh;
+    object-fit: "cover";
+}
+
+.agentContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    /* Prevent wrapping */
+    justify-content: center;
+    align-items: flex-end;
+    padding: 150px;
+}
+
+.agentItem {
+    margin-right: 20px;
+    /* Adjust spacing between agents */
+    position: relative;
+}

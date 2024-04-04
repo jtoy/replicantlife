@@ -277,12 +277,6 @@ llm = Llm()
 '''
 REDIS
 '''
-#TODO get rid of globals
-if "REDIS_URL" in globals():
-    redis_connection = redis.Redis.from_url(REDIS_URL)
-else:
-    print("REDIS_URL environment variable is not set.")
-    redis_connection = None
 
 def print_and_log(content, key):
     return
