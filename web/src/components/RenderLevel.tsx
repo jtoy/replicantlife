@@ -30,7 +30,7 @@ async function getData(sim_id: string, fromIndex: number) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const RenderLevel: React.FC<{ simId: string, map?: string | null, img?: string | null, hidePanel: boolean }> = ({ simId, map, img, hidePanel }) => {
 
-    const [isPlaying, setIsPlaying] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(false);
     const [followAgent, setFollowAgent] = useState<Agent | undefined>(undefined);
     const [levelState, setLevelState] = useState<LevelState>({ stepId: 0, substepId: 0, agents: [] });
     const [fetchIndex, setFetchIndex] = useState(0);
