@@ -239,3 +239,9 @@ When working on the main engine,  often times we can shut off all llm calls, in 
 * things getting destroyed
 * discover actions
 * environmental changes
+
+
+#pscopy2 notes
+# fix chatgpt support
+# dont require pscopy2 if not there
+# pause and ask a question

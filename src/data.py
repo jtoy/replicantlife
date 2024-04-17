@@ -19,6 +19,13 @@ class Data:
             return None
 
     def setup_database(self):
+        self.log_queue = queue.Queue()
+        self.log_thread = threading.Thread(target=self.process_log_queue)
+        self.log_thread.daemon = True 
+        self.log_thread.start()
+        self.dbconn = None
+        if os.environ.get("DB_HOST") is None:
+            return
         db_settings = {
             "database_host": os.environ.get("DB_HOST"),
             "database_port": int(os.environ.get("DB_PORT")),
@@ -35,7 +42,6 @@ class Data:
             "ssh_user": os.environ.get("SSH_USER"),
             "ssh_private_key": os.environ.get("SSH_PRIVATE_KEY")
         }
-        self.dbconn = None
         if ssh_host:
             self.tunnel = SSHTunnelForwarder(
                 (ssh_settings["ssh_host"], ssh_settings["ssh_port"]),
@@ -52,7 +58,6 @@ class Data:
                 port=self.tunnel.local_bind_port,
                 database=db_settings["database_name"],
             )
-            self.dbcursor = self.dbconn.cursor()
         elif db_settings["database_host"]:
             self.dbconn = psycopg2.connect(
                 user=db_settings["database_username"],
@@ -62,10 +67,7 @@ class Data:
             database=db_settings["database_name"],
         )
         if self.dbconn:
-            self.log_queue = queue.Queue()
-            self.log_thread = threading.Thread(target=self.process_log_queue)
-            self.log_thread.daemon = True 
-            self.log_thread.start()
+            self.dbcursor = self.dbconn.cursor()
 
     def process_log_queue(self):
         while True:
@@ -116,7 +118,5 @@ class Data:
         obj["step"] = self.cur_step
         obj["substep"] = self.current_substep
         obj["sim_id"] = self.id # i think we will change this to sim id everywhere
-
-
         self.log_queue.put(obj)
         self.current_substep += 1
