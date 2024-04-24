@@ -238,7 +238,7 @@ class Matrix(Data,Reporting):
 
         self.agents.append(agent)
 
-    def inject_thoughts():
+    def inject_thoughts(self):
         if self.redis_connection:
             control_cmd = self.redis_connection.lpop(f"{self.id}:communications")
             if control_cmd:
