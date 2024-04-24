@@ -238,6 +238,24 @@ class Matrix(Data,Reporting):
 
         self.agents.append(agent)
 
+    def inject_thoughts():
+        if self.redis_connection:
+            control_cmd = self.redis_connection.lpop(f"{self.id}:communications")
+            if control_cmd:
+                control_cmd_str = control_cmd.decode('utf-8')
+                try:
+                    control_cmd_dict = json.loads(control_cmd_str)
+
+                    name = control_cmd_dict.get('name', None)
+                    msg = control_cmd_dict.get('msg', None)
+                    control_type = control_cmd_dict.get('type', "thought")
+
+                    if name and msg:
+                        for agent in self.agents:
+                            if name == agent.name:
+                                agent.addMemory(kind=control_type, content=msg, timestamp=unix_to_strftime(self.unix_time), score=10)
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding control_cmd: {e}")
 
 
     def run_singlethread(self):
@@ -254,23 +272,7 @@ class Matrix(Data,Reporting):
             start_time = datetime.now()
             pd(f"Step {step + 1}:")
 
-            if self.redis_connection:
-                control_cmd = self.redis_connection.lpop(f"{self.id}:communications")
-                if control_cmd:
-                    control_cmd_str = control_cmd.decode('utf-8')
-                    try:
-                        control_cmd_dict = json.loads(control_cmd_str)
-
-                        name = control_cmd_dict.get('name', None)
-                        msg = control_cmd_dict.get('msg', None)
-                        control_type = control_cmd_dict.get('type', None)
-
-                        if name:
-                            for agent in self.agents:
-                                if name == agent.name:
-                                    agent.addMemory(kind=control_type, content=msg, timestamp=unix_to_strftime(self.unix_time), score=10)
-                    except json.JSONDecodeError as e:
-                        print(f"Error decoding control_cmd: {e}")
+            self.inject_thoughts()
 
             # Submit agent actions concurrently
             for i in range(len(self.agents)):
