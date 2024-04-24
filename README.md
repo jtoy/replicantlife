@@ -101,6 +101,13 @@ There are zombies killing people
 `NUM_ZOMBIES=5 python engine.py --scenario configs/zombie_situation.json --env configs/largev2.tmj`
 
 
+## Injecting thoughts
+
+You can inject thoughts into your agents while the simulation is running.
+Call utils/inject.py with the sim id, msg, and agent name (use --help to see the exact syntax). The simulation will check for messages over redis so you must have redis running.
+An importance score of 10 is automatically assigned.
+
+
 ## Adding New Tilemap Assets
 
 1. Create Tilemap in tilemap editor. Make sure to add proper collisions. Take note of the width/height you used.
