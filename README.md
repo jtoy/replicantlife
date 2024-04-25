@@ -13,6 +13,7 @@ Join discord here: https://discord.com/invite/DNBwbKT3Ns
 # Goal
 
 Our goal is to build the most powerful generative AI agent and simulation framework.
+It is quick and easy to get started with lots of documentation.
 We are looking for help on this project. If you know python or know how to use chatgpt, you can contribute :)
 
 # Paper
@@ -33,6 +34,22 @@ Recent advances in Large Language Models (LLMs) have shown impressive capabiliti
 # Run standalone chat
 
 `python chat.py`
+
+
+# LLM model support
+
+This platform has been built from the ground up to support local models. We support almost any model through several interfaces.
+Most of our models are called through ollama
+You just set the env MODEL to any ollama and it will work out of the box.
+The ollama url is set to localhost:11434, but you can override it with LLAMA_URL
+You can also use chatgpt models directly by changing MODEL to be the full chatgpt model such as gpt-4-turbo
+If you use chatgpt models, make sure you set OPENAI_KEY
+We also support VLLM models, just pass the full model name and it should work automatically.
+You can also disable all LLM calls by setting MODEL=off
+
+If there are missing interfaces, send us a request or submit a PR.
+
+
 
 
 ## Simulation flags

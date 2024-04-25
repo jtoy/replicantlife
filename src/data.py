@@ -3,7 +3,10 @@ import json
 import jsonlines
 import sys
 import time
-import psycopg2
+try
+    import psycopg2
+except ImportError as e:
+    print(f"Error importing psycopg2, if you dont need DB support, dont set DB_HOST: {e}")
 from dotenv import load_dotenv
 from sshtunnel import SSHTunnelForwarder
 import redis

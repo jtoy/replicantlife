@@ -54,15 +54,6 @@ Llm class wrapper
 Required to have a running ollama server on machine
 '''
 
-SUPPORTED_GPT_MODELS = [
-    "gpt-4",
-    "gpt-4-1106-preview",
-    "gpt-4-vision-preview",
-    "gpt-4-32k",
-    "gpt-3.5-turbo",
-    "gpt-3.5-turbo-16k",
-    "gpt-3.5-turbo-1106"
-]
 VLLM_MODELS = [
     "mistralai/Mistral-7B-Instruct-v0.1"
 ]
@@ -108,7 +99,7 @@ class Llm:
         if self.model == "off":
             return fallback
         start_time = time.time()
-        if self.model in SUPPORTED_GPT_MODELS:
+        if self.model.startswith("gpt-"):
           data = {
             "model": self.model,
             "messages": [{"role": "user", "content": prompt}]}
