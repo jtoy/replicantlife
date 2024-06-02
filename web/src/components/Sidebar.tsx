@@ -220,6 +220,12 @@ const Sidebar: React.FC<SidebarProps> = (
                             Play Audio
                         </label>
                     </div>}
+                    {level.simulationStarted && <div id="simulationStarted" style={{ display: 'none' }}>
+                        Simulation Started!
+                    </div>}
+                    {level.simulationComplete && <div id="simulationComplete" style={{ display: 'none' }}>
+                        Simulation Complete!
+                    </div>}
                 </div>
                 <span style={{ display: 'none' }}>{substepId}</span>
                 <div className={styles.buttons}>
